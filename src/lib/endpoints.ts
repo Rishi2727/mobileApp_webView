@@ -4,4 +4,7 @@ export const endpoints = {
     auth: {
         login: `${API_BASE_URL}/auth/login`,
     },
+    users: {
+        getCurrent: `${API_BASE_URL}/users/me`,
+    }
 };
