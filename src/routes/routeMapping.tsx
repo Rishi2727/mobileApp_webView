@@ -4,6 +4,7 @@ import { metadata } from "@/config/metadata";
 import Profile from "@/pages/profile/Profile";
 import { PublicOnlyRoute } from "@/components/core/wrapper/PublicRouteWrapper";
 import Login from "@/pages/login/Login";
+import Dashboard from "@/pages/dashboard/Dashboard";
 
 export type RouteObjectExtend = RouteObject & {
   title: string;
@@ -18,6 +19,11 @@ export const routeMapping: RouteObjectExtend[] = [
     path: "/",
     element: <AuthorizedLayout />,
     children: [
+      {
+        title: metadata.dashboard.title,
+        path: metadata.dashboard.path,
+        element: <Dashboard />,
+      },
       {
         title: metadata.profile.title,
         path: metadata.profile.path,
