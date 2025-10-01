@@ -1,23 +1,21 @@
-import DisplayWrapper from "@/components/core/wrapper/DisplayWrapper"
+import { Card } from "@/components/ui/card"
 import { Icon, type IconName } from "@/components/ui/custom/icon"
+import Text from "@/components/ui/custom/text"
 import { Link } from "react-router"
 
 
 const DashboardCard = ({ title, icon, path }: { title: string, icon: IconName, path: string }) => {
     return (
-        <DisplayWrapper
-            mode="card"
-            size="full"
-
+        <Card
             className="w-full"
         >
             <Link to={path}>
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center justify-center gap-4">
                     <Icon name={icon} size={24} />
-                    <div>{title}</div>
+                    <Text variant="subtitle">{title}</Text>
                 </div>
             </Link>
-        </DisplayWrapper>
+        </Card>
     )
 }
 
