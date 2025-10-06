@@ -1,5 +1,5 @@
 import { dashboard } from "@/config/dashboard"
-import DashboardCard from "@/features/dashboard/dashboardCard"
+import DashboardCard from "@/features/dashboard/DashboardCard"
 
 const Dashboard = () => {
     return (
