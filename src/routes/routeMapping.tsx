@@ -5,6 +5,7 @@ import Profile from "@/pages/profile/Profile";
 import { PublicOnlyRoute } from "@/components/core/wrapper/PublicRouteWrapper";
 import Login from "@/pages/login/Login";
 import Dashboard from "@/pages/dashboard/Dashboard";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 
 export type RouteObjectExtend = RouteObject & {
   title: string;
@@ -15,15 +16,22 @@ export type RouteObjectExtend = RouteObject & {
 
 export const routeMapping: RouteObjectExtend[] = [
   {
-    title: "Private Route",
+    title: "Dashboard Route",
     path: "/",
-    element: <AuthorizedLayout />,
+    element: <DashboardLayout />,
     children: [
       {
         title: metadata.dashboard.title,
         path: metadata.dashboard.path,
         element: <Dashboard />,
       },
+    ],
+  },
+   {
+    title: "Private Route",
+    path: "/",
+    element: <AuthorizedLayout />,
+    children: [
       {
         title: metadata.profile.title,
         path: metadata.profile.path,

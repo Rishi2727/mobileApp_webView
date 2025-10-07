@@ -1,65 +1,64 @@
-import type { IconName } from "@/components/ui/custom/icon";
 import { metadata } from "./metadata";
 
-export const dashboard: Array<{ title: string; icon: IconName; path: string }> = [
+export const dashboard: Array<{ title: string; image?: string; path: string }> = [
     {
         title: metadata.profile.title,
-        icon: metadata.profile.icon,
+        image: metadata.profile.image,
         path: metadata.profile.path
     },
     {
         title: metadata.booking.title,
-        icon: metadata.booking.icon,
+        image: metadata.booking.image,
         path: metadata.booking.path
     },
     {
         title: metadata.notice.title,
-        icon: metadata.notice.icon,
+        image: metadata.notice.image,
         path: metadata.notice.path
     },
     {
         title: metadata.seatBooking.title,
-        icon: metadata.seatBooking.icon,
+        image: metadata.seatBooking.image,
         path: metadata.seatBooking.path
     },
     {
         title: metadata.groupBooking.title,
-        icon: metadata.groupBooking.icon,
+        image: metadata.groupBooking.image,
         path: metadata.groupBooking.path
     },
     {
         title: metadata.carrelBooking.title,
-        icon: metadata.carrelBooking.icon,
+        image: metadata.carrelBooking.image,
         path: metadata.carrelBooking.path
     },
     {
         title: metadata.message.title,
-        icon: metadata.message.icon,
+        image: metadata.message.image,
         path: metadata.message.path
     },
     {
         title: metadata.bookSearch.title,
-        icon: metadata.bookSearch.icon,
+        image: metadata.bookSearch.image,
         path: metadata.bookSearch.path
     },
     {
         title: metadata.bookPurchase.title,
-        icon: metadata.bookPurchase.icon,
+        image: metadata.bookPurchase.image,
         path: metadata.bookPurchase.path
     },
     {
         title: metadata.loanHistory.title,
-        icon: metadata.loanHistory.icon,
+        image: metadata.loanHistory.image,
         path: metadata.loanHistory.path
     },
     {
         title: metadata.eBook.title,
-        icon: metadata.eBook.icon,
+        image: metadata.eBook.image,
         path: metadata.eBook.path
     },
     {
         title: metadata.setting.title,
-        icon: metadata.setting.icon,
+        image: metadata.setting.image,
         path: metadata.setting.path
     }
 ]

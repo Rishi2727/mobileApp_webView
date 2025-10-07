@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Cleaned & Corrected SVG -->
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1.49207in" height="1.4265in"
+     viewBox="0 0 323.26 309.06"
+     version="1.1"
+     style="shape-rendering:geometricPrecision;
+            text-rendering:geometricPrecision;
+            image-rendering:optimizeQuality;
+            fill-rule:evenodd; clip-rule:evenodd">
+
+  <defs>
+    <style type="text/css">
+      .fil0 {fill:currentColor}
+      .fil1 {fill:white}
+    </style>
+  </defs>
+
+  <g id="Layer_1">
+    <polygon class="fil0" points="2.72,0 230.42,0 322.17,140.05 94.47,140.05"/>
+    <rect class="fil1" x="18.51" y="8.53" width="207.31" height="122.99" rx="35.11" ry="35.11"
+          transform="matrix(1 0 0.655128 1 0 0)"/>
+    <path class="fil0" d="M53.61 17.06c-3.54 0 -8.62 0.65 -9.97 4.56 -1.81 5.24 2.25 13.13 5 17.34l34.58 52.78c9.79 14.94 32.74 31.25 50.97 31.25h137.1c3.54 0 8.63-0.65 9.97-4.56 1.81-5.24-2.25-13.13-5-17.34l-34.58-52.78c-9.79-14.94-32.74-31.25-50.97-31.25H53.61z"/>
+    <path class="fil0" d="M240.99 161.06v148h-48.08v-148h48.08zm-73.86 0v115.62l17.07 25.71V161.06h-17.07z"/>
+    <polygon class="fil0" points="0,21.05 0,6.26 92.09,145.04 323.26,145.04 323.26,153.57 86.32,153.57"/>
+  </g>
+</svg>

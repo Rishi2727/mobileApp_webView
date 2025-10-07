@@ -1,74 +1,75 @@
+import { commonIcons, dashboardIcons } from "@/assets";
 import type { IconName } from "@/components/ui/custom/icon";
 
-export const metadata: Record<string, { title: string; icon: IconName; path: string }> = {
+export const metadata: Record<string, { title: string; icon?: IconName; path: string; image?: string }> = {
     dashboard: {
         title: "Dashboard",
         icon: "LayoutDashboard",
-        path: "/dashboard"
+        path: "/"
     },
     profile: {
         title: "My Profile",
-        icon: "User",
+        image: dashboardIcons.profileIcon,
         path: "/profile"
     },
     booking: {
         title: "My Bookings",
-        icon: "Book",
+        image: dashboardIcons.bookIcon,
         path: "/bookings"
     },
     notice: {
         title: "Notices",
-        icon: "Megaphone",
+        image: dashboardIcons.messageIcon,
         path: "/notices"
     },
     seatBooking: {
         title: "Seat Booking",
-        icon: "Armchair",
+        image: dashboardIcons.bookIcon,
         path: "/seat-booking"
     },
     groupBooking: {
         title: "Group Bookings",
-        icon: "Group",
+        image: dashboardIcons.groupIcon,
         path: "/group-bookings"
     },
     carrelBooking: {
         title: "Carrel Booking",
-        icon: "Sofa",
+        image: dashboardIcons.carrelIcon,
         path: "/carrel-booking"
     },
     message: {
         title: "Messages",
-        icon: "Mail",
+        image: commonIcons.bellIcon,
         path: "/messages"
     },
     bookSearch: {
         title: "Book Search",
-        icon: "FileSearch2",
+        image: dashboardIcons.bookLoanIcon,
         path: "/book-search"
     },
     bookPurchase: {
         title: "Book Purchase",
-        icon: "BookUp",
+        image: dashboardIcons.bookRequestIcon,
         path: "/book-purchase"
     },
     loanHistory: {
         title: "Loan History",
-        icon: "History",
+        image: dashboardIcons.loanHistoryIcon,
         path: "/loan-history"
     },
     eBook: {
         title: "E-Books",
-        icon: "NotepadTextDashed",
+        image: dashboardIcons.eBookIcon,
         path: "/e-books"
     },
     setting: {
         title: "Settings",
-        icon: "Settings",
+        image: dashboardIcons.settingIcon,
         path: "/settings"
     },
     login: {
         title: "Login",
-        icon: "KeyRound",
+        image: "KeyRound",
         path: "/login"
     },
 }

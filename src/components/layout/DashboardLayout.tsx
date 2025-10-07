@@ -1,11 +1,11 @@
 import { Outlet } from "react-router"
-import { Navbar } from "../core/Navbar"
+import { DashbaordNavbar } from "../navbar/DashboardNavbar"
 
-export default function AuthorizedLayout() {
+export default function DashboardLayout() {
     return (
         // <PrivateRoute>
         <main>
-            <Navbar />
+            <DashbaordNavbar />
             <Outlet />
         </main>
         // </PrivateRoute>
