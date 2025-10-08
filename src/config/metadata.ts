@@ -1,7 +1,25 @@
 import { commonIcons, dashboardIcons } from "@/assets";
 import type { IconName } from "@/components/ui/custom/icon";
-
-export const metadata: Record<string, { title: string; icon?: IconName; path: string; image?: string }> = {
+export type MentaDataTypeProps = {
+    [key: string]: {
+        title: string;
+        path: string;
+        icon?: IconName;
+        image?: string;
+        animetedImage?: string;
+        isVisible?: boolean;
+        borderAnimation?: boolean;
+        borderColor?: string;
+        iconFillColor?: string;
+        iconStrokeColor?: string;
+        backgroundColor?: string;
+        borderRadius?: number;
+        padding?: number;
+        width?: number;
+        height?: number;
+    };
+};
+export const metadata: MentaDataTypeProps = {
     dashboard: {
         title: "Dashboard",
         icon: "LayoutDashboard",
@@ -10,66 +28,199 @@ export const metadata: Record<string, { title: string; icon?: IconName; path: st
     profile: {
         title: "My Profile",
         image: dashboardIcons.profileIcon,
-        path: "/profile"
+        animetedImage: dashboardIcons.profileIcon,
+        path: "/profile",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border border-border-accent",
+        iconFillColor: "success",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
     },
     booking: {
         title: "My Bookings",
         image: dashboardIcons.bookIcon,
-        path: "/bookings"
+        animetedImage: dashboardIcons.bookIcon,
+        path: "/bookings",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
     },
     notice: {
         title: "Notices",
         image: dashboardIcons.messageIcon,
-        path: "/notices"
+        animetedImage: dashboardIcons.messageIcon,
+        path: "/notices",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
     },
     seatBooking: {
         title: "Seat Booking",
-        image: dashboardIcons.bookIcon,
-        path: "/seat-booking"
+        image: dashboardIcons.seatIcon,
+        animetedImage: dashboardIcons.seatIcon,
+        path: "/seat-booking",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
     },
     groupBooking: {
         title: "Group Bookings",
         image: dashboardIcons.groupIcon,
-        path: "/group-bookings"
+        animetedImage: dashboardIcons.groupIcon,
+        path: "/group-bookings",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
     },
     carrelBooking: {
         title: "Carrel Booking",
         image: dashboardIcons.carrelIcon,
-        path: "/carrel-booking"
+        animetedImage: dashboardIcons.carrelIcon,
+        path: "/carrel-booking",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
     },
     message: {
         title: "Messages",
         image: commonIcons.bellIcon,
-        path: "/messages"
+        animetedImage: dashboardIcons.bellIcon,
+        path: "/messages",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
     },
     bookSearch: {
         title: "Book Search",
         image: dashboardIcons.bookLoanIcon,
-        path: "/book-search"
+        animetedImage: dashboardIcons.bookLoanIcon,
+        path: "/book-search",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
     },
     bookPurchase: {
         title: "Book Purchase",
         image: dashboardIcons.bookRequestIcon,
-        path: "/book-purchase"
+        animetedImage: dashboardIcons.bookRequestIcon,
+        path: "/book-purchase",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
     },
     loanHistory: {
         title: "Loan History",
         image: dashboardIcons.loanHistoryIcon,
-        path: "/loan-history"
+        animetedImage: dashboardIcons.loanHistoryIcon,
+        path: "/loan-history",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
     },
     eBook: {
         title: "E-Books",
         image: dashboardIcons.eBookIcon,
-        path: "/e-books"
+        animetedImage: dashboardIcons.eBookIcon,
+        path: "/e-books",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
     },
     setting: {
         title: "Settings",
         image: dashboardIcons.settingIcon,
-        path: "/settings"
+        animetedImage: dashboardIcons.settingIcon,
+        path: "/settings",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
     },
     login: {
         title: "Login",
         image: "KeyRound",
-        path: "/login"
+        path: "/login",
+        
     },
 }
