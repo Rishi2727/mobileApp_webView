@@ -18,6 +18,8 @@ import splashLogo from './images/splash_logo.png'
 import brandLogo from './icons/brandLogo.svg'
 import dashboardBg from './images/dash_background.png'
 import bannarImage from './images/banner2_white.png'
+import weatherIcon01d from './images/WEATHER_01d.png'
+import seatTableIcon from './icons/seatTable.svg'
 export const commonIcons = {
       bellIcon,
       homeIcon,
@@ -27,7 +29,8 @@ export const commonIcons = {
       splashLogo,
       brandLogo,
       dashboardBg,
-      bannarImage
+      bannarImage,
+      seatTableIcon
 }
 export const dashboardIcons = {
    profileIcon,
@@ -42,4 +45,7 @@ export const dashboardIcons = {
    loanHistoryIcon,
    eBookIcon,
    settingIcon,  
+}
+export const weatherIcon = {
+     weatherIcon01d
 }

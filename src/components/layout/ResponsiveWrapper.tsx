@@ -156,7 +156,7 @@ export default function ResponsiveWrapper({
 
 // Export named variants for common use cases
 export const ResponsiveContainer = ({ children, className }: { children: ReactNode; className?: string }) => (
-  <ResponsiveWrapper variant="md" className={cn("w-full max-w-7xl mx-auto", className)}>
+  <ResponsiveWrapper variant="sm" className={cn("w-full max-w-7xl mx-auto", className)}>
     {children}
   </ResponsiveWrapper>
 )

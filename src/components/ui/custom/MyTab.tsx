@@ -168,7 +168,7 @@ const MyTab = ({
               'border-b border-border bg-muted/50 p-1 rounded-lg overflow-x-auto': variant === 'default',
               
               // Pills variant
-              'bg-muted p-1 rounded-lg gap-1 overflow-x-auto': variant === 'pills',
+              'bg-muted p-1  gap-1 overflow-x-auto': variant === 'pills',
               
               // Underline variant
               'border-b border-border overflow-x-auto': variant === 'underline',
@@ -217,8 +217,8 @@ const MyTab = ({
                     'text-muted-foreground hover:text-foreground': variant === 'default' && !isActive,
                     
                     // Pills variant
-                    'rounded-lg': variant === 'pills',
-                    'text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10': variant === 'pills' && !isActive,
+                    'rounded-full': variant === 'pills',
+                    'text-muted-foreground bg-secondary hover:text-foreground hover:bg-muted-foreground/10': variant === 'pills' && !isActive,
                     
                     // Shared active state for default and pills
                     'bg-background text-foreground shadow-sm': (variant === 'default' || variant === 'pills') && isActive,

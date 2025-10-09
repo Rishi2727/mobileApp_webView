@@ -1,12 +1,11 @@
+import { Card, CardContent } from "@/components/ui/card";
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
+import { metadata } from "@/config/metadata";
 import ProfileDetail from "@/features/profile/profileDetail";
 import { useEffect, useState } from "react";
 
 const Profile = () => {
-  const breadcrumbItems = [
-    { id: 1, label: "Dashboard" },
-    { id: 2, label: "Profile" },
-  ];
+  const breadcrumbItems = metadata.profile.breadcrumbItems || [];
 
   const [timeLeft, setTimeLeft] = useState(30); 
 
@@ -49,14 +48,15 @@ const Profile = () => {
               }}
             ></div>
 
-            {/* QR Code */}
-            <div className="w-32 h-32 bg-white shadow-md flex items-center justify-center">
-              <img
-                src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=example"
-                alt="QR Code"
-                className="w-28 h-28"
-              />
-            </div>
+             <Card className="w-32 h-32 flex items-center justify-center shadow-lg">
+              <CardContent className="p-2">
+                <img
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=example"
+                  alt="QR Code"
+                  className="w-28 h-28 rounded"
+                />
+              </CardContent>
+            </Card>
           </div>
         </div>
 
@@ -69,7 +69,7 @@ const Profile = () => {
           <ProfileDetail
             text={myProfile.userName[0]}
             textColor="#FFFFFF"
-            bgColor="#4F8DFB"
+            bgColor="#27304B"
             circleBgColor="#E0E7FF"
             width={350}
             height={210}

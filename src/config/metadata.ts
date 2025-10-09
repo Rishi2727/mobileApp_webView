@@ -17,6 +17,7 @@ export type MentaDataTypeProps = {
         padding?: number;
         width?: number;
         height?: number;
+        breadcrumbItems?: { id: number; label: string }[];
     };
 };
 export const metadata: MentaDataTypeProps = {
@@ -40,6 +41,11 @@ export const metadata: MentaDataTypeProps = {
         padding: 12,
         width: 38,
         height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "Profile" },
+        ],
+
     },
     booking: {
         title: "My Bookings",
@@ -56,6 +62,10 @@ export const metadata: MentaDataTypeProps = {
         padding: 12,
         width: 38,
         height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "Bookings" },
+        ],
     },
     notice: {
         title: "Notices",
@@ -72,6 +82,10 @@ export const metadata: MentaDataTypeProps = {
         padding: 12,
         width: 38,
         height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "University Notices" },
+        ],
     },
     seatBooking: {
         title: "Seat Booking",
@@ -88,6 +102,30 @@ export const metadata: MentaDataTypeProps = {
         padding: 12,
         width: 38,
         height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "General/PC Seat" },
+        ],
+    },
+    seatBookingPage: {
+        title: "Seat Booking",
+        path: "/seat-booking-page",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "General/PC Seat" },
+            { id: 2, label: "Seat Booking" },
+
+        ],
     },
     groupBooking: {
         title: "Group Bookings",
@@ -221,6 +259,6 @@ export const metadata: MentaDataTypeProps = {
         title: "Login",
         image: "KeyRound",
         path: "/login",
-        
+
     },
 }
