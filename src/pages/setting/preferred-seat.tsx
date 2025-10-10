@@ -61,7 +61,7 @@ export default function PreferredSeat() {
     }
   };
   return (
-    <div className="min-h-screen bg-secondary">
+    <div className="min-h-[90vh] bg-secondary">
       <MyBreadcrumb
         items={breadcrumbItems}
         title="Settings"
