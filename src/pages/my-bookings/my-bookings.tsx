@@ -130,6 +130,37 @@ const mockBookings: MyBookingModel[] = [
     multiUserBooking: false,
     userId: "user123",
   },
+  {
+    bookingId: "4",
+    roomcatCode: 401,
+    roomcatName: "General Reading Room",
+    roomCode: "LHL",
+    roomName: "Lighthouse Lounge",
+    roomNumber: "3",
+    floorCode: "3F",
+    floorName: "3F",
+    floorNumber: "3",
+    reserveDeskNo: "2",
+    reserveDeskCode: "DESK002",
+    reservationFrom: "2025-08-13T17:56:00",
+    reservationTill: "2025-08-13T17:58:00",
+    reservationFinished: "2025-08-13T17:58:00",
+    reservationDtime: "2025-08-13T17:56:00",
+    actualStatus: "RETURNED",
+    buttonConfirmation: false,
+    buttonExtension: false,
+    buttonSeatchange: false,
+    buttonCancellation: false,
+    buttonReturn: false,
+    deskPassword: null,
+    roomExtensionLimit: 2,
+    extensionCount: 0,
+    roomConfirmationWaitingTime: 10,
+    bookingType: "SEAT",
+    reservationMode: "M",
+    multiUserBooking: false,
+    userId: "user123",
+  },
 ];
 
 const MyBookings = () => {
@@ -193,7 +224,7 @@ const MyBookings = () => {
               No bookings available.
             </Text>
           ) : (
-            <div className="max-h-[370px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+            <div className="max-h-[45vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
               {bookings.map((b) => {
                 const fromDate = new Date(b.reservationFrom);
                 const tillDate = new Date(b.reservationTill);
