@@ -29,15 +29,15 @@ const DashboardCard = ({
   height,
 }: Readonly<DashboardCardProps>) => {
   return (
-    <Card className="w-full transition-transform duration-300 hover:rotate-3">
+    <Card className="w-full transition-transform duration-300 hover:rotate-3 shadow-lg border">
       <Link to={path}>
         <div className="flex flex-col items-center justify-center gap-4">
           {image && (
             <Image
               src={image}
               alt={title}
-              width={width || 50}
-              height={height || 50}
+              width={width || 38}
+              height={height || 38}
                className={cn(`text-${iconFillColor}`, `bg-${backgroundColor}`, `rounded-${borderRadius}`, `p-${padding}`, )}
             />
           )}

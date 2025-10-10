@@ -18,6 +18,7 @@ import BookPurchase from "@/pages/book-purchase/book-purchase";
 import LoanHistory from "@/pages/loan-history/loan-history";
 import Ebook from "@/pages/e-books/e-book";
 import Setting from "@/pages/setting/setting";
+import PreferredSeat from "@/pages/setting/preferred-seat";
 
 export type RouteObjectExtend = RouteObject & {
   title: string;
@@ -108,6 +109,11 @@ export const routeMapping: RouteObjectExtend[] = [
         title: metadata.setting.title,
          path: metadata.setting.path,
         element: <Setting />,
+      },
+      {
+        title: metadata.PreferredSeatSetting.title,
+         path: metadata.PreferredSeatSetting.path,
+        element: <PreferredSeat />,
       },
     ],
   },

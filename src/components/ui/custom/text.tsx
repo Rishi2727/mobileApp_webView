@@ -6,6 +6,8 @@ type TextVariant =
   | "h2"
   | "h3"
   | "h4"
+  | "h5"
+  | "h6"
   | "p"
   | "blockquote"
   | "ul"
@@ -56,7 +58,7 @@ const Text = ({
     case "h3":
       return (
         <h3
-          className={cn("mt-8 scroll-m-20 text-2xl font-semibold tracking-tight", className)}
+          className={cn("text-[15px] font-semibold", className)}
           {...props}
         >
           {children}
@@ -66,6 +68,16 @@ const Text = ({
       return (
         <h4
           className={cn("scroll-m-20 text-xl font-semibold tracking-tight", className)}
+          {...props}
+        >
+          {children}
+        </h4>
+      )
+
+       case "h6":
+      return (
+        <h4
+          className={cn("text-xs text-gray-500", className)}
           {...props}
         >
           {children}

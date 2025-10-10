@@ -46,6 +46,9 @@ export function Image({
           const coloredSvg = text
             .replace(/fill="(?!none)[^"]*"/gi, 'fill="currentColor"')
             .replace(/stroke="(?!none)[^"]*"/gi, 'stroke="currentColor"')
+            .replace(/\s+width="[^"]*"/gi, '')
+            .replace(/\s+height="[^"]*"/gi, '')
+            .replace(/<svg/, '<svg style="width:100%;height:100%"')
           setSvgContent(coloredSvg)
         })
         .catch(() => setSvgContent(null))
@@ -74,7 +77,7 @@ export function Image({
   if (isSvg && svgContent) {
     return (
       <div
-        className={cn(commonClasses, "inline-flex items-center justify-center")}
+        className={cn(commonClasses, "inline-flex items-center justify-center flex-shrink-0")}
         style={sizeStyles}
         dangerouslySetInnerHTML={{ __html: svgContent }}
         {...props}

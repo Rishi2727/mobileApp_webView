@@ -39,7 +39,7 @@ function MyBreadcrumb({
                 </button>
             )}
 
-            <div className="flex flex-col gap-2 px-4 py-3">
+            <div className="flex flex-col px-4 py-1">
                 <h1 className="text-md font-medium text-secondary">
                     {currentPageTitle}
                 </h1>
@@ -52,7 +52,7 @@ function MyBreadcrumb({
                                     <span className="truncate">{item.label}</span>
                                 </BreadcrumbItem>
                                 {index < items.length - 1 && (
-                                    <BreadcrumbSeparator className="mx-2 text-slate-400">
+                                    <BreadcrumbSeparator className="mx-1 text-slate-400">
                                         »
                                     </BreadcrumbSeparator>
                                 )}

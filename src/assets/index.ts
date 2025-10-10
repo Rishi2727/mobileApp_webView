@@ -20,6 +20,9 @@ import dashboardBg from './images/dash_background.png'
 import bannarImage from './images/banner2_white.png'
 import weatherIcon01d from './images/WEATHER_01d.png'
 import seatTableIcon from './icons/seatTable.svg'
+import southKoreaFlag from './icons/country-south_korea.svg'
+import usaFlag from './icons/country-usa.svg'
+import questionMark from './icons/status_question.svg'
 export const commonIcons = {
       bellIcon,
       homeIcon,
@@ -30,7 +33,10 @@ export const commonIcons = {
       brandLogo,
       dashboardBg,
       bannarImage,
-      seatTableIcon
+      seatTableIcon,
+      southKoreaFlag,
+      usaFlag,
+      questionMark
 }
 export const dashboardIcons = {
    profileIcon,

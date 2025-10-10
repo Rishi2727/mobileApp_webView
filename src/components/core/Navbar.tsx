@@ -7,7 +7,7 @@ export function Navbar() {
   return (
     <>
       {/* Top Navigation Bar */}
-      <div className="relative flex justify-between items-center px-4 py-3 bg-border-accent h-[10vh]">
+      <div className="relative flex justify-between items-center px-4 py-3 bg-border-accent h-[8vh]">
         {/* Logo Section */}
         <div className="flex items-center">
           <Image

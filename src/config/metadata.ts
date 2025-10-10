@@ -123,7 +123,7 @@ export const metadata: MentaDataTypeProps = {
         breadcrumbItems: [
             { id: 1, label: "Dashboard" },
             { id: 2, label: "General/PC Seat" },
-            { id: 2, label: "Seat Booking" },
+            { id: 3, label: "Seat Booking" },
 
         ],
     },
@@ -174,6 +174,11 @@ export const metadata: MentaDataTypeProps = {
         padding: 12,
         width: 38,
         height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "Notifications" },
+
+        ],
     },
     bookSearch: {
         title: "Book Search",
@@ -254,6 +259,28 @@ export const metadata: MentaDataTypeProps = {
         padding: 12,
         width: 38,
         height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "Settings" },
+        ],
+    },
+    PreferredSeatSetting: {
+        title: "Settings",
+        path: "/settings-preferred-seat",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "Favourite Seat" },
+        ],
     },
     login: {
         title: "Login",
