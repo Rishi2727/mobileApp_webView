@@ -4,6 +4,7 @@ import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import { metadata } from "@/config/metadata";
 import { useNavigate } from "react-router";
 
+
 const SeatBooking = () => {
   const navigate = useNavigate();
   const breadcrumbItems = metadata.seatBooking.breadcrumbItems || [];
