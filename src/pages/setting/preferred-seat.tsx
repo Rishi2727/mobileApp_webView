@@ -60,6 +60,36 @@ export default function PreferredSeat() {
       setSeats((prev) => prev.filter((s) => s.id !== id));
     }
   };
+  const handleAdd = async (id: number) => {
+    const seat = seats.find((s) => s.id === id);
+    if (!seat) return;
+
+    const confirmed = await ShowAlert({
+      title: (
+        <div className="flex justify-center mb-2">
+          <Image
+            src={commonIcons.questionMark}
+            alt="question mark"
+            width={40}
+            height={40}
+          />
+        </div>
+      ),
+      description: (
+        <Text>
+          Are you sure you want to Add <strong>{seat.lounge}</strong> (Desk{" "}
+          {seat.desk}) from your preferred seats?
+        </Text>
+      ),
+      confirmText: "OK",
+      cancelText: "No",
+      isDangerous: false,
+    });
+
+    if (confirmed) {
+      setSeats((prev) => prev.filter((s) => s.id !== id));
+    }
+  };
   return (
     <div className="min-h-[90vh] bg-secondary">
       <MyBreadcrumb
@@ -80,10 +110,17 @@ export default function PreferredSeat() {
       {/* Seats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-8 gap-4 p-4">
         {seats.map((seat) => (
-          <Card key={seat.id} className="relative overflow-hidden">
+          <Card
+            key={seat.id}
+            className="relative overflow-hidden"
+            onClick={() => handleAdd(seat.id)}
+          >
             {/* Delete Button */}
             <button
-              onClick={() => handleDelete(seat.id)}
+              onClick={(e) => {
+                e.stopPropagation(); 
+                handleDelete(seat.id);
+              }}
               className="absolute top-4 right-4 bg-red-50 hover:bg-red-100 text-red-500 rounded-full p-2 transition-colors"
             >
               <Trash2 className="w-5 h-5" />

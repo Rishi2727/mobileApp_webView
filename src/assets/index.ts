@@ -23,6 +23,8 @@ import seatTableIcon from './icons/seatTable.svg'
 import southKoreaFlag from './icons/country-south_korea.svg'
 import usaFlag from './icons/country-usa.svg'
 import questionMark from './icons/status_question.svg'
+import rm566 from './store/RM-566-20250710.png'
+import rmNav566 from './store/miniMaps/RM-NAV-566-20250804.png'
 export const commonIcons = {
       bellIcon,
       homeIcon,
@@ -54,4 +56,10 @@ export const dashboardIcons = {
 }
 export const weatherIcon = {
      weatherIcon01d
+}
+export const roomImage = {
+     rm566
+}
+export const roomMiniMap = {
+     rmNav566
 }
