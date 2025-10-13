@@ -21,6 +21,7 @@ import Setting from "@/pages/setting/setting";
 import PreferredSeat from "@/pages/setting/preferred-seat";
 import TimeSelection from "@/pages/group-booking/time-selection";
 import CarrelTimeSelection from "@/pages/carrel-booking/carrelTimeSelection";
+import Reservation from "@/pages/group-booking/reservation";
 
 export type RouteObjectExtend = RouteObject & {
   title: string;
@@ -131,6 +132,11 @@ export const routeMapping: RouteObjectExtend[] = [
         title: metadata.carrelTimeSelection.title,
          path: metadata.carrelTimeSelection.path,
         element: <CarrelTimeSelection/>,
+      },
+      {
+        title: metadata.reservaton.title,
+         path: metadata.reservaton.path,
+        element: <Reservation/>,
       },
     ],
   },

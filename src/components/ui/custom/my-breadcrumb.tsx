@@ -39,7 +39,7 @@ function MyBreadcrumb({
                 </button>
             )}
 
-            <div className="flex flex-col px-4 py-1">
+            <div className="flex flex-col px-3 py-1">
                 <h1 className="text-md font-medium text-secondary">
                     {currentPageTitle}
                 </h1>
@@ -49,10 +49,10 @@ function MyBreadcrumb({
                         {items.map((item, index) => (
                             <Fragment key={item.id}>
                                 <BreadcrumbItem>
-                                    <span className="truncate">{item.label}</span>
+                                    <span className="truncate text-[13px]">{item.label}</span>
                                 </BreadcrumbItem>
-                                {index < items.length - 1 && (
-                                    <BreadcrumbSeparator className="mx-1 text-slate-400">
+                                {index < items.length - 1 && ( 
+                                    <BreadcrumbSeparator className=" text-slate-400">
                                         »
                                     </BreadcrumbSeparator>
                                 )}

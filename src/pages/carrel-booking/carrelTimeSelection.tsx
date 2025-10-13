@@ -5,6 +5,9 @@ import { metadata } from "@/config/metadata";
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import Text from "@/components/ui/custom/text";
 import { useState } from "react";
+import { Image } from "@/components/ui/custom/image";
+import { ShowAlert } from "@/components/ui/custom/my-alert";
+import { commonIcons } from "@/assets";
 
 const CarrelTimeSelection = () => {
   const breadcrumbItems = metadata.timeSelection.breadcrumbItems || [];
@@ -56,6 +59,33 @@ const CarrelTimeSelection = () => {
       )
     );
   };
+const handleBooking = async (room: string, time: string) => {
+  const confirmed = await ShowAlert({
+    title: (
+      <div className="flex justify-center mb-2">
+        <Image
+          src={commonIcons.questionMark}
+          alt="question mark"
+          width={40}
+          height={40}
+        />
+      </div>
+    ),
+    description: (
+      <Text>
+        Are you sure you want to book <strong>{room}</strong> at{" "}
+        <strong>{time}</strong>?
+      </Text>
+    ),
+    confirmText: "Yes",
+    cancelText: "No",
+    isDangerous: false,
+  });
+
+  if (confirmed) {
+    console.log(`Booking confirmed for ${room} at ${time}`);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -150,6 +180,7 @@ const CarrelTimeSelection = () => {
         </div>
 
         {/* Time Slot Rows */}
+        <div className=" max-h-[55vh] overflow-y-auto pb-10">
         {timeSlots.map((time, idx) => (
           <div key={idx} className="bg-white rounded-lg overflow-hidden">
             <div
@@ -169,9 +200,10 @@ const CarrelTimeSelection = () => {
               </div>
 
               {/* Room Columns */}
-              {currentRooms.map((_, roomIdx) => (
+              {currentRooms.map((room, roomIdx) => (
                 <button
                   key={roomIdx}
+                  onClick={() => handleBooking(room, time)}
                   className="bg-blue-100 rounded-sm p-2 flex items-center justify-center transition-colors w-full hover:bg-blue-200"
                 >
                   <Text className="text-[13px] font-semibold text-gray-900">
@@ -182,6 +214,7 @@ const CarrelTimeSelection = () => {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );

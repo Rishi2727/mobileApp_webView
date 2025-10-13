@@ -168,6 +168,28 @@ export const metadata: MentaDataTypeProps = {
 
         ],
     },
+    reservaton: {
+        title: "Group Bookings",
+        path: "/reservation",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "Group Study" },
+            { id: 3, label: "Time Selection" },
+            { id: 4, label: "Reservation" },
+
+
+        ],
+    },
     carrelBooking: {
         title: "Carrel Booking",
         image: dashboardIcons.carrelIcon,

@@ -31,7 +31,7 @@ const GroupBooking = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-primary-50">
+ <div className="min-h-[90vh] bg-primary-50">
       <MyBreadcrumb
         items={breadcrumbItems}
         title="Group Study"

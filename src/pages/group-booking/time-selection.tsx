@@ -4,15 +4,16 @@ import { Button } from "@/components/ui/button";
 import { metadata } from "@/config/metadata";
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import Text from "@/components/ui/custom/text";
+import { useNavigate } from "react-router";
 
 const TimeSelection = () => {
   const breadcrumbItems = metadata.timeSelection.breadcrumbItems || [];
-
+  const navigate = useNavigate();
   const [selectedDay, setSelectedDay] = useState(13);
   const [currentRoomType] = useState(0);
-  const [startIndex, setStartIndex] = useState(0); // 👈 track visible room index
-
-  const roomsPerPage = 3; // show 3 rooms per view
+  const [startIndex, setStartIndex] = useState(0); 
+ 
+  const roomsPerPage = 3; 
 
   const weekDays = [
     { day: "M", date: 13 },
@@ -36,7 +37,7 @@ const TimeSelection = () => {
     },
   ];
 
-  const timeSlots = ["2:30 PM", "3:00 PM", "3:30 PM", "4:00 PM"];
+  const timeSlots = ["2:30 PM", "3:00 PM", "3:30 PM", "4:00 PM", "4:00 PM", "4:00 PM", "4:00 PM","4:00 PM", "4:00 PM", "4:00 PM", "4:00 PM","4:00 PM"];
 
   const currentRooms = roomTypes[currentRoomType].rooms.slice(
     startIndex,
@@ -57,7 +58,7 @@ const TimeSelection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-[70vh] bg-gray-50">
       <MyBreadcrumb
         items={breadcrumbItems}
         title="Bookings"
@@ -149,6 +150,7 @@ const TimeSelection = () => {
         </div>
 
         {/* Time Slot Rows */}
+        <div className=" max-h-[55vh] overflow-y-auto pb-10">
         {timeSlots.map((time, idx) => (
           <div key={idx} className="bg-white rounded-lg overflow-hidden">
             <div
@@ -171,6 +173,7 @@ const TimeSelection = () => {
               {currentRooms.map((_, roomIdx) => (
                 <button
                   key={roomIdx}
+                  onClick={() => navigate("/reservation")}
                   className="bg-blue-100 rounded-sm p-2 flex items-center justify-center transition-colors w-full hover:bg-blue-200"
                 >
                   <span className="text-[13px] font-semibold text-gray-900">
@@ -181,6 +184,7 @@ const TimeSelection = () => {
             </div>
           </div>
         ))}
+        </div>
       </div>
     </div>
   );
