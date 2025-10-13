@@ -142,6 +142,31 @@ export const metadata: MentaDataTypeProps = {
         padding: 12,
         width: 38,
         height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "Group Study" },
+
+        ],
+    },
+    timeSelection: {
+        title: "Group Bookings",
+        path: "/time-selection",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "Group Study" },
+            { id: 2, label: "Time Selection" },
+
+        ],
     },
     carrelBooking: {
         title: "Carrel Booking",
@@ -158,6 +183,31 @@ export const metadata: MentaDataTypeProps = {
         padding: 12,
         width: 38,
         height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "Personal Carrel" },
+
+        ],
+    },
+     carrelTimeSelection: {
+        title: "Carrel Booking",
+        path: "/carrel-time-selection",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
+        breadcrumbItems: [
+            { id: 1, label: "Dashboard" },
+            { id: 2, label: "Personal Carrel" },
+            { id: 2, label: "Time Selection" },
+
+        ],
     },
     message: {
         title: "Messages",

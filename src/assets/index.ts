@@ -25,6 +25,7 @@ import usaFlag from './icons/country-usa.svg'
 import questionMark from './icons/status_question.svg'
 import rm566 from './store/RM-566-20250710.png'
 import rmNav566 from './store/miniMaps/RM-NAV-566-20250804.png'
+import handiCaped from './icons/HandiCaped.svg'
 export const commonIcons = {
       bellIcon,
       homeIcon,
@@ -38,7 +39,8 @@ export const commonIcons = {
       seatTableIcon,
       southKoreaFlag,
       usaFlag,
-      questionMark
+      questionMark,
+      handiCaped
 }
 export const dashboardIcons = {
    profileIcon,

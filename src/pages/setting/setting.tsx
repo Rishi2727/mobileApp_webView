@@ -6,8 +6,8 @@ import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import { metadata } from "@/config/metadata";
 import { ChevronRight } from "lucide-react";
 import Text from "@/components/ui/custom/text";
-import LanguageSelector from "@/features/language-selector/language-selector";
 import { useNavigate } from "react-router";
+import LanguageSelector from "@/features/language-selector/languageSelector";
 
 
 const Setting = () => {
