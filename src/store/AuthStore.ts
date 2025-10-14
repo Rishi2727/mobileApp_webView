@@ -69,10 +69,10 @@ export const useAuthStore = create<AuthStore>()(
                 const res = await signin({
                     userId: userId,
                     password: password,
-                    platformType: 'A', // Use 'A' for Android since API doesn't support web yet
-                    pushTokenDevice: fcmToken,
-                    pushTokenExpo: fcmToken ? 'FCM_WEB' : undefined,
-                    deviceUniqueId: deviceUUID,
+                    platformType: 'A',
+                    // pushTokenDevice: fcmToken,
+                    // pushTokenExpo: fcmToken ? 'FCM_WEB' : undefined,
+                    // deviceUniqueId: deviceUUID,
                 });
                 
                 if (res) {

@@ -8,6 +8,7 @@ import { ChevronRight } from "lucide-react";
 import Text from "@/components/ui/custom/text";
 import { useNavigate } from "react-router";
 import LanguageSelector from "@/features/language-selector/languageSelector";
+import { useAuthStore } from "@/store/AuthStore";
 
 
 const Setting = () => {
@@ -19,7 +20,7 @@ const Setting = () => {
     group: true,
     carrel: true,
   });
-
+  const { logout } = useAuthStore();
   const [language, setLanguage] = useState("english");
   const [open, setOpen] = useState(false);
 
@@ -114,9 +115,8 @@ const Setting = () => {
           ].map((item, index, arr) => (
             <div
               key={item.label}
-              className={`flex justify-between pb-2 ${
-                index < arr.length - 1 ? "border-b" : ""
-              }`}
+              className={`flex justify-between pb-2 ${index < arr.length - 1 ? "border-b" : ""
+                }`}
             >
               <Text className="font-semibold">{item.label}</Text>
               {item.isLink ? (
@@ -130,14 +130,14 @@ const Setting = () => {
 
         {/* Logout Button */}
         <div className="flex justify-center bg-background p-2">
-          <Button className="bg-black text-white w-[50%] rounded-full hover:bg-gray-800">
+          <Button className="bg-black text-white w-[50%] rounded-full hover:bg-gray-800" onClick={logout}>
             Logout
           </Button>
         </div>
       </div>
 
       {/* ✅ Language Dialog (using MyDialog) */}
-      <LanguageSelector open={open} onOpenChange={setOpen} setLanguage={setLanguage} language = {language}/>
+      <LanguageSelector open={open} onOpenChange={setOpen} setLanguage={setLanguage} language={language} />
     </div>
   );
 };

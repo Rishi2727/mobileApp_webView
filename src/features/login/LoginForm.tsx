@@ -7,19 +7,15 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { storage } from "@/lib/storage"
 import MyForm, { type FormFieldItem } from "@/components/ui/custom/my-form/MyForm"
-import { useNavigate } from "react-router"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-import { usePostApi } from "@/hooks/useApi"
-import { endpoints } from "@/lib/endpoints"
 import useLoaderStore from "@/store/useLoaderStore"
 import { User, Lock, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import useProfileStore from "@/store/useProfileStore"
-import type { Login, LoginResponse } from "@/types/models"
+import { useAuthStore } from "@/store/AuthStore"
+import type { Login } from "@/types/models"
 const loginSchema = z.object({
     username: z.string().min(2, {
         message: "Username must be at least 2 characters.",
@@ -33,28 +29,20 @@ export function LoginForm({
     className,
     ...props
 }: Readonly<React.ComponentPropsWithoutRef<"div">>) {
-    const navigate = useNavigate();
-    const login = usePostApi<LoginResponse>();
+    const { login } = useAuthStore();
     const { startLoading, stopLoading } = useLoaderStore();
-    const { setUser } = useProfileStore();
 
     const handleSubmit = async (values: Login) => {
-        await login.postData(
-            endpoints.auth.login,
-            { username: values.username, password: values.password },
-            {
-                actionCallbacks: {
-                    onSuccess: (data) => {
-                        setUser(data.user);
-                        storage.set("AUTH_TOKEN", data.token);
-                        toast.success("Login Successful");
-                        navigate("/");
-                    },
-                    onLoadingStart: () => startLoading(),
-                    onLoadingStop: () => stopLoading(),
-                    onError: (error) => toast.error(error ?? "Login failed")
-                }
-            });
+        try {
+            startLoading();
+            await login(values.username, values.password);
+            toast.success("Login Successful");
+        } catch (error) {
+            console.error("Login error:", error);
+            toast.error("Login failed. Please check your credentials.");
+        } finally {
+            stopLoading();
+        }
     };
 
     const [showPassword, setShowPassword] = useState(false);

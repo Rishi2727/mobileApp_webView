@@ -1,15 +1,12 @@
 import type { ReactNode } from "react";
 import { Navigate } from "react-router";
-import { storage } from "@/lib/storage";
+import { useAuthStore } from "@/store/AuthStore";
 
 // To homepage if user is already logged in
 export function PublicOnlyRoute({ children }: Readonly<{ children: ReactNode }>) {
-    const isAuthenticated = () => {
-        const token = storage.get('AUTH_TOKEN')
-        return !!token;
-    };
+    const { isLoggedIn } = useAuthStore();
 
-    if (isAuthenticated()) {
+    if (isLoggedIn()) {
         // Redirect to dashboard if already logged in
         return <Navigate to="/" replace />;
     }

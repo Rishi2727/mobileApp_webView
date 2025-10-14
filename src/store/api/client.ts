@@ -1,4 +1,3 @@
-// api/client.ts
 import axios, { type AxiosRequestConfig } from "axios";
 import qs from 'qs';
 

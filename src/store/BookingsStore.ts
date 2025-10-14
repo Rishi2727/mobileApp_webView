@@ -3,7 +3,6 @@ import { changeBooking, confirmBooking, createBooking, extendBooking, getMyBooki
 import type { ApiResponse, MyBookingModel, UserDemography } from './api/ResponseModels';
 import type { SeatBookingRequest } from './api/RequestModels';
 import isEqual from 'lodash/isEqual';
-import { useNavigate } from 'react-router';
 
 
 let refreshTimer: ReturnType<typeof setInterval> | null = null;
@@ -27,7 +26,6 @@ type BookingsStore = {
 };
 
 export const useBookingsStore = create<BookingsStore>((set, get) => ({
-    router: useNavigate(),
     myBookings: [] as MyBookingModel[],
     loadedPages: -1,
     haveMore: true,
