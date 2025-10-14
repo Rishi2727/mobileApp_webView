@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuthStore } from "@/store/AuthStore";
 import { Spinner } from "@/components/ui/custom/spinner";
-import { useNavigate } from "react-router";
 import { metadata } from "@/config/metadata";
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 
@@ -10,14 +9,11 @@ const UniversityNotice = () => {
   const { kmouSecretGenerate, myProfile, getMyProfile } = useAuthStore();
   const [url, setUrl] = useState('');
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const navigate = useNavigate();
   const breadcrumbItems = metadata.notice.breadcrumbItems || [];
 
   useEffect(() => {
-    // Ensure profile is loaded first
     const loadNotice = async () => {
       try {
-        // If profile is not loaded, fetch it first
         if (!myProfile) {
           await getMyProfile();
         }
@@ -41,7 +37,6 @@ const UniversityNotice = () => {
     loadNotice();
   }, [kmouSecretGenerate, myProfile, getMyProfile]);
 
-  // Handle browser back button
   useEffect(() => {
     const handlePopState = (e: PopStateEvent) => {
       // Check if iframe can go back
