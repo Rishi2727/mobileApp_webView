@@ -3,6 +3,7 @@ import type { ReactNode } from "react"
 import GlobalLoader from "../core/GlobalLoader"
 import { Toaster } from "../ui/sonner"
 import { ThemeProvider } from "next-themes"
+import { LanguageProvider } from "@/contexts/LanguageProvider"
 
 interface RootLayoutProps {
     children: ReactNode
@@ -11,9 +12,11 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
     return (
         <ThemeProvider>
-            <GlobalLoader />
-            {children}
-            <Toaster richColors closeButton />
+            <LanguageProvider>
+                <GlobalLoader />
+                {children}
+                <Toaster richColors closeButton />
+            </LanguageProvider>
         </ThemeProvider>
     )
 }
