@@ -1,11 +1,12 @@
 import { useEffect, useRef } from "react";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import { metadata } from "@/config/metadata";
 import { commonIcons, dashboardIcons } from "@/assets";
 import { useMessagesStore } from "@/store/MessagesStore";
 import { useLanguage } from "@/contexts/useLanguage";
 import moment from "moment";
+import Text from "@/components/ui/custom/text";
+import { Image } from "@/components/ui/custom/image";
 
 const getPageConfig = (t: (key: string) => string) => ({
   METHODS: {
@@ -68,7 +69,6 @@ const Message = () => {
     stopAndClear,
     myNotifications,
     getMyNotificationsList,
-    selectedMethod,
     setSelectedClassification,
     selectedClassification,
     haveMore,
@@ -120,95 +120,73 @@ const Message = () => {
         showBackButton={true}
       />
 
-      <div className="p-3">
+      <div className="p-4">
         {/* Filter Buttons */}
-        <div className="flex gap-3 mb-3 overflow-x-auto pb-2">
+        <div className="grid grid-cols-5 gap-2 mb-3">
           {(Object.keys(pageConfig.CLASSIFICATIONS) as ClassificationsKeys[]).map((key) => {
             const classification = pageConfig.CLASSIFICATIONS[key];
             const isSelected =
               selectedClassification?.sort().join(",") ===
               classification.code?.sort().join(",");
-            const isCorrectlyFetched =
-              isSelected &&
-              myNotifications.length > 0 &&
-              myNotifications.every(
-                (e) =>
-                  e.pushSendMethod === selectedMethod &&
-                  (!classification.code ||
-                    classification.code?.includes(e.pushClassificationCode))
-              );
 
             return (
-              <button
+              <div
                 key={key}
                 onClick={() => setSelectedClassification(classification.code)}
-                className={`flex flex-col items-center justify-center p-2 rounded-lg min-w-[60px] transition-all ${
+                className={`w-[40px] h-[40px] flex flex-col items-center justify-center p-1 rounded-md transition-colors ${
                   isSelected
-                    ? "border-2 border-[#4A90E2] bg-white"
-                    : "border-0 bg-white"
+                    ? "text-primary-900 bg-surface-tertiary border-2 border-border-accent"
+                    : "bg-background text-primary-400 hover:bg-primary-50"
                 }`}
-                style={{
-                  backgroundColor: isCorrectlyFetched
-                    ? "#E3F2FD"
-                    : isSelected
-                    ? "#FAFAFA"
-                    : "#FFFFFF",
-                }}
               >
-                <img
+                <Image
                   src={classification.icon}
                   alt={classification.name}
-                  className="w-[14px] h-[14px] mb-1"
+                  width={15}
+                  height={15}
+                  className="mb-1"
                 />
-                <span className="text-[8px] text-primary-900 font-medium whitespace-nowrap">
-                  {classification.name}
-                </span>
-              </button>
+                <Text className="text-[10px] font-medium">{classification.name}</Text>
+              </div>
             );
           })}
         </div>
 
         {/* Notifications List */}
-        <div
-          ref={scrollContainerRef}
-          className="overflow-y-auto"
-          style={{ maxHeight: "calc(90vh - 180px)" }}
-        >
+        <div className="max-h-[620px] overflow-y-auto" ref={scrollContainerRef}>
           {myNotifications.length === 0 ? (
             <div className="flex items-center justify-center h-40">
-              <p className="text-muted-foreground">No notifications found</p>
+              <Text className="text-muted-foreground">No notifications found</Text>
             </div>
           ) : (
             myNotifications.map((item, index) => (
-              <Card
+              <div
                 key={item.pushId + index.toString()}
                 className="rounded-md p-3 mb-2 bg-white"
               >
-                <CardHeader className="p-0">
-                  <CardTitle className="text-primary-900 text-xs font-bold">
+                <div className="p-0">
+                  <Text className="text-gray-900 text-sm font-semibold">
                     {language === "ko"
                       ? item.pushTitle || item.pushTitleEn
                       : item.pushTitleEn || item.pushTitle}
-                  </CardTitle>
-                  <CardDescription className="text-gray-700 mt-2 text-xs">
+                  </Text>
+                  <Text className="text-gray-700 mt-1 text-sm">
                     {language === "ko"
                       ? item.pushMessage || item.pushMessageEn
                       : item.pushMessageEn || item.pushMessage}
-                  </CardDescription>
-                  <p className="text-muted-foreground mt-2 text-[11px]">
-                    {moment(item.sendDateTime || item.pushScheduleDateTime).format(
-                      "LLL"
-                    )}
-                  </p>
-                </CardHeader>
-              </Card>
+                  </Text>
+                  <Text variant="h6" className="mt-1">
+                    {moment(item.sendDateTime || item.pushScheduleDateTime).format("LLL")}
+                  </Text>
+                </div>
+              </div>
             ))
           )}
-          
+
           {/* Loading indicator */}
           {haveMore && myNotifications.length > 0 && (
             <div className="flex justify-center py-4">
-              <p className="text-muted-foreground text-sm">Loading more...</p>
+              <Text className="text-muted-foreground text-sm">Loading more...</Text>
             </div>
           )}
         </div>
