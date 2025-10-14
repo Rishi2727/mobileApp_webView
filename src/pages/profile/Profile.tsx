@@ -1,5 +1,6 @@
 import { QRViewComponent } from "@/components/layout/QRViewComponent";
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
+import Text from "@/components/ui/custom/text";
 import { metadata } from "@/config/metadata";
 import ProfileDetail from "@/features/profile/profileDetail";
 import { useAuthStore } from "@/store/AuthStore";
@@ -55,9 +56,9 @@ const Profile = () => {
             height={210}
           />
           <div className=" text-start absolute w-[60%] left-[70%] transform -translate-x-1/2 top-7">
-            <div className="text-lg font-bold text-border-accent">
+            <Text className="text-lg font-bold text-border-accent">
               {myProfile?.userName}
-            </div>
+            </Text>
             <div className="text-sm text-gray-400">
               <span className="font-semibold">ID:</span> {myProfile?.userSchoolNo}
             </div>

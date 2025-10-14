@@ -121,7 +121,7 @@ export default function PreferredSeat() {
                 e.stopPropagation(); 
                 handleDelete(seat.id);
               }}
-              className="absolute top-4 right-4 bg-red-50 hover:bg-red-100 text-red-500 rounded-full p-2 transition-colors"
+              className="absolute top-4 right-4 bg-red-50 hover:bg-red-100 text-destructive rounded-full p-2 transition-colors"
             >
               <Trash2 className="w-5 h-5" />
             </button>
@@ -152,8 +152,8 @@ export default function PreferredSeat() {
             <div
               className={`absolute bottom-0 left-0 w-full text-center py-1 font-semibold text-sm ${
                 seat.available
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-300 text-gray-600"
+                  ? "bg-success text-background"
+                  : "bg-primary-100 text-border-tile"
               }`}
             >
               {seat.available ? "Available" : "Closed"}
@@ -165,10 +165,10 @@ export default function PreferredSeat() {
       {/* Empty State */}
       {seats.length === 0 && (
         <div className="text-center py-16">
-          <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            <Armchair className="w-8 h-8 text-gray-400" />
+          <div className="bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <Armchair className="w-8 h-8 text-border-tile" />
           </div>
-          <Text className="text-lg font-semibold text-gray-900 mb-2">
+          <Text className="text-lg font-semibold text-primary-900 mb-2">
             No favorite seats
           </Text>
           <Text variant="h6">Add seats to your favorites for quick access</Text>

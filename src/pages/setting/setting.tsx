@@ -26,7 +26,7 @@ const Setting = () => {
 
 
   return (
-    <div className="min-h-[90vh] bg-gray-50">
+    <div className="min-h-[90vh] bg-primary-50">
       {/* Breadcrumb */}
       <MyBreadcrumb
         items={breadcrumbItems}
@@ -61,7 +61,7 @@ const Setting = () => {
           ].map((item) => (
             <div
               key={item.key}
-              className="flex justify-between items-center border-t border-gray-200 pt-2"
+              className="flex justify-between items-center border-t border-primary-200 pt-2"
             >
               <div>
                 <Text variant="h3" className="font-semibold">
@@ -87,18 +87,18 @@ const Setting = () => {
             <Text variant="h3">Language</Text>
             <Button
               variant="secondary"
-              className="bg-primary-100 text-gray-700"
+              className="bg-primary-100 text-primary-400"
               onClick={() => setOpen(true)}
             >
               {language === "english" ? "English" : "한국어"}
             </Button>
           </div>
 
-          <div className="flex justify-between items-center border-gray-200 pt-2">
+          <div className="flex justify-between items-center border-primary-100 pt-2">
             <Text variant="h3">Preferred Seat</Text>
             <Button
               variant="ghost"
-              className="flex items-center bg-primary-200 text-gray-700"
+              className="flex items-center bg-primary-200 text-primary-400"
               onClick={() => navigate("/settings-preferred-seat")}
             >
               View <ChevronRight className="w-4 h-4 ml-1" />
@@ -107,7 +107,7 @@ const Setting = () => {
         </div>
 
         {/* Developer Info */}
-        <div className="p-4 text-sm bg-white rounded-md space-y-4">
+        <div className="p-4 text-sm bg-background rounded-md space-y-4">
           {[
             { label: "Developer", value: "Wise Neosco" },
             { label: "Contact", value: "info@wiseneosco.com", isLink: true },
@@ -130,7 +130,7 @@ const Setting = () => {
 
         {/* Logout Button */}
         <div className="flex justify-center bg-background p-2">
-          <Button className="bg-black text-white w-[50%] rounded-full hover:bg-gray-800" onClick={logout}>
+          <Button className="bg-black text-background w-[50%] rounded-full hover:bg-gray-800" onClick={logout}>
             Logout
           </Button>
         </div>

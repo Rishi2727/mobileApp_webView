@@ -81,15 +81,15 @@ const SeatBookingPage = () => {
         <div className=''>
         <div className="flex items-center gap-2 pb-2">
           <div className="w-7 h-7 rounded-md bg-[#10b981]"></div>
-          <span className="text-sm">Available</span>
+          <Text className="text-sm">Available</Text>
         </div>
         <div className="flex items-center gap-2 pb-2">
           <div className="w-7 h-7 rounded-md bg-[#ef4444]"></div>
-          <span className="text-sm">In Use</span>
+          <Text className="text-sm">In Use</Text>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-md bg-[#6b7280]"></div>
-          <span className="text-sm">Fixed Seat</span>
+          <Text className="text-sm">Fixed Seat</Text>
         </div>
         </div>
         {/* Mini floor plan */}
