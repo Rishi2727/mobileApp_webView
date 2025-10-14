@@ -354,6 +354,21 @@ export const metadata: MentaDataTypeProps = {
             { id: 2, label: "Favourite Seat" },
         ],
     },
+        oneDayPass: {
+        title: "One Day Pass",
+        path: "/one-day-pass",
+        isVisible: true,
+        borderAnimation: false,
+        borderColor: "border-accent",
+        iconFillColor: "primary-400",
+        iconStrokeColor: "border-accent",
+        backgroundColor: "background",
+        borderRadius: 16,
+        padding: 12,
+        width: 38,
+        height: 38,
+       
+    },
     login: {
         title: "Login",
         image: "KeyRound",

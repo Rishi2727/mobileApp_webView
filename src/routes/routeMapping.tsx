@@ -22,6 +22,7 @@ import PreferredSeat from "@/pages/setting/preferred-seat";
 import TimeSelection from "@/pages/group-booking/time-selection";
 import CarrelTimeSelection from "@/pages/carrel-booking/carrelTimeSelection";
 import Reservation from "@/pages/group-booking/reservation";
+import ExternalUser from "@/pages/external-user/external-user";
 
 export type RouteObjectExtend = RouteObject & {
   title: string;
@@ -43,7 +44,7 @@ export const routeMapping: RouteObjectExtend[] = [
       },
     ],
   },
-   {
+  {
     title: "Private Route",
     path: "/",
     element: <AuthorizedLayout />,
@@ -58,7 +59,7 @@ export const routeMapping: RouteObjectExtend[] = [
         path: metadata.booking.path,
         element: <MyBookings />,
       },
-       {
+      {
         title: metadata.notice.title,
         path: metadata.notice.path,
         element: <Notice />,
@@ -70,75 +71,84 @@ export const routeMapping: RouteObjectExtend[] = [
       },
       {
         title: metadata.seatBookingPage.title,
-         path: metadata.seatBookingPage.path,
+        path: metadata.seatBookingPage.path,
         element: <SeatBookingPage />,
       },
       {
         title: metadata.groupBooking.title,
-         path: metadata.groupBooking.path,
+        path: metadata.groupBooking.path,
         element: <GroupBooking />,
       },
       {
         title: metadata.timeSelection.title,
-         path: metadata.timeSelection.path,
+        path: metadata.timeSelection.path,
         element: <TimeSelection />,
       },
       {
         title: metadata.carrelBooking.title,
-         path: metadata.carrelBooking.path,
+        path: metadata.carrelBooking.path,
         element: <CarrelBooking />,
       },
       {
         title: metadata.message.title,
-         path: metadata.message.path,
+        path: metadata.message.path,
         element: <Message />,
       },
       {
         title: metadata.bookSearch.title,
-         path: metadata.bookSearch.path,
+        path: metadata.bookSearch.path,
         element: <BookSearch />,
       },
       {
         title: metadata.bookPurchase.title,
-         path: metadata.bookPurchase.path,
+        path: metadata.bookPurchase.path,
         element: <BookPurchase />,
       },
       {
         title: metadata.loanHistory.title,
-         path: metadata.loanHistory.path,
+        path: metadata.loanHistory.path,
         element: <LoanHistory />,
       },
       {
         title: metadata.eBook.title,
-         path: metadata.eBook.path,
+        path: metadata.eBook.path,
         element: <Ebook />,
       },
       {
         title: metadata.setting.title,
-         path: metadata.setting.path,
+        path: metadata.setting.path,
         element: <Setting />,
       },
       {
         title: metadata.PreferredSeatSetting.title,
-         path: metadata.PreferredSeatSetting.path,
+        path: metadata.PreferredSeatSetting.path,
         element: <PreferredSeat />,
       },
       {
         title: metadata.carrelBooking.title,
-         path: metadata.carrelBooking.path,
+        path: metadata.carrelBooking.path,
         element: <CarrelBooking />,
       },
       {
         title: metadata.carrelTimeSelection.title,
-         path: metadata.carrelTimeSelection.path,
-        element: <CarrelTimeSelection/>,
+        path: metadata.carrelTimeSelection.path,
+        element: <CarrelTimeSelection />,
       },
       {
         title: metadata.reservaton.title,
-         path: metadata.reservaton.path,
-        element: <Reservation/>,
+        path: metadata.reservaton.path,
+        element: <Reservation />,
       },
     ],
+  },
+  {
+    title: "One Day Pass",
+    path: "/one-day-pass",
+    element: (
+      <PublicOnlyRoute>
+        <ExternalUser />
+      </PublicOnlyRoute>
+    ),
   },
   {
     title: "Login",

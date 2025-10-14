@@ -16,6 +16,9 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { useAuthStore } from "@/store/AuthStore"
 import type { Login } from "@/types/models"
+import { useNavigate } from "react-router"
+
+
 const loginSchema = z.object({
     username: z.string().min(2, {
         message: "Username must be at least 2 characters.",
@@ -31,7 +34,8 @@ export function LoginForm({
 }: Readonly<React.ComponentPropsWithoutRef<"div">>) {
     const { login } = useAuthStore();
     const { startLoading, stopLoading } = useLoaderStore();
-
+    const navigate = useNavigate()
+ 
     const handleSubmit = async (values: Login) => {
         try {
             startLoading();
@@ -129,6 +133,7 @@ export function LoginForm({
                                 <Button
                                     type="submit"
                                     className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
+                                    onClick={()=> navigate("/one-day-pass")}
                                 >
                                     One Day Pass Request
                                 </Button>

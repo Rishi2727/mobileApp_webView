@@ -12,3 +12,11 @@ export type Login = {
     username: string
     password: string
 }
+export type OneDayPass = {
+    username: string
+    phoneno:number
+
+}
+export type OtpInfo = {
+    otp:number
+}
