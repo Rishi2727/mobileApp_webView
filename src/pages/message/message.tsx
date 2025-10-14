@@ -99,8 +99,8 @@ const Message = () => {
               onClick={() => setActiveFilter(value)}
               className={`w-[40px] h-[40px] flex flex-col items-center justify-center p-1 rounded-md transition-colors ${
                 activeFilter === value
-                  ? "text-gray-900 bg-gray-100 border-2 border-border-accent"
-                  : "bg-white text-gray-600 hover:bg-gray-200"
+                  ? "text-primary-900 bg-surface-tertiary border-2 border-border-accent"
+                  : "bg-background text-primary-400 hover:bg-primary-50"
               }`}
             >
               <Image 
