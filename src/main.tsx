@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import './i18n' // Initialize i18n
+import './i18n'
 import { MyRouter } from './routes/routes.tsx'
 import RootLayout from './components/layout/RootLayout.tsx'
 

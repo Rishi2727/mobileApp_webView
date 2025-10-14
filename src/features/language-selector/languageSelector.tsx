@@ -25,7 +25,7 @@ const LanguageSelector = ({ open, onOpenChange , setLanguage, language}: Languag
             <Image src={commonIcons.usaFlag} alt="English" width={16} height={16} />
             <label className="text-sm font-medium">English</label>
           </div>
-          <RadioGroupItem value="english" />
+          <RadioGroupItem value="en" />
         </div>
 
         <div className="flex items-center justify-between">
@@ -33,7 +33,7 @@ const LanguageSelector = ({ open, onOpenChange , setLanguage, language}: Languag
             <Image src={commonIcons.southKoreaFlag} alt="Korean" width={16} height={16} />
             <label className="text-sm font-medium">한국어</label>
           </div>
-          <RadioGroupItem value="korean" />
+          <RadioGroupItem value="ko" />
         </div>
       </RadioGroup>
     </div>
