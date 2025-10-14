@@ -17,6 +17,8 @@ import dirBackIcon from './icons/dirBack.svg'
 import splashLogo from './images/splash_logo.png'
 import brandLogo from './icons/brandLogo.svg'
 import dashboardBg from './images/dash_background.png'
+import logoutIcon from './icons/logout.svg'
+import qrLogo from './images/QR_Logo.jpg'
 import bannarImage from './images/banner2_white.png'
 import weatherIcon01d from './images/WEATHER_01d.png'
 import seatTableIcon from './icons/seatTable.svg'
@@ -78,7 +80,9 @@ export const commonIcons = {
      southKoreaFlag,
      usaFlag,
      questionMark,
-     handiCaped
+     handiCaped,
+     logoutIcon,
+     qrLogo
 }
 export const dashboardIcons = {
      profileIcon,
