@@ -1,9 +1,6 @@
-// Firebase configuration for web
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage, isSupported } from 'firebase/messaging';
 
-// Your web app's Firebase configuration
-// You should replace these with your actual Firebase project configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -15,17 +12,37 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-export const app = initializeApp(firebaseConfig);
-
-// Initialize Firebase Cloud Messaging and get a reference to the service
+let app: any = null;
 let messaging: any = null;
 let isMessagingSupported = false;
 
-// Check if messaging is supported
+// Check if Firebase config is properly set
+const isFirebaseConfigured = () => {
+  return firebaseConfig.apiKey && 
+         firebaseConfig.apiKey !== undefined &&
+         firebaseConfig.apiKey !== 'undefined' &&
+         firebaseConfig.apiKey !== '';
+};
+
+// Initialize Firebase only if properly configured
+if (isFirebaseConfigured()) {
+  try {
+    app = initializeApp(firebaseConfig);
+  } catch (error) {
+    console.warn('Firebase initialization failed:', error);
+  }
+}
+
+// Initialize Firebase Cloud Messaging and get a reference to the service
 export const initializeMessaging = async () => {
+  if (!isFirebaseConfigured()) {
+    console.warn('Firebase is not configured. Skipping messaging initialization.');
+    return;
+  }
+
   try {
     isMessagingSupported = await isSupported();
-    if (isMessagingSupported) {
+    if (isMessagingSupported && app) {
       messaging = getMessaging(app);
     }
   } catch (error) {
@@ -36,8 +53,8 @@ export const initializeMessaging = async () => {
 export const getFirebaseMessaging = () => messaging;
 
 export const requestPermission = async () => {
-  if (!isMessagingSupported || !messaging) {
-    console.warn('Firebase messaging is not supported');
+  if (!isFirebaseConfigured() || !isMessagingSupported || !messaging) {
+    console.warn('Firebase messaging is not available');
     return false;
   }
 
@@ -57,8 +74,8 @@ export const requestPermission = async () => {
 };
 
 export const getFCMToken = async () => {
-  if (!isMessagingSupported || !messaging) {
-    console.warn('Firebase messaging is not supported');
+  if (!isFirebaseConfigured() || !isMessagingSupported || !messaging) {
+    console.warn('Firebase messaging is not available');
     return null;
   }
 
@@ -84,8 +101,9 @@ export const getFCMToken = async () => {
 };
 
 export const onMessageListener = () => {
-  if (!isMessagingSupported || !messaging) {
-    return Promise.reject(new Error('Firebase messaging is not supported'));
+  if (!isFirebaseConfigured() || !isMessagingSupported || !messaging) {
+    // Return a promise that never resolves to prevent errors
+    return new Promise(() => {});
   }
 
   return new Promise((resolve) => {
@@ -96,5 +114,7 @@ export const onMessageListener = () => {
   });
 };
 
-// Initialize messaging when the module loads
-initializeMessaging();
+// Initialize messaging when the module loads only if Firebase is configured
+if (isFirebaseConfigured()) {
+  initializeMessaging();
+}
