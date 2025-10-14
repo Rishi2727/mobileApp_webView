@@ -5,6 +5,7 @@ import './i18n'
 import { MyRouter } from './routes/routes.tsx'
 import RootLayout from './components/layout/RootLayout.tsx'
 
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <RootLayout>

@@ -1,24 +1,28 @@
-
-import type { ReactNode } from "react"
-import GlobalLoader from "../core/GlobalLoader"
-import { Toaster } from "../ui/sonner"
-import { ThemeProvider } from "next-themes"
-import { LanguageProvider } from "@/contexts/LanguageProvider"
-import { GlobalAlertDialog } from "../ui/custom/AlertDialog"
+import type { ReactNode } from "react";
+import GlobalLoader from "../core/GlobalLoader";
+import { Toaster } from "../ui/sonner";
+import { ThemeProvider } from "next-themes";
+import { LanguageProvider } from "@/contexts/LanguageProvider";
+import { GlobalAlertDialog } from "../ui/custom/AlertDialog";
+import moment from "moment";
+import "moment/dist/locale/ko";
 
 interface RootLayoutProps {
-    children: ReactNode
+  children: ReactNode;
 }
 
 export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
-    return (
-        <ThemeProvider>
-            <LanguageProvider>
-                <GlobalLoader />
-                <GlobalAlertDialog />
-                {children}
-                <Toaster richColors closeButton />
-            </LanguageProvider>
-        </ThemeProvider>
-    )
+  moment.tz.setDefault("Asia/Seoul");
+
+
+  return (
+    <ThemeProvider>
+      <LanguageProvider>
+        <GlobalLoader />
+        <GlobalAlertDialog />
+        {children}
+        <Toaster richColors closeButton />
+      </LanguageProvider>
+    </ThemeProvider>
+  );
 }

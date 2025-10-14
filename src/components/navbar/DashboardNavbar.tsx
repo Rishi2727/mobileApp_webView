@@ -4,6 +4,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useEffect, useState } from "react";
 import { useMainStore } from "@/store/MainStore";
 import { DATE_FORMATS, formatDate } from "@/lib/dateUtils";
+import { LanguageToggle } from "@/features/language-toggle/languageToggle";
+import { useLanguage } from "@/contexts/useLanguage";
 
 // Weather icon mapping (matching your native implementation)
 const weatherIconMap: Record<string, string> = {
@@ -31,7 +33,7 @@ export function DashbaordNavbar() {
   const isMobile = useIsMobile();
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
-
+  const {  setLanguage } = useLanguage();
   // Get weather data and fetch function from store
 
   const currentWeather = useMainStore((state) => state.currentWeather);
@@ -84,6 +86,11 @@ export function DashbaordNavbar() {
     const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
   }, []);
+  const handleLanguageToggle = (newLanguage: string) => {
+    console.log('Language changed to:', newLanguage);
+    setLanguage(newLanguage);
+    // Add your language change logic here
+  };
 
   return (
     <div className="fixed top-0 left-0 w-full z-50">
@@ -149,13 +156,7 @@ export function DashbaordNavbar() {
 
           {/* Right Icons */}
           <div className="flex items-center space-x-4 pointer-events-auto">
-            <Image
-              src={commonIcons.languageIconEn}
-              alt="language"
-              width={isMobile ? 20 : 24}
-              height={isMobile ? 20 : 24}
-              className="text-background"
-            />
+            <LanguageToggle onToggle={handleLanguageToggle} />
             <Image
               src={commonIcons.homeIcon}
               alt="home"
