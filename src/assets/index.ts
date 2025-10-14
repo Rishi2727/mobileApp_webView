@@ -23,6 +23,7 @@ import seatTableIcon from './icons/seatTable.svg'
 import southKoreaFlag from './icons/country-south_korea.svg'
 import usaFlag from './icons/country-usa.svg'
 import questionMark from './icons/status_question.svg'
+import handiCaped from './icons/HandiCaped.svg'
 
 // Room Map Images
 import rm566 from './store/RM-566-20250710.png'
@@ -55,7 +56,8 @@ export const commonIcons = {
      seatTableIcon,
      southKoreaFlag,
      usaFlag,
-     questionMark
+     questionMark,
+     handiCaped
 }
 export const dashboardIcons = {
      profileIcon,
