@@ -204,13 +204,13 @@ export function DashbaordNavbar() {
             </div>
             <div className="text-right flex items-center space-x-2">
               <div>
-                <div className="text-sm opacity-80 font-medium">Seoul</div>
-                <div className="text-sm">clear sky</div>
-                <div className="text-md font-bold">32°C</div>
+                <div className="text-sm opacity-80 font-medium">{cityName}</div>
+                <div className="text-sm">{weatherDescription}</div>
+                <div className="text-md font-bold">{temperature !== null ? `${temperature}°C` : ''}</div>
               </div>
               <div className="flex items-center justify-end space-x-2">
                 <Image
-                  src={weatherIcon.weatherIcon01d}
+                  src={weatherIconSrc}
                   alt="Weather"
                   width={40}
                   height={40}
