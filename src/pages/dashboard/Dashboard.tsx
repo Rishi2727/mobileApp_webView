@@ -20,6 +20,9 @@ const Dashboard = () => {
                 padding={item.padding}
                 width={item.width}
                 height={item.height}
+                isExternal={item.isExternal}
+                requiresSecret={item.requiresSecret}
+                externalUrl={item.externalUrl}
               />
             ))}
           </div>

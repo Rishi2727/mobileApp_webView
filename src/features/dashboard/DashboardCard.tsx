@@ -4,6 +4,7 @@ import Text from "@/components/ui/custom/text";
 import { useLanguage } from "@/contexts/useLanguage";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router";
+import { useAuthStore } from "@/store/AuthStore";
 
 type DashboardCardProps = {
   title: string;
@@ -17,6 +18,9 @@ type DashboardCardProps = {
   padding?: number;
   width?: number;
   height?: number;
+  isExternal?: boolean;
+  requiresSecret?: boolean;
+  externalUrl?: (secret?: string) => string;
 };
 
 const DashboardCard = ({
@@ -29,24 +33,57 @@ const DashboardCard = ({
   padding,
   width,
   height,
+  isExternal,
+  requiresSecret,
+  externalUrl,
 }: Readonly<DashboardCardProps>) => {
   const { t } = useLanguage();
+  const { kmouSecretGenerate } = useAuthStore();
+  
+  const handleClick = async () => {
+    if (isExternal && externalUrl) {
+      // Get the secret from auth store if required
+      const secret = requiresSecret ? await kmouSecretGenerate() : undefined;
+      const url = externalUrl(secret);
+      
+      // Open external link in the same window (for mobile web view)
+      window.location.href = url;
+    }
+  };
+
+
+
+  const cardContent = (
+    <div className="flex flex-col items-center justify-center gap-4">
+      {image && (
+        <Image
+          src={image}
+          alt={title}
+          width={width || 38}
+          height={height || 38}
+          className={cn(`text-${iconFillColor}`, `bg-${backgroundColor}`, `rounded-${borderRadius}`, `p-${padding}`,)}
+        />
+      )}
+      <Text variant="subtitle">{t(title)}</Text>
+    </div>
+  );
+
   return (
     <Card className="w-full transition-transform duration-300 hover:rotate-3 shadow-lg border">
-      <Link to={path}>
-        <div className="flex flex-col items-center justify-center gap-4">
-          {image && (
-            <Image
-              src={image}
-              alt={title}
-              width={width || 38}
-              height={height || 38}
-              className={cn(`text-${iconFillColor}`, `bg-${backgroundColor}`, `rounded-${borderRadius}`, `p-${padding}`,)}
-            />
-          )}
-          <Text variant="subtitle">{t(title)}</Text>
-        </div>
-      </Link>
+      {isExternal ? (
+        <button 
+          onClick={handleClick} 
+          className="w-full cursor-pointer bg-transparent border-none p-0 m-0"
+          type="button"
+          aria-label={`Open ${t(title)} in external link`}
+        >
+          {cardContent}
+        </button>
+      ) : (
+        <Link to={path}>
+          {cardContent}
+        </Link>
+      )}
     </Card>
   );
 };

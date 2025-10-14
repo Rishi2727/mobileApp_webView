@@ -13,10 +13,6 @@ import SeatBookingPage from "@/pages/seat-booking/seat-booking-page";
 import GroupBooking from "@/pages/group-booking/group-booking";
 import CarrelBooking from "@/pages/carrel-booking/carrel-booking";
 import Message from "@/pages/message/message";
-import BookSearch from "@/pages/book-search/book-search";
-import BookPurchase from "@/pages/book-purchase/book-purchase";
-import LoanHistory from "@/pages/loan-history/loan-history";
-import Ebook from "@/pages/e-books/e-book";
 import Setting from "@/pages/setting/setting";
 import PreferredSeat from "@/pages/setting/preferred-seat";
 import TimeSelection from "@/pages/group-booking/time-selection";
@@ -94,26 +90,7 @@ export const routeMapping: RouteObjectExtend[] = [
         path: metadata.message.path,
         element: <Message />,
       },
-      {
-        title: metadata.bookSearch.title,
-        path: metadata.bookSearch.path,
-        element: <BookSearch />,
-      },
-      {
-        title: metadata.bookPurchase.title,
-        path: metadata.bookPurchase.path,
-        element: <BookPurchase />,
-      },
-      {
-        title: metadata.loanHistory.title,
-        path: metadata.loanHistory.path,
-        element: <LoanHistory />,
-      },
-      {
-        title: metadata.eBook.title,
-        path: metadata.eBook.path,
-        element: <Ebook />,
-      },
+
       {
         title: metadata.setting.title,
         path: metadata.setting.path,

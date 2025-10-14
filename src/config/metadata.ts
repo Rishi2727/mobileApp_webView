@@ -18,6 +18,9 @@ export type MentaDataTypeProps = {
         width?: number;
         height?: number;
         breadcrumbItems?: { id: number; label: string }[];
+        isExternal?: boolean;
+        requiresSecret?: boolean;
+        externalUrl?: (secret?: string) => string;
     };
 };
 export const metadata: MentaDataTypeProps = {
@@ -257,6 +260,9 @@ export const metadata: MentaDataTypeProps = {
         image: dashboardIcons.bookLoanIcon,
         animetedImage: dashboardIcons.bookLoanIcon,
         path: "/book-search",
+        externalUrl: (kmouSecretSecret?: string) => `https://library.kmou.ac.kr/appLogin?encText=${kmouSecretSecret}&retUrl=/searchTotal/result?st=KWRD%26si=TOTAL%26q=`,
+        isExternal: true,
+        requiresSecret: true,
         isVisible: true,
         borderAnimation: false,
         borderColor: "border-accent",
@@ -273,6 +279,9 @@ export const metadata: MentaDataTypeProps = {
         image: dashboardIcons.bookRequestIcon,
         animetedImage: dashboardIcons.bookRequestIcon,
         path: "/book-purchase",
+        externalUrl: (kmouSecretSecret?: string) => `https://library.kmou.ac.kr/appLogin?encText=${kmouSecretSecret}&retUrl=/webcontent/info/13`,
+        isExternal: true,
+        requiresSecret: true,
         isVisible: true,
         borderAnimation: false,
         borderColor: "border-accent",
@@ -289,6 +298,9 @@ export const metadata: MentaDataTypeProps = {
         image: dashboardIcons.loanHistoryIcon,
         animetedImage: dashboardIcons.loanHistoryIcon,
         path: "/loan-history",
+        externalUrl: (kmouSecretSecret?: string) => `https://library.kmou.ac.kr/appLogin?encText=${kmouSecretSecret}&retUrl=/myloan/list`,
+        isExternal: true,
+        requiresSecret: true,
         isVisible: true,
         borderAnimation: false,
         borderColor: "border-accent",
@@ -305,6 +317,9 @@ export const metadata: MentaDataTypeProps = {
         image: dashboardIcons.eBookIcon,
         animetedImage: dashboardIcons.eBookIcon,
         path: "/e-books",
+        externalUrl: (kmouSecretSecret?: string) => `https://library.kmou.ac.kr/appLogin?encText=${kmouSecretSecret}&retUrl=/webcontent/info/72`,
+        isExternal: true,
+        requiresSecret: true,
         isVisible: true,
         borderAnimation: false,
         borderColor: "border-accent",
