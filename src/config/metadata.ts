@@ -42,8 +42,8 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Profile" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "header.UserProfile" },
         ],
 
     },
@@ -63,8 +63,8 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Bookings" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "header.BookingHistory" },
         ],
     },
     notice: {
@@ -83,8 +83,8 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "University Notices" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "header.UniversityNotices" },
         ],
     },
     seatBooking: {
@@ -103,8 +103,8 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "General/PC Seat" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.generalRoom" },
         ],
     },
     seatBookingPage: {
@@ -121,9 +121,9 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "General/PC Seat" },
-            { id: 3, label: "Seat Booking" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.generalRoom" },
+            { id: 3, label: "header.SeatSelection" },
 
         ],
     },
@@ -143,8 +143,8 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Group Study" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.groupStudyRoom" },
 
         ],
     },
@@ -162,9 +162,9 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Group Study" },
-            { id: 2, label: "Time Selection" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.groupStudyRoom" },
+            { id: 2, label: "header.DisplayTimeChart" },
 
         ],
     },
@@ -182,10 +182,10 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Group Study" },
-            { id: 3, label: "Time Selection" },
-            { id: 4, label: "Reservation" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.groupStudyRoom" },
+            { id: 3, label: "header.DisplayTimeChart" },
+            { id: 4, label: "header.TimeAndUserPicker" },
 
 
         ],
@@ -206,12 +206,12 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Personal Carrel" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.personalCarrel" },
 
         ],
     },
-     carrelTimeSelection: {
+    carrelTimeSelection: {
         title: "Carrel Booking",
         path: "/carrel-time-selection",
         isVisible: true,
@@ -225,9 +225,9 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Personal Carrel" },
-            { id: 2, label: "Time Selection" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.personalCarrel" },
+            { id: 2, label: "header.DisplayTimeChart" },
 
         ],
     },
@@ -247,8 +247,8 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Notifications" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "header.PushNotifications" },
 
         ],
     },
@@ -332,8 +332,8 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Settings" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "header.Settings" },
         ],
     },
     PreferredSeatSetting: {
@@ -350,8 +350,8 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Favourite Seat" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "header.FavouriteSeat" },
         ],
     },
     login: {
