@@ -33,9 +33,11 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
   const qrDuration = useRef<number>(0);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [progress, setProgress] = useState<number>(0);
+  const animationStartTimeRef = useRef<number>(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
   const [timeRange, setTimeRange] = useState<string | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<string>("");
 
@@ -51,6 +53,10 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
+    }
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
     }
   }, []);
 
@@ -149,15 +155,32 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
 
     qrDuration.current = duration;
     setTimeLeft(left);
-    setProgress((duration - left) / duration);
+    
+    // Calculate initial progress based on elapsed time
+    const elapsedTime = duration - left;
+    const initialProgress = elapsedTime / duration;
+    setProgress(initialProgress);
+    
+    // Store animation start time
+    animationStartTimeRef.current = Date.now();
+    
+    // Animate progress smoothly using requestAnimationFrame
+    const animate = () => {
+      const currentLeft = calculateTimeLeft();
+      if (currentLeft >= 0) {
+        const currentDuration = qrDuration.current;
+        const newProgress = (currentDuration - currentLeft) / currentDuration;
+        setProgress(newProgress);
+        animationFrameRef.current = requestAnimationFrame(animate);
+      }
+    };
+    animationFrameRef.current = requestAnimationFrame(animate);
 
-    // Start the countdown interval
+    // Start the countdown interval for time display
     intervalRef.current = setInterval(() => {
       const currentLeft = calculateTimeLeft();
       if (currentLeft >= 0) {
         setTimeLeft(currentLeft);
-        const currentDuration = qrDuration.current;
-        setProgress((currentDuration - currentLeft) / currentDuration);
         
         if (currentLeft <= 0) {
           setTimeRemaining("Expired");
@@ -190,6 +213,15 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
   // Memoize time range regex to avoid recreating on each render
   const timeRangeRegex = useMemo(() => /^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]-([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/, []);
 
+  // Reset progress when QR data changes (like the React Native version)
+  useEffect(() => {
+    setProgress(0);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+  }, [qrData, generatedAt, expireAt]);
+
   // Process time range with memoization
   const processedTimeRange = useMemo(() => {
     if (!qrTimeRange) return null;
@@ -219,8 +251,9 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
     };
   }, [cleanup]);
 
-  // Calculate stroke dash offset for progress
-  const strokeDashoffset = CIRCUMFERENCE - (progress * CIRCUMFERENCE);
+  // Calculate stroke dash offset for progress (matching React Native logic)
+  // In the original: strokeDashoffset goes from 0 to CIRCUMFERENCE as time passes
+  const strokeDashoffset = progress * CIRCUMFERENCE;
 
   return (
     <div className="flex flex-col items-center">
@@ -276,9 +309,6 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
             transform={`rotate(-90 ${RADIUS} ${RADIUS})`}
-            style={{
-              transition: 'stroke-dashoffset 1s linear'
-            }}
           />
         </svg>
 
