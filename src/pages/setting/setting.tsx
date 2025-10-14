@@ -131,7 +131,7 @@ const Setting = () => {
         {/* Logout Button */}
         <div className="flex justify-center bg-background p-2">
           <Button className="bg-black text-background w-[50%] rounded-full hover:bg-gray-800" onClick={logout}>
-            Logout
+            {t("common.logout")}
           </Button>
         </div>
       </div>
