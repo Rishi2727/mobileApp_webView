@@ -3,7 +3,9 @@ import { Image } from "../ui/custom/image";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useEffect, useState } from "react";
 import { useMainStore } from "@/store/MainStore";
-
+import { DATE_FORMATS, formatDate } from "@/lib/dateUtils";
+import { LanguageToggle } from "@/features/language-toggle/languageToggle";
+import { useLanguage } from "@/contexts/useLanguage";
 
 // Weather icon mapping (matching your native implementation)
 const weatherIconMap: Record<string, string> = {
@@ -27,88 +29,68 @@ const weatherIconMap: Record<string, string> = {
   "50n": weatherIcon.weatherIcon50n,
 };
 
-
-
-
-
 export function DashbaordNavbar() {
   const isMobile = useIsMobile();
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
-
-
+  const {  setLanguage } = useLanguage();
   // Get weather data and fetch function from store
 
   const currentWeather = useMainStore((state) => state.currentWeather);
   const fetchInitialData = useMainStore((state) => state.fetchInitialData);
 
-
-
-
-  // Fetch weather data on component mount and set up auto-refresh
   useEffect(() => {
-    fetchInitialData('A');
-    // Auto-refresh every 10 minutes (600000ms)
+    fetchInitialData("A");
     const weatherRefreshInterval = setInterval(() => {
-      fetchInitialData('A');
+      fetchInitialData("A");
     }, 600000);
-    // Refresh when window regains focus (similar to AppState in native)
+
     const handleFocus = () => {
-      fetchInitialData('A');
+      fetchInitialData("A");
     };
-    window.addEventListener('focus', handleFocus);
+    window.addEventListener("focus", handleFocus);
     return () => {
       clearInterval(weatherRefreshInterval);
-      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener("focus", handleFocus);
     };
   }, [fetchInitialData]);
-
-
-
 
   // Get weather icon source - with fallback
   const getWeatherIcon = () => {
     if (currentWeather?.weather?.[0]?.icon) {
-      return weatherIconMap[currentWeather.weather[0].icon] || weatherIcon.weatherIcon01d;
+      return (
+        weatherIconMap[currentWeather.weather[0].icon] ||
+        weatherIcon.weatherIcon01d
+      );
     }
     return weatherIcon.weatherIcon01d;
   };
 
   // Get weather data with fallbacks
   const cityName = currentWeather?.name || "Seoul";
-  const weatherDescription = currentWeather?.weather?.[0]?.description || "clear sky";
+  const weatherDescription =
+    currentWeather?.weather?.[0]?.description || "clear sky";
   const temperature = currentWeather?.main?.temp
     ? Math.round(currentWeather.main.temp)
     : null;
   const weatherIconSrc = getWeatherIcon();
 
-
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes().toString().padStart(2, "0");
-      const ampm = hours >= 12 ? "PM" : "AM";
-      const formattedTime = `${ampm} ${hours % 12 || 12}:${minutes}`;
-
-      const formattedDate = now.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-
-      setTime(formattedTime);
-      setDate(formattedDate);
+      setDate(formatDate(now, DATE_FORMATS.LONG_DATE));
+      setTime(formatDate(now, DATE_FORMATS.LONG_TIME));
     };
 
     updateTime();
     const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
   }, []);
-
-
-
-
+  const handleLanguageToggle = (newLanguage: string) => {
+    console.log('Language changed to:', newLanguage);
+    setLanguage(newLanguage);
+    // Add your language change logic here
+  };
 
   return (
     <div className="fixed top-0 left-0 w-full z-50">
@@ -137,9 +119,14 @@ export function DashbaordNavbar() {
               <div>
                 <div className="text-right flex items-center space-x-2">
                   <div>
-                    <div className="text-sm opacity-80 font-medium">{cityName}</div>
+                    <div className="text-sm opacity-80 font-medium">
+                      {cityName}
+                    </div>
                     <div className="text-sm">{weatherDescription}</div>
-                    <div className="text-md font-bold">    {temperature !== null ? `${temperature}°C` : ''}</div>
+                    <div className="text-md font-bold">
+                      {" "}
+                      {temperature !== null ? `${temperature}°C` : ""}
+                    </div>
                   </div>
                   <div className="flex items-center justify-end space-x-2">
                     <Image
@@ -169,13 +156,7 @@ export function DashbaordNavbar() {
 
           {/* Right Icons */}
           <div className="flex items-center space-x-4 pointer-events-auto">
-            <Image
-              src={commonIcons.languageIconEn}
-              alt="language"
-              width={isMobile ? 20 : 24}
-              height={isMobile ? 20 : 24}
-              className="text-background"
-            />
+            <LanguageToggle onToggle={handleLanguageToggle} />
             <Image
               src={commonIcons.homeIcon}
               alt="home"
@@ -206,7 +187,9 @@ export function DashbaordNavbar() {
               <div>
                 <div className="text-sm opacity-80 font-medium">{cityName}</div>
                 <div className="text-sm">{weatherDescription}</div>
-                <div className="text-md font-bold">{temperature !== null ? `${temperature}°C` : ''}</div>
+                <div className="text-md font-bold">
+                  {temperature !== null ? `${temperature}°C` : ""}
+                </div>
               </div>
               <div className="flex items-center justify-end space-x-2">
                 <Image

@@ -27,7 +27,7 @@ export const metadata: MentaDataTypeProps = {
         path: "/"
     },
     profile: {
-        title: "My Profile",
+        title: "dashboard.profile.title",
         image: dashboardIcons.profileIcon,
         animetedImage: dashboardIcons.profileIcon,
         path: "/profile",
@@ -42,13 +42,13 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Profile" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "header.UserProfile" },
         ],
 
     },
     booking: {
-        title: "My Bookings",
+        title: "dashboard.bookings.title",
         image: dashboardIcons.bookIcon,
         animetedImage: dashboardIcons.bookIcon,
         path: "/bookings",
@@ -63,12 +63,12 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Bookings" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "header.BookingHistory" },
         ],
     },
     notice: {
-        title: "Notices",
+        title: "dashboard.notices.title",
         image: dashboardIcons.messageIcon,
         animetedImage: dashboardIcons.messageIcon,
         path: "/notices",
@@ -83,12 +83,12 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "University Notices" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "header.UniversityNotices" },
         ],
     },
     seatBooking: {
-        title: "Seat Booking",
+        title: "dashboard.reserveSeatAndPC.title",
         image: dashboardIcons.seatIcon,
         animetedImage: dashboardIcons.seatIcon,
         path: "/seat-booking",
@@ -103,8 +103,8 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "General/PC Seat" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.generalRoom" },
         ],
     },
     seatBookingPage: {
@@ -121,14 +121,14 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "General/PC Seat" },
-            { id: 3, label: "Seat Booking" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.generalRoom" },
+            { id: 3, label: "header.SeatSelection" },
 
         ],
     },
     groupBooking: {
-        title: "Group Bookings",
+        title: "dashboard.reserveGroup.title",
         image: dashboardIcons.groupIcon,
         animetedImage: dashboardIcons.groupIcon,
         path: "/group-bookings",
@@ -143,8 +143,8 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Group Study" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.groupStudyRoom" },
 
         ],
     },
@@ -162,9 +162,9 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Group Study" },
-            { id: 2, label: "Time Selection" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.groupStudyRoom" },
+            { id: 2, label: "header.DisplayTimeChart" },
 
         ],
     },
@@ -182,16 +182,16 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Group Study" },
-            { id: 3, label: "Time Selection" },
-            { id: 4, label: "Reservation" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.groupStudyRoom" },
+            { id: 3, label: "header.DisplayTimeChart" },
+            { id: 4, label: "header.TimeAndUserPicker" },
 
 
         ],
     },
     carrelBooking: {
-        title: "Carrel Booking",
+        title: "dashboard.reserveCarrel.title",
         image: dashboardIcons.carrelIcon,
         animetedImage: dashboardIcons.carrelIcon,
         path: "/carrel-booking",
@@ -206,12 +206,12 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Personal Carrel" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.personalCarrel" },
 
         ],
     },
-     carrelTimeSelection: {
+    carrelTimeSelection: {
         title: "Carrel Booking",
         path: "/carrel-time-selection",
         isVisible: true,
@@ -225,14 +225,14 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Personal Carrel" },
-            { id: 2, label: "Time Selection" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "roomLayout.personalCarrel" },
+            { id: 2, label: "header.DisplayTimeChart" },
 
         ],
     },
     message: {
-        title: "Messages",
+        title: "dashboard.push.title",
         image: commonIcons.bellIcon,
         animetedImage: dashboardIcons.bellIcon,
         path: "/messages",
@@ -247,13 +247,13 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Notifications" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "header.PushNotifications" },
 
         ],
     },
     bookSearch: {
-        title: "Book Search",
+        title: "dashboard.bookSearch.title",
         image: dashboardIcons.bookLoanIcon,
         animetedImage: dashboardIcons.bookLoanIcon,
         path: "/book-search",
@@ -269,7 +269,7 @@ export const metadata: MentaDataTypeProps = {
         height: 38,
     },
     bookPurchase: {
-        title: "Book Purchase",
+        title: "dashboard.bookRequest.title",
         image: dashboardIcons.bookRequestIcon,
         animetedImage: dashboardIcons.bookRequestIcon,
         path: "/book-purchase",
@@ -285,7 +285,7 @@ export const metadata: MentaDataTypeProps = {
         height: 38,
     },
     loanHistory: {
-        title: "Loan History",
+        title: "dashboard.loanHistory.title",
         image: dashboardIcons.loanHistoryIcon,
         animetedImage: dashboardIcons.loanHistoryIcon,
         path: "/loan-history",
@@ -317,7 +317,7 @@ export const metadata: MentaDataTypeProps = {
         height: 38,
     },
     setting: {
-        title: "Settings",
+        title: "dashboard.appSettings.title",
         image: dashboardIcons.settingIcon,
         animetedImage: dashboardIcons.settingIcon,
         path: "/settings",
@@ -332,8 +332,8 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Settings" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "header.Settings" },
         ],
     },
     PreferredSeatSetting: {
@@ -350,8 +350,8 @@ export const metadata: MentaDataTypeProps = {
         width: 38,
         height: 38,
         breadcrumbItems: [
-            { id: 1, label: "Dashboard" },
-            { id: 2, label: "Favourite Seat" },
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "header.FavouriteSeat" },
         ],
     },
         oneDayPass: {

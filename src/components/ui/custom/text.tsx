@@ -77,7 +77,7 @@ const Text = ({
        case "h6":
       return (
         <h4
-          className={cn("text-xs text-gray-500", className)}
+          className={cn("text-xs text-gray-500 whitespace-pre-line", className)}
           {...props}
         >
           {children}

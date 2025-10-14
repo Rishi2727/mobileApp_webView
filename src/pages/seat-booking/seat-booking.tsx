@@ -1,6 +1,8 @@
 import { commonIcons } from "@/assets";
+import { Button } from "@/components/ui/button";
 import { Image } from "@/components/ui/custom/image";
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
+import Text from "@/components/ui/custom/text";
 import { metadata } from "@/config/metadata";
 import { useNavigate } from "react-router";
 
@@ -96,18 +98,18 @@ const SeatBooking = () => {
           <h2 className="text-sm font-bold mb-2">My Favorite Seats</h2>
           <div className="flex gap-3 overflow-x-auto pb-2">
             {favoriteSeats.map((seat, index) => (
-              <button
+              <Button
                 key={index}
                 className={`flex-shrink-0 px-2 py-1 rounded-md border-2 font-medium transition-colors ${
                   seat.type === "lighthouse"
-                    ? "bg-slate-800 text-white border-slate-800"
-                    : "bg-white text-gray-400 border-gray-300"
+                    ? "bg-border-accent text-background border-border-accent"
+                    : "bg-background text-primary-300 border-border"
                 }`}
               >
-                <span className="text-sm font-bold">{seat.id}</span>
-                <span className="mx-2">|</span>
-                <span className="text-sm">{seat.name}</span>
-              </button>
+                <Text className="text-sm font-bold">{seat.id}</Text>
+                <Text className="mx-2">|</Text>
+                <Text className="text-sm">{seat.name}</Text>
+              </Button>
             ))}
           </div>
         </div>
@@ -118,35 +120,35 @@ const SeatBooking = () => {
             <div
               key={seat.id}
               onClick={() => navigate("/seat-booking-page")}
-              className="bg-white rounded-2xl p-2 flex items-center gap-4"
+              className="bg-background rounded-2xl p-2 flex items-center gap-4"
             >
               {/* Seat Number Circle */}
-              <div className="flex-shrink-0 w-14 h-14 rounded-full border-4 border-slate-800 flex flex-col items-center justify-center">
-                <div className="text-md font-bold text-slate-800">
+              <div className="flex-shrink-0 w-14 h-14 rounded-full border-4 border-border-accent flex flex-col items-center justify-center">
+                <Text className="text-md font-bold text-border-accent">
                   {seat.id}
-                </div>
-                <div className="text-xs text-gray-400">{seat.id}</div>
+                </Text>
+                <Text className="text-xs text-seat-fixed">{seat.id}</Text>
               </div>
 
               {/* Seat Info */}
               <div className="flex-1">
-                <h3 className="text-md font-semibold text-slate-900 ">
+                <Text className="text-md font-semibold text-border-accent ">
                   {seat.name}
-                </h3>
+                </Text>
                 {seat.available ? (
-                  <p className="text-[12px] text-gray-500">{seat.time}</p>
+                  <Text variant="h6" className=" text-seat-fixed">{seat.time}</Text>
                 ) : (
-                  <p className="text-sm text-red-500 font-medium">
+                  <Text className="text-sm text-seat-booked font-medium">
                     Room is closed now!
-                  </p>
+                  </Text>
                 )}
               </div>
 
               {/* Floor Info */}
               <div className="flex-shrink-0 flex flex-col items-center gap-1 pr-2">
-                <div className="text-md font-bold text-slate-800">
+                <Text className="text-md font-bold text-border-accent">
                   {seat.floor}
-                </div>
+                </Text>
                 <Image
                   src={commonIcons.seatTableIcon}
                   alt="Seat Table"

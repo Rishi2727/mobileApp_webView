@@ -1,19 +1,11 @@
 import axios, { type AxiosRequestConfig } from "axios";
-import qs from 'qs';
+import { randomUUID } from "@/lib/crypto";
+import { AvailableAppLanguages, LANGUAGE_STORAGE_KEY } from "@/contexts/LanguageContext";
 
-// Web equivalents for React Native constants
-export const AvailableAppLanguages = [
-  { code: 'en', name: 'English' },
-  { code: 'es', name: 'Spanish' },
-  // Add other languages as needed
-];
-export const LANGUAGE_STORAGE_KEY = 'app_language';
-
-// Import the auth store to access token
 let getAuthToken: (() => string | null) | null = null;
 let clearAuthOnUnauthorized: (() => void) | null = null;
+let navigateToLogin: (() => void) | null = null;
 
-// Function to set the auth store reference (called from AuthStore)
 export const setAuthStoreReference = (
   getToken: () => string | null,
   clearAuth: () => void
@@ -22,33 +14,36 @@ export const setAuthStoreReference = (
   clearAuthOnUnauthorized = clearAuth;
 };
 
+export const setNavigationReference = (navigate: () => void) => {
+  navigateToLogin = navigate;
+};
+
 export const baseUrl = "http" + (import.meta.env.VITE_API_IS_SECURE === "true" ? "s" : "") + "://" + import.meta.env.VITE_API_DOMAIN;
 
-export const getDeviceUUID = () => {
+export const getDeviceUUID = async () => {
   let deviceUUID = localStorage.getItem('deviceUUID');
   if (!deviceUUID) {
-    deviceUUID = crypto.randomUUID();
-    localStorage.setItem('deviceUUID', deviceUUID);
+    deviceUUID = randomUUID();
+    if (deviceUUID) localStorage.setItem('deviceUUID', deviceUUID);
   }
-  return deviceUUID;
+  return deviceUUID || null;
 };
-const getLanguage = () => {
+
+const getLanguage = async () => {
   try {
     const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
     if (savedLanguage) {
       return savedLanguage;
     } else {
-      // If no saved language, use browser locale
-      const deviceLang = navigator.language.split('-')[0] || 'en';
-      if (AvailableAppLanguages.some(lang => lang.code === deviceLang)) {
-        return deviceLang;
+      const browserLang = navigator.language.split('-')[0] || 'en';
+      if (AvailableAppLanguages.some(lang => lang.code === browserLang)) {
+        return browserLang;
       }
     }
   } catch (error) {
     console.warn('Error getting language:', error);
   }
 
-  // Default to English if device language is not supported
   return 'en';
 };
 
@@ -65,16 +60,14 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   async (config) => {
-    // Get the current language from localStorage
-    const language = getLanguage();
+    const language = await getLanguage();
     config.headers['Accept-Language'] = language;
 
-    const deviceUUID = getDeviceUUID();
+    const deviceUUID = await getDeviceUUID();
     if (deviceUUID) {
       config.headers['traceId'] = deviceUUID;
     }
 
-    // Get token from AuthStore instead of localStorage
     const token = getAuthToken ? getAuthToken() : null;
     if (token && token !== 'null' && token !== '') {
       config.headers["Authorization"] = `Bearer ${token}`;
@@ -82,11 +75,64 @@ apiClient.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error instanceof Error ? error : new Error(String(error)))
+  (error) => Promise.reject(new Error(error.message || 'Request error'))
 );
 
-apiClient.defaults.paramsSerializer = (params) => qs.stringify(params, { arrayFormat: 'repeat' }); // or 'brackets', 'comma', 'indices', etc.
+apiClient.defaults.paramsSerializer = (params) => {
+  const searchParams = new URLSearchParams();
+  for (const key in params) {
+    const value = params[key];
+    if (Array.isArray(value)) {
+      value.forEach(v => searchParams.append(key, String(v)));
+    } else if (value !== null && value !== undefined) {
+      searchParams.append(key, String(value));
+    }
+  }
+  return searchParams.toString();
+};
 
+
+// Translation helper - can be overridden by setting external reference
+let getTranslation: ((key: string, options?: Record<string, unknown>) => string) | null = null;
+
+export const setTranslationReference = (t: (key: string, options?: Record<string, unknown>) => string) => {
+  getTranslation = t;
+};
+
+const translate = (key: string, fallback?: string) => {
+  if (getTranslation) {
+    return getTranslation(key, { defaultValue: fallback });
+  }
+  return fallback || key;
+};
+
+const handleUnauthorizedError = (status: number, url?: string): boolean => {
+  const isUnauthorized = status === 401 || status === 403;
+  const isNotLoginUrl = url !== '/api/v1/mobile/auth/login';
+  
+  if (isUnauthorized && isNotLoginUrl) {
+    if (clearAuthOnUnauthorized) {
+      clearAuthOnUnauthorized();
+    } else if (navigateToLogin) {
+      setTimeout(navigateToLogin, 100);
+    }
+    return true;
+  }
+  return false;
+};
+
+const getErrorMessage = (err: any): string => {
+  if (err.response) {
+    return err.response.data?.msg || translate('errors.general', 'An error occurred. Please try again later.');
+  }
+  
+  if (err.request) {
+    console.warn('Network error:', err.request);
+    return translate('errors.network', 'Network error: Unable to reach the server. Please check your connection.');
+  }
+  
+  return err.message || translate('errors.unexpected', 'An unexpected error occurred.');
+};
 
 export async function request<TResponse, TPayload = any>(
   method: 'get' | 'post' | 'put' | 'delete',
@@ -95,55 +141,27 @@ export async function request<TResponse, TPayload = any>(
   config?: AxiosRequestConfig,
   noError?: boolean
 ): Promise<TResponse | null> {
-  // Simple translation fallback function
-  const t = (key: string, fallback?: string) => {
-    // Return fallback text or key as is
-    return fallback || key;
-  };
-
   try {
     const res = await apiClient.request<TResponse>({
       method,
       url,
-      // ...(payload && { data: payload }),
-      // ...(method === 'get' ? { params: payload } : { data: payload }),
       ...(payload && method !== 'get' && { data: payload }),
       ...(payload && { params: payload }),
       ...config,
     });
     return res.data;
   } catch (err: any) {
-    // Detect network error vs server error
-    let msg = '';
     if (err.response) {
-
-      if ((err.response.status === 401 || err.response.status === 403) && err.config?.url !== '/api/v1/mobile/auth/login') {
-        // Use AuthStore to clear authentication instead of localStorage
-        if (clearAuthOnUnauthorized) {
-          clearAuthOnUnauthorized();
-        } else {
-          // Fallback if auth store not available
-          setTimeout(() => {
-            window.location.href = '/Login';
-          }, 100);
-        }
+      const { status, config: reqConfig, data } = err.response;
+      
+      if (handleUnauthorizedError(status, reqConfig?.url)) {
         return null;
       }
-
-      // Use server message or translated fallback
-      msg = err.response.data?.msg || t('errors.general', 'Uh oh, an error occurred. Please try again later.');
-
-      if (noError) return err.response.data;
-
-    } else if (err.request) {
-      // Request was made but no response received (network error)
-      console.warn('Network error:', err.request);
-      msg = t('errors.network', 'Network error: Unable to reach the server. Please check your connection.');
-    } else {
-      // Something else happened
-      msg = err.message || t('errors.unexpected', 'An unexpected error occurred.');
+      
+      if (noError) return data;
     }
 
-    return Promise.reject(new Error(msg));
+    const message = getErrorMessage(err);
+    return Promise.reject(new Error(message));
   }
 }

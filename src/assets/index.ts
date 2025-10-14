@@ -27,6 +27,23 @@ import usaFlag from './icons/country-usa.svg'
 import questionMark from './icons/status_question.svg'
 import handiCaped from './icons/HandiCaped.svg'
 
+// Booking related icons
+import pcIcon from './icons/pc.svg'
+import kioskIcon from './icons/kiosk.svg'
+import webIcon from './icons/web.svg'
+import mobileIcon from './icons/mobile.svg'
+import dirCollapseIcon from './icons/dirCollapse.svg'
+import dirExpandIcon from './icons/dirExpand.svg'
+import fellowMemberIcon from './icons/fellow-member.svg'
+import bookingsGoleIcon from './icons/BookingsGole.svg'
+import favouriteIcon from './icons/favourite.svg'
+
+// Status icons
+import statusErrorIcon from './icons/status_error.svg'
+import statusInfoIcon from './icons/status_info.svg'
+import statusSuccessIcon from './icons/status_success.svg'
+import statusWarningIcon from './icons/status_warning.svg'
+
 // Room Map Images
 import rm566 from './store/RM-566-20250710.png'
 import rm567 from './store/RM-567-20250710.png'
@@ -82,7 +99,22 @@ export const commonIcons = {
      questionMark,
      handiCaped,
      logoutIcon,
-     qrLogo
+     qrLogo,
+     // Booking related icons
+     pcIcon,
+     kioskIcon,
+     webIcon,
+     mobileIcon,
+     dirCollapseIcon,
+     dirExpandIcon,
+     fellowMemberIcon,
+     bookingsGoleIcon,
+     favouriteIcon,
+     // Status icons
+     statusErrorIcon,
+     statusInfoIcon,
+     statusSuccessIcon,
+     statusWarningIcon,
 }
 export const dashboardIcons = {
      profileIcon,

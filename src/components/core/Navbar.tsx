@@ -1,9 +1,17 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Image } from "../ui/custom/image";
 import { commonIcons } from "@/assets";
+import { LanguageToggle } from "@/features/language-toggle/languageToggle";
+import { useLanguage } from "@/contexts/useLanguage";
 
 export function Navbar() {
   const isMobile = useIsMobile();
+  const {  setLanguage } = useLanguage();
+  const handleLanguageToggle = (newLanguage: string) => {
+    console.log('Language changed to:', newLanguage);
+    setLanguage(newLanguage);
+    // Add your language change logic here
+  };
   return (
     <>
       {/* Top Navigation Bar */}
@@ -21,12 +29,8 @@ export function Navbar() {
 
         {/* Right Icons */}
         <div className="flex items-center space-x-4">
-          <Image
-            src={commonIcons.languageIconEn}
-            alt="language"
-            width={isMobile ? 20 : 24}
-            height={isMobile ? 20 : 24}
-            className="text-background"
+          <LanguageToggle
+            onToggle={handleLanguageToggle}
           />
          <Image
             src={commonIcons.homeIcon}
