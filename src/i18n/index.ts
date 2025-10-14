@@ -20,13 +20,22 @@ const getBrowserLanguage = () => {
   return browserLang === 'en' ? 'en' : 'ko';
 };
 
+// Get language from localStorage or use browser language
+const getInitialLanguage = () => {
+  const savedLanguage = localStorage.getItem('app_language');
+  if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ko')) {
+    return savedLanguage;
+  }
+  return getBrowserLanguage();
+};
+
 // Initialize i18next
 i18n
   .use(initReactI18next)
   .init({
     resources,
     fallbackLng: 'en',
-    lng: getBrowserLanguage(), // Use browser locale by default
+    lng: getInitialLanguage(), // Use saved language or browser locale
     interpolation: {
       escapeValue: false // React already escapes values
     },
