@@ -23,45 +23,60 @@ import seatTableIcon from './icons/seatTable.svg'
 import southKoreaFlag from './icons/country-south_korea.svg'
 import usaFlag from './icons/country-usa.svg'
 import questionMark from './icons/status_question.svg'
+
+// Room Map Images
 import rm566 from './store/RM-566-20250710.png'
+import rm567 from './store/RM-567-20250710.png'
+import rm568 from './store/RM-568-20250710.png'
+import rm592 from './store/RM-592-20250710.png'
+import rm593 from './store/RM-593-20250710.png'
+import rm594 from './store/RM-594-20250710.png'
+import rm595 from './store/RM-595-20250710.png'
+
+// Room Mini Maps Images
 import rmNav566 from './store/miniMaps/RM-NAV-566-20250804.png'
-import handiCaped from './icons/HandiCaped.svg'
+import rmNav567 from './store/miniMaps/RM-NAV-567-20250804.png'
+import rmNav568 from './store/miniMaps/RM-NAV-568-20250804.png'
+import rmNav592 from './store/miniMaps/RM-NAV-592-20250804.png'
+import rmNav593 from './store/miniMaps/RM-NAV-593-20250804.png'
+import rmNav594 from './store/miniMaps/RM-NAV-594-20250804.png'
+import rmNav595 from './store/miniMaps/RM-NAV-595-20250804.png'
+
 export const commonIcons = {
-      bellIcon,
-      homeIcon,
-      languageIconKo,
-      languageIconEn,
-      dirBackIcon,
-      splashLogo,
-      brandLogo,
-      dashboardBg,
-      bannarImage,
-      seatTableIcon,
-      southKoreaFlag,
-      usaFlag,
-      questionMark,
-      handiCaped
+     bellIcon,
+     homeIcon,
+     languageIconKo,
+     languageIconEn,
+     dirBackIcon,
+     splashLogo,
+     brandLogo,
+     dashboardBg,
+     bannarImage,
+     seatTableIcon,
+     southKoreaFlag,
+     usaFlag,
+     questionMark
 }
 export const dashboardIcons = {
-   profileIcon,
-   bookIcon,
-   messageIcon,
-   seatIcon,
-   groupIcon,
-   carrelIcon,
-   bellIcon,
-   bookLoanIcon,
-   bookRequestIcon,
-   loanHistoryIcon,
-   eBookIcon,
-   settingIcon,  
+     profileIcon,
+     bookIcon,
+     messageIcon,
+     seatIcon,
+     groupIcon,
+     carrelIcon,
+     bellIcon,
+     bookLoanIcon,
+     bookRequestIcon,
+     loanHistoryIcon,
+     eBookIcon,
+     settingIcon,
 }
 export const weatherIcon = {
      weatherIcon01d
 }
 export const roomImage = {
-     rm566
+     rm566, rm567, rm568, rm592, rm593, rm594, rm595
 }
 export const roomMiniMap = {
-     rmNav566
+     rmNav566, rmNav567, rmNav568, rmNav592, rmNav593, rmNav594, rmNav595
 }
