@@ -43,6 +43,27 @@ import rmNav593 from './store/miniMaps/RM-NAV-593-20250804.png'
 import rmNav594 from './store/miniMaps/RM-NAV-594-20250804.png'
 import rmNav595 from './store/miniMaps/RM-NAV-595-20250804.png'
 
+
+
+// Weather Icons
+import weatherIcon01n from './images/WEATHER_01n.png'
+import weatherIcon02d from './images/WEATHER_02d.png'
+import weatherIcon02n from './images/WEATHER_02n.png'
+import weatherIcon03d from './images/WEATHER_03d.png'
+import weatherIcon03n from './images/WEATHER_03n.png'
+import weatherIcon04d from './images/WEATHER_04d.png'
+import weatherIcon04n from './images/WEATHER_04n.png'
+import weatherIcon09d from './images/WEATHER_09d.png'
+import weatherIcon09n from './images/WEATHER_09n.png'
+import weatherIcon10d from './images/WEATHER_10d.png'
+import weatherIcon10n from './images/WEATHER_10n.png'
+import weatherIcon11d from './images/WEATHER_11d.png'
+import weatherIcon11n from './images/WEATHER_11n.png'
+import weatherIcon13d from './images/WEATHER_13d.png'
+import weatherIcon13n from './images/WEATHER_13n.png'
+import weatherIcon50d from './images/WEATHER_50d.png'
+import weatherIcon50n from './images/WEATHER_50n.png'
+
 export const commonIcons = {
      bellIcon,
      homeIcon,
@@ -74,7 +95,24 @@ export const dashboardIcons = {
      settingIcon,
 }
 export const weatherIcon = {
-     weatherIcon01d
+     weatherIcon01d,
+     weatherIcon01n,
+     weatherIcon02d,
+     weatherIcon02n,
+     weatherIcon03d,
+     weatherIcon03n,
+     weatherIcon04d,
+     weatherIcon04n,
+     weatherIcon09d,
+     weatherIcon09n,
+     weatherIcon10d,
+     weatherIcon10n,
+     weatherIcon11d,
+     weatherIcon11n,
+     weatherIcon13d,
+     weatherIcon13n,
+     weatherIcon50d,
+     weatherIcon50n,
 }
 export const roomImage = {
      rm566, rm567, rm568, rm592, rm593, rm594, rm595
