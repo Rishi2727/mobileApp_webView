@@ -3,177 +3,262 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Image } from "@/components/ui/custom/image";
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import { metadata } from "@/config/metadata";
-import { Armchair, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Trash2, Heart, Plus } from "lucide-react";
+import { useCallback, useEffect } from "react";
 import { ShowAlert } from "@/components/ui/custom/my-alert";
 import Text from "@/components/ui/custom/text";
+import { useFavouriteSeatStore, maxFavouriteSeatsLimit, type FavouriteSeat } from "@/store/FavouriteSeat";
+import { useBookingsStore } from "@/store/BookingsStore";
+import { useNavigate } from "react-router";
 
 export default function PreferredSeat() {
   const breadcrumbItems = metadata.PreferredSeatSetting.breadcrumbItems || [];
+  
+  const {
+    favouriteSeats,
+    checkLimit,
+    init,
+    stopAndClear,
+    removeFavouriteSeat,
+    prependFavouriteSeat,
+    suggestedFavourite
+  } = useFavouriteSeatStore();
+  
+  const { createBooking } = useBookingsStore();
+  const router = useNavigate();
 
-  const [seats, setSeats] = useState([
-    { id: 1, floor: "3F", desk: 6, lounge: "Lounge'80", available: true },
-    { id: 2, floor: "3F", desk: 7, lounge: "Lounge'80", available: true },
-    {
-      id: 3,
-      floor: "3F",
-      desk: 7,
-      lounge: "Lighthouse Lounge",
-      available: true,
-    },
-    {
-      id: 4,
-      floor: "3F",
-      desk: 1,
-      lounge: "Lighthouse Lounge",
-      available: true,
-    },
-  ]);
+  // Initialize store
+  useEffect(() => {
+    init();
+    return () => stopAndClear();
+  }, [init, stopAndClear]);
 
-  const handleDelete = async (id: number) => {
-    const seat = seats.find((s) => s.id === id);
-    if (!seat) return;
-
+  // Book a seat
+  const handleBookSeat = useCallback(async (seat: FavouriteSeat) => {
     const confirmed = await ShowAlert({
-      title: (
-        <div className="flex justify-center mb-2">
-          <Image
-            src={commonIcons.questionMark}
-            alt="question mark"
-            width={40}
-            height={40}
-          />
-        </div>
-      ),
-      description: (
-        <Text>
-          Are you sure you want to delete <strong>{seat.lounge}</strong> (Desk{" "}
-          {seat.desk}) from your preferred seats?
-        </Text>
-      ),
-      confirmText: "OK",
+      title: "Book Seat",
+      description: `Book Desk ${seat.deskNo} in ${seat.room.roomName}?`,
+      confirmText: "Yes",
       cancelText: "No",
       isDangerous: false,
     });
 
     if (confirmed) {
-      setSeats((prev) => prev.filter((s) => s.id !== id));
+      try {
+        const result = await createBooking({
+          reserveDeskCode: seat.deskCode,
+          type: 'SEAT',
+          bookingStartFromNow: true
+        });
+        
+        if (result?.success) {
+          await ShowAlert({
+            title: "Success",
+            description: "Seat booked successfully!",
+            confirmText: "OK",
+            isDangerous: false,
+          });
+        }
+      } catch (error) {
+        await ShowAlert({
+          title: "Error",
+          description: error instanceof Error ? error.message : "Failed to book seat",
+          confirmText: "OK", 
+          isDangerous: true,
+        });
+      }
     }
-  };
-  const handleAdd = async (id: number) => {
-    const seat = seats.find((s) => s.id === id);
-    if (!seat) return;
+  }, [createBooking]);
+
+  // Remove from favorites
+  const handleRemoveFavorite = useCallback(async (seat: FavouriteSeat) => {
+    const confirmed = await ShowAlert({
+      title: "Remove Favorite",
+      description: `Remove ${seat.room.roomName} Desk ${seat.deskNo} from favorites?`,
+      confirmText: "Yes",
+      cancelText: "No", 
+      isDangerous: true,
+    });
+
+    if (confirmed) {
+      removeFavouriteSeat(seat.deskCode);
+    }
+  }, [removeFavouriteSeat]);
+
+  // Add to favorites
+  const handleAddFavorite = useCallback(async (seat: FavouriteSeat) => {
+    if (!checkLimit()) {
+      await ShowAlert({
+        title: "Limit Reached",
+        description: `You can only have ${maxFavouriteSeatsLimit} favorite seats`,
+        confirmText: "OK",
+        isDangerous: true,
+      });
+      return;
+    }
 
     const confirmed = await ShowAlert({
-      title: (
-        <div className="flex justify-center mb-2">
-          <Image
-            src={commonIcons.questionMark}
-            alt="question mark"
-            width={40}
-            height={40}
-          />
-        </div>
-      ),
-      description: (
-        <Text>
-          Are you sure you want to Add <strong>{seat.lounge}</strong> (Desk{" "}
-          {seat.desk}) from your preferred seats?
-        </Text>
-      ),
-      confirmText: "OK",
+      title: "Add Favorite", 
+      description: `Add ${seat.room.roomName} Desk ${seat.deskNo} to favorites?`,
+      confirmText: "Yes",
       cancelText: "No",
       isDangerous: false,
     });
 
     if (confirmed) {
-      setSeats((prev) => prev.filter((s) => s.id !== id));
+      prependFavouriteSeat(seat);
     }
+  }, [checkLimit, prependFavouriteSeat]);
+
+  // Navigate to room selection
+  const handleAddNew = () => {
+    router('/ticketing/RoomSelection?catCodes=401,402&newFavourite=true');
   };
+
   return (
-    <div className="min-h-[90vh] bg-secondary">
+    <div className="min-h-[90vh] bg-gray-50">
       <MyBreadcrumb
         items={breadcrumbItems}
         title="Settings"
         showBackButton={true}
       />
 
+      {/* Header */}
       <div className="p-4 flex justify-between items-center">
         <div>
-          <Text variant="h4">My Favourite Seats</Text>
-          <Text variant="h6"> Quick access to your preferred seats</Text>
+          <Text className="text-lg font-bold">My Favourite Seats</Text>
+          <Text className="text-sm text-gray-600">Quick access to your preferred seats</Text>
         </div>
-        <div className="border border-border-accent bg-primary-200 rounded-xl w-12 h-8 flex justify-center items-center">
-          4/4
+        <div className="border border-blue-200 bg-blue-100 rounded-xl px-3 py-1">
+          <Text className="text-blue-700 font-semibold text-sm">
+            {favouriteSeats.length}/{maxFavouriteSeatsLimit}
+          </Text>
         </div>
       </div>
-      {/* Seats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-8 gap-4 p-4">
-        {seats.map((seat) => (
-          <Card
-            key={seat.id}
-            className="relative overflow-hidden"
-            onClick={() => handleAdd(seat.id)}
-          >
-            {/* Delete Button */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation(); 
-                handleDelete(seat.id);
-              }}
-              className="absolute top-4 right-4 bg-red-50 hover:bg-red-100 text-destructive rounded-full p-2 transition-colors"
-            >
-              <Trash2 className="w-5 h-5" />
-            </button>
 
-            <CardContent className="pt-0 pb-5">
-              {/* Seat Icon */}
-              <div className="flex justify-center">
-                <div className="bg-background rounded-lg p-2">
+      {/* Main Content */}
+      <div className="p-4">
+        {/* Show content only if there are favorite seats */}
+        {favouriteSeats.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
+            {/* Favorite Seats */}
+            {favouriteSeats.map((seat) => (
+            <Card
+              key={seat.deskCode}
+              className="relative h-36 cursor-pointer hover:bg-gray-50"
+              onClick={() => handleBookSeat(seat)}
+            >
+              {/* Remove Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveFavorite(seat);
+                }}
+                className="absolute top-2 right-2 bg-red-50 hover:bg-red-100 text-red-500 rounded-full p-1.5 z-10"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+
+              <CardContent className="p-3 flex flex-col items-center justify-center h-full">
+                {/* Seat Icon */}
+                <div className="mb-2">
                   <Image
                     src={commonIcons.seatTableIcon}
                     alt="seat"
-                    width={38}
-                    height={38}
+                    width={32}
+                    height={32}
                   />
                 </div>
+
+                {/* Seat Info */}
+                <div className="text-center">
+                  <Text className="text-xs text-gray-500 truncate mb-1">
+                    {seat.room.floorName} | Desk: {seat.deskNo}
+                  </Text>
+                  <Text className="font-medium text-sm truncate">
+                    {seat.room.roomName}
+                  </Text>
+                </div>
+              </CardContent>
+
+              {/* Status */}
+              <div className="absolute bottom-0 left-0 right-0 bg-green-500 text-center py-1">
+                <Text className="text-xs font-semibold text-white">Available</Text>
               </div>
+            </Card>
+          ))}
 
-              {/* Seat Info */}
-              <div className="text-center">
-                <Text variant="h6">
-                  {seat.floor} | Desk: {seat.desk}
-                </Text>
-                <Text variant="h3">{seat.lounge}</Text>
-              </div>
-            </CardContent>
-
-            {/* Bottom Border for Availability */}
-            <div
-              className={`absolute bottom-0 left-0 w-full text-center py-1 font-semibold text-sm ${
-                seat.available
-                  ? "bg-success text-background"
-                  : "bg-primary-100 text-border-tile"
-              }`}
-            >
-              {seat.available ? "Available" : "Closed"}
-            </div>
-          </Card>
-        ))}
-      </div>
-
-      {/* Empty State */}
-      {seats.length === 0 && (
-        <div className="text-center py-16">
-          <div className="bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            <Armchair className="w-8 h-8 text-border-tile" />
+            {/* Add New Button - Show at the end when there are existing favorites */}
+            {checkLimit() && (
+              <Card
+                className="h-36 cursor-pointer hover:bg-gray-50 flex items-center justify-center"
+                onClick={handleAddNew}
+              >
+                <CardContent className="p-3 text-center">
+                  <Plus className="w-8 h-8 text-blue-500 mb-2 mx-auto" />
+                  <Text className="font-semibold text-sm">Add Favorite</Text>
+                  <Text className="text-xs text-gray-500">
+                    {maxFavouriteSeatsLimit - favouriteSeats.length} slots left
+                  </Text>
+                </CardContent>
+              </Card>
+            )}
           </div>
-          <Text className="text-lg font-semibold text-primary-900 mb-2">
-            No favorite seats
-          </Text>
-          <Text variant="h6">Add seats to your favorites for quick access</Text>
-        </div>
-      )}
+        )}
+
+        {/* Empty State */}
+        {favouriteSeats.length === 0 && (
+          <div className="text-center py-16">
+            <Heart className="w-16 h-16 text-gray-300 mb-4 mx-auto" />
+            <Text className="text-lg font-semibold text-gray-900 mb-2">
+              No favorite seats
+            </Text>
+            <Text className="text-gray-500 mb-4">
+              Add seats to your favorites for quick access
+            </Text>
+            <button
+              onClick={handleAddNew}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            >
+              Add Favorite Seat
+            </button>
+          </div>
+        )}
+
+        {/* Suggestions */}
+        {checkLimit() && suggestedFavourite.length > 0 && (
+          <div className="mt-8">
+            <Text className="font-semibold mb-3">Suggested for You</Text>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {suggestedFavourite.slice(0, 4).map((item) => (
+                <Card
+                  key={item.desk.deskCode}
+                  className="p-3 cursor-pointer hover:bg-gray-50"
+                  onClick={() => handleAddFavorite(item.desk)}
+                >
+                  <div className="flex items-center space-x-3">
+                    <Image
+                      src={commonIcons.seatTableIcon}
+                      alt="seat"
+                      width={24}
+                      height={24}
+                    />
+                    <div className="flex-1">
+                      <Text className="font-medium text-sm">
+                        Desk {item.desk.deskNo} - {item.desk.room.roomName}
+                      </Text>
+                      <Text className="text-xs text-gray-500">
+                        Used {item.times} times in {item.days} days
+                      </Text>
+                    </div>
+                    <Plus className="w-5 h-5 text-blue-600" />
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
