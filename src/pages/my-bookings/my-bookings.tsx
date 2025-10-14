@@ -620,7 +620,7 @@ const MyBookings = () => {
     scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const breadcrumbItems = metadata.myBookings?.breadcrumbItems || [];
+  const breadcrumbItems = metadata.booking?.breadcrumbItems || [];
 
   return (
     <div className="max-h-screen bg-gray-50">

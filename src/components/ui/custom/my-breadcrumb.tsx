@@ -22,12 +22,12 @@ type MyBreadcrumbProps = {
 
 function MyBreadcrumb({
     items,
-    title,
     showBackButton = false,
 }: Readonly<MyBreadcrumbProps>) {
     const navigate = useNavigate()
-    const currentPageTitle = title || items[items.length - 1]?.label || ""
     const { t } = useLanguage();
+
+    const currentPageTitle = items[items.length - 1]?.label || ""
 
     return (
         <div className="bg-primary flex min-h-[60px]">
@@ -43,7 +43,7 @@ function MyBreadcrumb({
 
             <div className="flex flex-col px-3 py-1">
                 <h1 className="text-md font-medium text-secondary">
-                    {currentPageTitle}
+                    {t(currentPageTitle)}
                 </h1>
 
                 <Breadcrumb>

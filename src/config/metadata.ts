@@ -27,7 +27,7 @@ export const metadata: MentaDataTypeProps = {
         path: "/"
     },
     profile: {
-        title: "My Profile",
+        title: "dashboard.profile.title",
         image: dashboardIcons.profileIcon,
         animetedImage: dashboardIcons.profileIcon,
         path: "/profile",
@@ -48,7 +48,7 @@ export const metadata: MentaDataTypeProps = {
 
     },
     booking: {
-        title: "My Bookings",
+        title: "dashboard.bookings.title",
         image: dashboardIcons.bookIcon,
         animetedImage: dashboardIcons.bookIcon,
         path: "/bookings",
@@ -68,7 +68,7 @@ export const metadata: MentaDataTypeProps = {
         ],
     },
     notice: {
-        title: "Notices",
+        title: "dashboard.notices.title",
         image: dashboardIcons.messageIcon,
         animetedImage: dashboardIcons.messageIcon,
         path: "/notices",
@@ -88,7 +88,7 @@ export const metadata: MentaDataTypeProps = {
         ],
     },
     seatBooking: {
-        title: "Seat Booking",
+        title: "dashboard.reserveSeatAndPC.title",
         image: dashboardIcons.seatIcon,
         animetedImage: dashboardIcons.seatIcon,
         path: "/seat-booking",
@@ -128,7 +128,7 @@ export const metadata: MentaDataTypeProps = {
         ],
     },
     groupBooking: {
-        title: "Group Bookings",
+        title: "dashboard.reserveGroup.title",
         image: dashboardIcons.groupIcon,
         animetedImage: dashboardIcons.groupIcon,
         path: "/group-bookings",
@@ -191,7 +191,7 @@ export const metadata: MentaDataTypeProps = {
         ],
     },
     carrelBooking: {
-        title: "Carrel Booking",
+        title: "dashboard.reserveCarrel.title",
         image: dashboardIcons.carrelIcon,
         animetedImage: dashboardIcons.carrelIcon,
         path: "/carrel-booking",
@@ -232,7 +232,7 @@ export const metadata: MentaDataTypeProps = {
         ],
     },
     message: {
-        title: "Messages",
+        title: "dashboard.push.title",
         image: commonIcons.bellIcon,
         animetedImage: dashboardIcons.bellIcon,
         path: "/messages",
@@ -253,7 +253,7 @@ export const metadata: MentaDataTypeProps = {
         ],
     },
     bookSearch: {
-        title: "Book Search",
+        title: "dashboard.bookSearch.title",
         image: dashboardIcons.bookLoanIcon,
         animetedImage: dashboardIcons.bookLoanIcon,
         path: "/book-search",
@@ -269,7 +269,7 @@ export const metadata: MentaDataTypeProps = {
         height: 38,
     },
     bookPurchase: {
-        title: "Book Purchase",
+        title: "dashboard.bookRequest.title",
         image: dashboardIcons.bookRequestIcon,
         animetedImage: dashboardIcons.bookRequestIcon,
         path: "/book-purchase",
@@ -285,7 +285,7 @@ export const metadata: MentaDataTypeProps = {
         height: 38,
     },
     loanHistory: {
-        title: "Loan History",
+        title: "dashboard.loanHistory.title",
         image: dashboardIcons.loanHistoryIcon,
         animetedImage: dashboardIcons.loanHistoryIcon,
         path: "/loan-history",
@@ -317,7 +317,7 @@ export const metadata: MentaDataTypeProps = {
         height: 38,
     },
     setting: {
-        title: "Settings",
+        title: "dashboard.appSettings.title",
         image: dashboardIcons.settingIcon,
         animetedImage: dashboardIcons.settingIcon,
         path: "/settings",
