@@ -13,6 +13,7 @@ import type { MyBookingModel } from "@/store/api/ResponseModels";
 import { Button } from "@/components/ui/button";
 import Text from "@/components/ui/custom/text";
 import MyTab from "@/components/ui/custom/MyTab";
+import { Loader } from "@/components/ui/custom/loader";
 
 const getPageConfig = (t: (key: string) => string) => ({
   CATEGORY: {
@@ -109,12 +110,12 @@ const ActionButtons = ({ selectedBookingData }: { selectedBookingData: MyBooking
         action === "CONFIRM"
           ? t("bookings.actions.confirm").toLowerCase()
           : action === "CANCEL"
-          ? t("bookings.actions.cancel").toLowerCase()
-          : action === "EXTEND"
-          ? t("bookings.actions.extend").toLowerCase()
-          : action === "RETURN"
-          ? t("bookings.actions.return").toLowerCase()
-          : t("bookings.actions.seatChange").toLowerCase();
+            ? t("bookings.actions.cancel").toLowerCase()
+            : action === "EXTEND"
+              ? t("bookings.actions.extend").toLowerCase()
+              : action === "RETURN"
+                ? t("bookings.actions.return").toLowerCase()
+                : t("bookings.actions.seatChange").toLowerCase();
 
       const confirmText = t(`bookings.actions.confirmText`).replace("{{action}}", actionLower);
       newAlert({
@@ -133,7 +134,7 @@ const ActionButtons = ({ selectedBookingData }: { selectedBookingData: MyBooking
                 buttons: [
                   {
                     title: t("common.ok"),
-                    action: () => {},
+                    action: () => { },
                     closeOnSuccess: true,
                     color: "primary",
                   },
@@ -148,7 +149,7 @@ const ActionButtons = ({ selectedBookingData }: { selectedBookingData: MyBooking
                 buttons: [
                   {
                     title: t("common.ok"),
-                    action: () => {},
+                    action: () => { },
                     closeOnSuccess: true,
                     color: "primary",
                   },
@@ -170,7 +171,7 @@ const ActionButtons = ({ selectedBookingData }: { selectedBookingData: MyBooking
           },
           {
             title: t("common.no"),
-            action: () => {},
+            action: () => { },
             color: "secondary",
           },
         ],
@@ -293,16 +294,16 @@ const BookingCard = ({
             <Text className="text-white text-[10px]">
               {selectedBookingData.actualStatus === "BOOKED"
                 ? getRelativeTime(
-                    moment(selectedBookingData.reservationFrom).add(
-                      selectedBookingData.roomConfirmationWaitingTime,
-                      "m"
-                    ),
-                    t
-                  )
+                  moment(selectedBookingData.reservationFrom).add(
+                    selectedBookingData.roomConfirmationWaitingTime,
+                    "m"
+                  ),
+                  t
+                )
                 : getRelativeTime(
-                    moment(selectedBookingData.reservationFinished || selectedBookingData.reservationTill),
-                    t
-                  )}
+                  moment(selectedBookingData.reservationFinished || selectedBookingData.reservationTill),
+                  t
+                )}
             </Text>
           </div>
         )}
@@ -438,7 +439,7 @@ const MyBookings = () => {
 
   const renderBookingCards = (catCodes: number[]) => {
     const bookings = myBookings;
-    
+
     return (
       <>
         {/* Static Booking Info Header */}
@@ -455,7 +456,7 @@ const MyBookings = () => {
 
         {/* Dynamic Bookings */}
         <div className="bg-background p-2">
-          <Text className="p-2 font-medium">{t("bookings.bookingsHistory")}</Text>
+          <Loader isLoading={isLoadingMore.current || bookings.length === 0} />
           {bookings.length === 0 && !haveMore ? (
             <Text className="text-muted-foreground text-center mt-4">{t("bookings.noBookings")}</Text>
           ) : (

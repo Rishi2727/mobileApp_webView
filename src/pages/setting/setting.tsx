@@ -95,7 +95,7 @@ const Setting = () => {
           </div>
 
           <div className="flex justify-between items-center border-primary-100 pt-2">
-            <Text variant="h3">Preferred Seat</Text>
+            <Text variant="h3">{t("settings.preferredSeat")}</Text>
             <Button
               variant="ghost"
               className="flex items-center bg-primary-200 text-primary-400"
