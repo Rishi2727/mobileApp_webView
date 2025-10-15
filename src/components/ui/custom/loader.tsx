@@ -9,6 +9,7 @@ interface LoaderProps {
   size?: "sm" | "md" | "lg";
   variant?: "primary" | "secondary" | "white";
   className?: string;
+  isCenter?: boolean;
 }
 
 const Loader = ({
@@ -19,6 +20,7 @@ const Loader = ({
   variant = "primary",
   className,
   isLoading = true,
+  isCenter = false,
 }: LoaderProps) => {
   if (!isLoading) return null;
 
@@ -44,6 +46,14 @@ const Loader = ({
   if (overlay) {
     return (
       <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
+        {content}
+      </div>
+    );
+  }
+
+  if (isCenter) {
+    return (
+      <div className="fixed inset-0 z-40 flex items-center justify-center">
         {content}
       </div>
     );
