@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { commonIcons } from '@/assets';
+import { useLanguage } from '@/contexts/useLanguage';
 
 interface LanguageToggleProps {
   onToggle?: (newLanguage: string) => void;
@@ -11,19 +12,26 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
   onToggle,
   className,
 }) => {
+  const { language } = useLanguage(); 
   const [isAnimating, setIsAnimating] = useState(false);
-  const [rotated, setRotated] = useState(false);
+  const [rotated, setRotated] = useState(language === 'en');
+  const [hasInteracted, setHasInteracted] = useState(false);
+  useEffect(() => {
+    if (!hasInteracted) {
+      setRotated(language === 'en');
+    }
+  }, [language, hasInteracted]);
 
   const toggleLanguage = () => {
     if (isAnimating) return;
 
+    setHasInteracted(true); 
     setIsAnimating(true);
     setRotated((prev) => {
       const newRotated = !prev;
-
-      // Call the onToggle callback with the new language
+      const newLanguage = newRotated ? 'en' : 'ko';
       if (onToggle) {
-        onToggle(newRotated ? 'en' : 'ko');
+        onToggle(newLanguage);
       }
 
       return newRotated;
@@ -31,6 +39,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
 
     setTimeout(() => {
       setIsAnimating(false);
+      setHasInteracted(false); 
     }, 500);
   };
 
@@ -42,7 +51,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
     <button
       onClick={toggleLanguage}
       type="button"
-      aria-label={`Switch to ${rotated ? 'English' : 'Korean'}`}
+      aria-label={`Switch to ${rotated ? 'Korean' : 'English'}`}
       className={cn(
         'inline-flex items-center justify-center',
         'hover:opacity-80 active:opacity-60',
@@ -54,8 +63,9 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
         src={languageIcon}
         alt={rotated ? 'English language' : 'Korean language'}
         className={cn(
-          'transition-transform duration-500 ease-in-out transform w-7 h-7 invert brightness-0',
-          rotated ? 'rotate-[360deg] scale-100' : 'rotate-[-360deg] scale-100'
+          'w-7 h-7 invert brightness-0',
+          isAnimating && 'transition-transform duration-500 ease-in-out transform',
+          isAnimating && (rotated ? 'rotate-[360deg]' : 'rotate-[-360deg]')
         )}
       />
     </button>
