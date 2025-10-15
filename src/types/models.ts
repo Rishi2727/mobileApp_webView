@@ -14,9 +14,9 @@ export type Login = {
 }
 export type OneDayPass = {
     username: string
-    phoneno:number
+    phoneno: string
 
 }
 export type OtpInfo = {
-    otp:number
+    otp: string
 }

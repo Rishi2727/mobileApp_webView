@@ -12,10 +12,9 @@ import MyForm, {
 import { Input } from "@/components/ui/input";
 
 import { cn } from "@/lib/utils";
-import type { OneDayPass, OtpInfo } from "@/types/models";
 import { Checkbox } from "@/components/ui/checkbox";
-import { KeyRound, Phone, User } from "lucide-react";
-import { useState } from "react";
+import { KeyRound, Loader2, Phone, User } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import z from "zod";
 import { motion, AnimatePresence } from "framer-motion";;
@@ -23,12 +22,14 @@ import { QRViewComponent } from "@/components/layout/QRViewComponent";
 import useExternalUserStore from "@/store/ExternalUserStore";
 import { useTranslation } from "react-i18next";
 
+import type { OneDayPass, OtpInfo } from "@/types/models";
+
 const oneDayPassSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
   phoneno: z.string().min(5, {
-    message: "Number must be at least 6 values.",
+    message: "Number must be at least 5 digits.",
   }),
 });
 
@@ -38,28 +39,165 @@ const otpInfo = z.object({
   }),
 });
 
+
+// Define step type as const
+const ExternalUserStep = {
+  ENTER_DETAILS: "ENTER_DETAILS",
+  ENTER_OTP: "ENTER_OTP",
+  SHOW_QR: "SHOW_QR",
+} as const;
+
+type ExternalUserStepType = typeof ExternalUserStep[keyof typeof ExternalUserStep];
+
+// OTP Timer Component with proper types
+interface OtpExpireProps {
+  expireAt: string | null;
+  t: (key: string) => string;
+}
+
+// OTP Timer Component
+const OtpExpire: React.FC<OtpExpireProps> = ({ expireAt, t }) => {
+  const [expTxt, setExpTxt] = useState("");
+
+  useEffect(() => {
+    if (!expireAt) return;
+
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const expTime = new Date(expireAt).getTime();
+      const diff = expTime - now;
+
+      if (diff <= 0) {
+        setExpTxt(t ? t("externalUser.otpExpired") : "OTP Expired");
+        clearInterval(timer);
+      } else {
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        setExpTxt(
+          t
+            ? `${t("externalUser.otpExpiresIn")} ${minutes}m ${seconds}s`
+            : `Expires in ${minutes}m ${seconds}s`
+        );
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [expireAt, t]);
+
+  return <div className="text-sm text-center mt-2 text-muted-foreground">{expTxt}</div>;
+};
 export default function ExternalUser() {
   const navigate = useNavigate();
   const [consentAllowed, setConsentAllowed] = useState(false);
   const [showTable, setShowTable] = useState(false);
-  const [showOtpCard, setShowOtpCard] = useState(false);
-  const { encQrData, qrGeneratedAt, qrExpireAt, generateQRByToken, qrTimeRange, clearAllData } = useExternalUserStore();
-  const [showQrCard, setShowQrCard] = useState(false);
+  const [currentStep, setCurrentStep] = useState<ExternalUserStepType>(
+    ExternalUserStep.ENTER_DETAILS
+  );
   const { t } = useTranslation()
-  //Submit functions
-  const handleSubmit = (values: OneDayPass) => {
-    console.log("Form submitted:", values);
-    setShowOtpCard(true);
-    // Do something with form values, e.g., send API request
+
+  //store Data
+  const {
+    userName,
+    encOtpTxnData,
+    encUserToken,
+    encQrData,
+    qrTimeRange,
+    qrGeneratedAt,
+    qrExpireAt,
+    otpExpireAt,
+    isSubmittingDetails,
+    isSubmittingOTP,
+    isGeneratingQR,
+    isAuthenticated,
+    isTokenExpired,
+    isOtpExpired,
+    isQrCodeGenerated,
+    submitDetails,
+    submitOTP,
+    generateQRByToken,
+    clearAllData,
+  } = useExternalUserStore();
+
+  // Check authentication status on mount
+  useEffect(() => {
+    if (isAuthenticated() || isQrCodeGenerated()) {
+      setCurrentStep(ExternalUserStep.SHOW_QR);
+      if (encUserToken && !isTokenExpired() && !isQrCodeGenerated()) {
+        generateQRByToken();
+      }
+    } else {
+      setCurrentStep(ExternalUserStep.ENTER_DETAILS);
+    }
+  }, [
+    encUserToken,
+    generateQRByToken,
+    isAuthenticated,
+    isQrCodeGenerated,
+    isTokenExpired,
+  ]);
+
+  // Handle form submit for details
+  const handleSubmit = async (values: OneDayPass) => {
+    console.log("Form submitted with values:", values);
+    try {
+      await submitDetails({ name: values.username, phoneNumber: values.phoneno });
+
+      if (isQrCodeGenerated()) {
+        setCurrentStep(ExternalUserStep.SHOW_QR);
+      } else {
+        setCurrentStep(ExternalUserStep.ENTER_OTP);
+      }
+    } catch (error) {
+      console.error("Error submitting details:", error);
+
+    }
   };
 
-  const handleOtpSubmit = (values: OtpInfo) => {
-    console.log("Form submitted:", values);
-    // After OTP verification, hide OTP card and show QR
-    setShowOtpCard(false);
-    setShowQrCard(true);
 
-    // Do something with form values, e.g., send API request
+  // Handle OTP submit
+  const handleOtpSubmit = async (values: OtpInfo) => {
+
+    if (!encOtpTxnData || isOtpExpired()) {
+      clearAllData();
+      setCurrentStep(ExternalUserStep.ENTER_DETAILS);
+      alert("OTP expired. Please try again.");
+      return;
+    }
+
+    try {
+      await submitOTP({ otp: String(values.otp), encOtpTxnData });
+      setCurrentStep(ExternalUserStep.SHOW_QR);
+    } catch (error) {
+      console.error("Error submitting OTP:", error);
+
+    }
+  };
+
+  // Handle generate new QR
+  const handleGenerateNewQR = async () => {
+    if (!isAuthenticated()) {
+      clearAllData();
+      setCurrentStep(ExternalUserStep.ENTER_DETAILS);
+      return;
+    }
+
+    try {
+      await generateQRByToken();
+    } catch (error) {
+      console.error("Error generating QR:", error);
+    }
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    clearAllData();
+    setCurrentStep(ExternalUserStep.ENTER_DETAILS);
+    setConsentAllowed(false);
+  };
+
+  // Handle back to login
+  const handleBackToLogin = () => {
+    navigate(-1);
   };
 
   const formItemOtpData: FormFieldItem<OtpInfo>[] = [
@@ -71,9 +209,9 @@ export default function ExternalUser() {
           <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder="Enter 6-digit OTP"
-            type="number"
+            type="text"
             maxLength={6}
-            className="pl-10 h-12  text-center text-lg"
+            className="pl-10 h-12 text-center text-lg tracking-widest"
             {...field}
           />
         </div>
@@ -89,7 +227,7 @@ export default function ExternalUser() {
         <div className="relative">
           <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            placeholder="Enter your username"
+            placeholder="Enter your full name"
             className="pl-10 h-12"
             {...field}
           />
@@ -106,13 +244,13 @@ export default function ExternalUser() {
             placeholder="Enter your phone number"
             type="tel"
             className="pl-10 h-12"
-            value={field.value}
-            onChange={(e) => field.onChange(e.target.value)}
+            {...field}
           />
         </div>
       ),
     },
   ];
+
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 bg-gradient-to-br from-background via-background to-muted/20 relative overflow-hidden">
       <div className="w-full max-w-md relative z-10">
@@ -122,27 +260,31 @@ export default function ExternalUser() {
               {/* Welcome Text */}
               <div className="text-center space-y-2">
                 <CardTitle className="text-3xl font-bold">
-                  One Day Pass Request
+                  {currentStep === ExternalUserStep.SHOW_QR && userName
+                    ? userName
+                    : "One Day Pass Request"}
                 </CardTitle>
-                {!showOtpCard ? (
-                  <CardDescription className="text-base text-muted-foreground">
-                    Enter your details to get started
-                  </CardDescription>
-                ) : (
-                  <CardDescription className="text-base text-muted-foreground">
-                    Enter the OTP for verification
-                  </CardDescription>
-                )}
+                <CardDescription className="text-base text-muted-foreground">
+                  {currentStep === ExternalUserStep.ENTER_DETAILS &&
+                    "Enter your details to get started"}
+                  {currentStep === ExternalUserStep.ENTER_OTP &&
+                    "Enter the OTP for verification"}
+                  {currentStep === ExternalUserStep.SHOW_QR &&
+                    "Your QR Code for Library Access"}
+                </CardDescription>
               </div>
             </CardHeader>
-            {!showOtpCard && !showQrCard && (
+
+            {/* STEP 1: Enter Details */}
+            {currentStep === ExternalUserStep.ENTER_DETAILS && (
               //  *Personal Info Consent  section 
+
               <CardContent className="space-y-6">
                 <MyForm
                   formSchema={oneDayPassSchema}
                   defaultValues={{
                     username: "",
-                    phoneno: "" as unknown as number,
+                    phoneno: "",
                   }}
                   onSubmit={handleSubmit}
                   formItemData={formItemData}
@@ -234,20 +376,26 @@ export default function ExternalUser() {
 
                       <Button
                         type="submit"
-                        disabled={!consentAllowed}
+                        disabled={!consentAllowed || isSubmittingDetails}
                         className={cn(
                           "w-full h-12 text-base font-semibold transition-colors duration-300",
-                          consentAllowed
+                          consentAllowed && !isSubmittingDetails
                             ? "bg-primary text-secondary hover:bg-primary/80 cursor-pointer"
                             : "bg-gray-300 text-gray-500 cursor-not-allowed"
                         )}
                       >
-                        Submit Details
+                        {isSubmittingDetails ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Submitting...
+                          </>
+                        ) : (
+                          "Submit Details"
+                        )}
                       </Button>
                       <Button
-                        type="submit"
                         className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
-                        onClick={() => navigate(-1)}
+                        onClick={handleBackToLogin}
                       >
                         Back to Student Login
                       </Button>
@@ -257,7 +405,7 @@ export default function ExternalUser() {
               </CardContent>
             )}
             {/* // OTP Card section */}
-            {showOtpCard && !showQrCard && (
+            {currentStep === ExternalUserStep.ENTER_OTP && (
               <CardContent className="space-y-6">
                 <p className="text-md">
                   (OTP information will be sent to the phone number text message
@@ -266,23 +414,32 @@ export default function ExternalUser() {
                 <MyForm
                   formSchema={otpInfo}
                   defaultValues={{
-                    otp: "" as unknown as number,
+                    otp: "",
                   }}
                   onSubmit={handleOtpSubmit}
                   formItemData={formItemOtpData}
                   buttonActions={
-                    <div className="grid grid-row-1 sm:grid-row-2 gap-2">
+                    <div className="space-y-2">
+                      <OtpExpire expireAt={otpExpireAt} t={t} />
+
                       <Button
                         type="submit"
+                        disabled={isSubmittingOTP}
                         className="w-full h-12 text-base font-semibold text-secondary bg-primary hover:bg-primary/80 cursor-pointer"
                       >
-                        {" "}
-                        Submit OTP{" "}
+                        {isSubmittingOTP ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Verifying...
+                          </>
+                        ) : (
+                          "Submit OTP"
+                        )}
                       </Button>
                       <Button
-                        type="submit"
+                        type="button"
                         className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
-                        onClick={() => navigate(-1)}
+                        onClick={handleBackToLogin}
                       >
                         Back to Student Login
                       </Button>
@@ -294,44 +451,50 @@ export default function ExternalUser() {
             )}
 
             {/* QR Code section */}
-            {showQrCard && (
+            {currentStep === ExternalUserStep.SHOW_QR && (
               <CardContent>
                 {/* Title */}
-                <div className="flex flex-col items-center justify-center text-center mt-10">
-                  <div className="pt-3 font-bold text-xl">
-                    Username
-                  </div>
-                  <div className="text-primary-600">Your QR Code for Library Access</div>
+                <div className="flex flex-col items-center justify-center text-center ">
+              
 
                   {/* QR Circle */}
-                  <div className="relative mt-8">
+                  <div className="relative ">
                     <QRViewComponent
                       qrData={encQrData || "No QR Generated"}
                       generatedAt={qrGeneratedAt}
                       expireAt={qrExpireAt}
-                      onRefresh={generateQRByToken}
+                      onRefresh={handleGenerateNewQR}
                       qrTimeRange={qrTimeRange}
-                      handleLogout={clearAllData}
-                      page="PROFILE"
+                      handleLogout={handleLogout}
+                      page="EXTERNAL_USER"
                       t={t}
                     />
 
 
                   </div>
 
-                  <div className="text-sm mt-2">Time Left: 10 hour,41 minute, 32 second</div>
+                  
                 </div>
                 <div className="grid grid-row-1 sm:grid-row-2 gap-2 mt-8">
                   <Button
-                    type="submit"
+                    type="button"
+                    disabled={isGeneratingQR}
                     className="w-full h-12 text-base font-semibold text-secondary bg-primary hover:bg-primary/80 cursor-pointer"
+                    onClick={handleGenerateNewQR}
                   >
-                    Generate New QR Code
+                    {isGeneratingQR ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      "Generate New QR Code"
+                    )}
                   </Button>
                   <Button
-                    type="submit"
+                    type="button"
                     className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
-                    onClick={() => navigate(-1)}
+                    onClick={handleLogout}
                   >
                     Back to Student Login
                   </Button>
