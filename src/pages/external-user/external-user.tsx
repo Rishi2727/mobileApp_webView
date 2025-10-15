@@ -6,7 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import MyForm, { type FormFieldItem } from "@/components/ui/custom/my-form/MyForm"
+import MyForm, {
+  type FormFieldItem,
+} from "@/components/ui/custom/my-form/MyForm";
 import { Input } from "@/components/ui/input";
 
 import { cn } from "@/lib/utils";
@@ -16,9 +18,10 @@ import { KeyRound, Phone, User } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import z from "zod";
-import { motion, AnimatePresence } from "framer-motion";
-
-
+import { motion, AnimatePresence } from "framer-motion";;
+import { QRViewComponent } from "@/components/layout/QRViewComponent";
+import useExternalUserStore from "@/store/ExternalUserStore";
+import { useTranslation } from "react-i18next";
 
 const oneDayPassSchema = z.object({
   username: z.string().min(2, {
@@ -26,26 +29,23 @@ const oneDayPassSchema = z.object({
   }),
   phoneno: z.string().min(5, {
     message: "Number must be at least 6 values.",
-  })
-})
+  }),
+});
 
 const otpInfo = z.object({
   otp: z.string().min(6, {
-    message: "The OTP should be of 6-digits"
-  })
-})
-
-
+    message: "The OTP should be of 6-digits",
+  }),
+});
 
 export default function ExternalUser() {
-
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [consentAllowed, setConsentAllowed] = useState(false);
   const [showTable, setShowTable] = useState(false);
   const [showOtpCard, setShowOtpCard] = useState(false);
-
-
+  const { encQrData, qrGeneratedAt, qrExpireAt, generateQRByToken, qrTimeRange, clearAllData } = useExternalUserStore();
+  const [showQrCard, setShowQrCard] = useState(false);
+  const { t } = useTranslation()
   //Submit functions
   const handleSubmit = (values: OneDayPass) => {
     console.log("Form submitted:", values);
@@ -55,9 +55,12 @@ export default function ExternalUser() {
 
   const handleOtpSubmit = (values: OtpInfo) => {
     console.log("Form submitted:", values);
+    // After OTP verification, hide OTP card and show QR
+    setShowOtpCard(false);
+    setShowQrCard(true);
+
     // Do something with form values, e.g., send API request
   };
-
 
   const formItemOtpData: FormFieldItem<OtpInfo>[] = [
     {
@@ -78,7 +81,6 @@ export default function ExternalUser() {
     },
   ];
 
-
   const formItemData: FormFieldItem<OneDayPass>[] = [
     {
       label: "Full Name",
@@ -92,7 +94,7 @@ export default function ExternalUser() {
             {...field}
           />
         </div>
-      )
+      ),
     },
     {
       label: "Phone Number",
@@ -109,11 +111,8 @@ export default function ExternalUser() {
           />
         </div>
       ),
-    }
-
-
-
-  ]
+    },
+  ];
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 bg-gradient-to-br from-background via-background to-muted/20 relative overflow-hidden">
       <div className="w-full max-w-md relative z-10">
@@ -125,16 +124,19 @@ export default function ExternalUser() {
                 <CardTitle className="text-3xl font-bold">
                   One Day Pass Request
                 </CardTitle>
-                <CardDescription className="text-base text-muted-foreground">
-                  Enter your details to get started
-                </CardDescription>
-
-
-
+                {!showOtpCard ? (
+                  <CardDescription className="text-base text-muted-foreground">
+                    Enter your details to get started
+                  </CardDescription>
+                ) : (
+                  <CardDescription className="text-base text-muted-foreground">
+                    Enter the OTP for verification
+                  </CardDescription>
+                )}
               </div>
             </CardHeader>
-            {!showOtpCard ? (
-
+            {!showOtpCard && !showQrCard && (
+              //  *Personal Info Consent  section 
               <CardContent className="space-y-6">
                 <MyForm
                   formSchema={oneDayPassSchema}
@@ -146,7 +148,6 @@ export default function ExternalUser() {
                   formItemData={formItemData}
                   buttonActions={
                     <div className="grid grid-row-1 sm:grid-row-2 gap-2">
-
                       {/* ✅ Consent and Table Section Added Below */}
                       <div className="mt-6 space-y-4">
                         <div className="flex justify-between items-center">
@@ -157,7 +158,6 @@ export default function ExternalUser() {
                               onCheckedChange={(checked) =>
                                 setConsentAllowed(checked === true)
                               }
-
                             />
                             <label
                               htmlFor="consent"
@@ -165,7 +165,6 @@ export default function ExternalUser() {
                             >
                               *Personal Info Consent (required)
                             </label>
-
                           </div>
 
                           <Button
@@ -189,9 +188,10 @@ export default function ExternalUser() {
                               className="overflow-hidden"
                             >
                               <p className="text-[11px] text-center mt-2">
-                                We collect and use personal information as follows for
-                                the operation of QR services entering the library of
-                                the Korea Maritime University.
+                                We collect and use personal information as
+                                follows for the operation of QR services
+                                entering the library of the Korea Maritime
+                                University.
                               </p>
 
                               <div className="border rounded-lg mt-4">
@@ -221,9 +221,10 @@ export default function ExternalUser() {
                               </div>
 
                               <div className="mt-2 text-center md:text-[12px] text-[10px] bg-yellow-100 py-2 px-2 w-3/4 mx-auto rounded mb-2">
-                                You have the right to disagree with the collection and
-                                use of personal information. However, if you disagree,
-                                daily pass applications may be restricted.
+                                You have the right to disagree with the
+                                collection and use of personal information.
+                                However, if you disagree, daily pass
+                                applications may be restricted.
                               </div>
                             </motion.div>
                           )}
@@ -246,7 +247,7 @@ export default function ExternalUser() {
                       <Button
                         type="submit"
                         className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
-                        onClick={() => setShowOtpCard(false)}
+                        onClick={() => navigate(-1)}
                       >
                         Back to Student Login
                       </Button>
@@ -254,35 +255,90 @@ export default function ExternalUser() {
                   }
                 />
               </CardContent>
-            ) :
+            )}
+            {/* // OTP Card section */}
+            {showOtpCard && !showQrCard && (
+              <CardContent className="space-y-6">
+                <p className="text-md">
+                  (OTP information will be sent to the phone number text message
+                  you entered.)
+                </p>
+                <MyForm
+                  formSchema={otpInfo}
+                  defaultValues={{
+                    otp: "" as unknown as number,
+                  }}
+                  onSubmit={handleOtpSubmit}
+                  formItemData={formItemOtpData}
+                  buttonActions={
+                    <div className="grid grid-row-1 sm:grid-row-2 gap-2">
+                      <Button
+                        type="submit"
+                        className="w-full h-12 text-base font-semibold text-secondary bg-primary hover:bg-primary/80 cursor-pointer"
+                      >
+                        {" "}
+                        Submit OTP{" "}
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
+                        onClick={() => navigate(-1)}
+                      >
+                        Back to Student Login
+                      </Button>
+                    </div>
+                  }
+                />
+              </CardContent>
 
-              // OTP Card section
-              (
-                <CardContent className="space-y-6">
-                  <MyForm
-                    formSchema={otpInfo}
-                    defaultValues={{
-                      otp: "" as unknown as number
-                    }}
-                    onSubmit={handleOtpSubmit}
-                    formItemData={formItemOtpData}
-                    buttonActions={
-                      <div className="grid grid-row-1 sm:grid-row-2 gap-2">
+            )}
 
-                        <Button type="submit" className="w-full h-12 text-base font-semibold text-secondary bg-primary hover:bg-primary/80 cursor-pointer" > Submit OTP </Button>
-                        <Button
-                          type="submit"
-                          className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
-                          onClick={() => navigate(-1)}
-                        >
-                          Back to Student Login
-                        </Button>
-                      </div>
-                    }
-                  />
-                </CardContent>
-              )}
+            {/* QR Code section */}
+            {showQrCard && (
+              <CardContent>
+                {/* Title */}
+                <div className="flex flex-col items-center justify-center text-center mt-10">
+                  <div className="pt-3 font-bold text-xl">
+                    Username
+                  </div>
+                  <div className="text-primary-600">Your QR Code for Library Access</div>
 
+                  {/* QR Circle */}
+                  <div className="relative mt-8">
+                    <QRViewComponent
+                      qrData={encQrData || "No QR Generated"}
+                      generatedAt={qrGeneratedAt}
+                      expireAt={qrExpireAt}
+                      onRefresh={generateQRByToken}
+                      qrTimeRange={qrTimeRange}
+                      handleLogout={clearAllData}
+                      page="PROFILE"
+                      t={t}
+                    />
+
+
+                  </div>
+
+                  <div className="text-sm mt-2">Time Left: 10 hour,41 minute, 32 second</div>
+                </div>
+                <div className="grid grid-row-1 sm:grid-row-2 gap-2 mt-8">
+                  <Button
+                    type="submit"
+                    className="w-full h-12 text-base font-semibold text-secondary bg-primary hover:bg-primary/80 cursor-pointer"
+                  >
+                    Generate New QR Code
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
+                    onClick={() => navigate(-1)}
+                  >
+                    Back to Student Login
+                  </Button>
+                </div>
+              </CardContent>
+            )}
+            <div></div>
           </Card>
         </div>
       </div>
