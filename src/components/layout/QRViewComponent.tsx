@@ -1,7 +1,14 @@
 import { commonIcons } from "@/assets";
 import moment from "moment";
-import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import QRCode from "qrcode";
+import Text from "../ui/custom/text";
 
 // Size constants (converted from React Native scale to px)
 const QR_SIZE = 180;
@@ -16,8 +23,9 @@ type QRViewComponentProps = {
   onRefresh: () => void;
   qrTimeRange: string | null | undefined;
   handleLogout?: null | (() => void);
-  page?: 'PROFILE' | 'EXTERNAL_USER' | 'SHAKE_MODEL';
+  page?: "PROFILE" | "EXTERNAL_USER" | "SHAKE_MODEL";
   textColor?: string;
+  t: (key: string) => string;
 };
 
 export const QRViewComponent: React.FC<QRViewComponentProps> = ({
@@ -27,8 +35,9 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
   onRefresh,
   qrTimeRange,
   handleLogout = null,
-  page = 'PROFILE',
-  textColor
+  page = "PROFILE",
+  textColor,
+  t,
 }) => {
   const qrDuration = useRef<number>(0);
   const [timeLeft, setTimeLeft] = useState<number>(0);
@@ -69,8 +78,8 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
 
     if (!genTime.isValid() || !expTime.isValid()) return 0;
 
-    const elapsed = now.diff(genTime, 'seconds');
-    const duration = expTime.diff(genTime, 'seconds');
+    const elapsed = now.diff(genTime, "seconds");
+    const duration = expTime.diff(genTime, "seconds");
     const left = duration - elapsed;
 
     return Math.max(0, left);
@@ -82,46 +91,58 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
       if (!canvasRef.current) return;
 
       const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
       try {
         // Generate QR code
-        await QRCode.toCanvas(canvas, qrData || 'I like curious people', {
+        await QRCode.toCanvas(canvas, qrData || "I like curious people", {
           width: QR_SIZE * 0.65,
           margin: 0,
           color: {
-            dark: '#000000',
-            light: '#FFFFFF'
-          }
+            dark: "#000000",
+            light: "#FFFFFF",
+          },
         });
 
         // Load and draw logo
         const logo = new Image();
-        logo.crossOrigin = 'anonymous';
+        logo.crossOrigin = "anonymous";
         logo.src = commonIcons.qrLogo;
-        
+
         logo.onload = () => {
-          const logoSize = (QR_SIZE * 0.65) * 0.23;
+          const logoSize = QR_SIZE * 0.65 * 0.23;
           const logoX = (canvas.width - logoSize) / 2;
           const logoY = (canvas.height - logoSize) / 2;
-          
+
           // Draw white background circle for logo
-          ctx.fillStyle = '#FFFFFF';
+          ctx.fillStyle = "#FFFFFF";
           ctx.beginPath();
-          ctx.arc(canvas.width / 2, canvas.height / 2, logoSize / 2 + 5, 0, Math.PI * 2);
+          ctx.arc(
+            canvas.width / 2,
+            canvas.height / 2,
+            logoSize / 2 + 5,
+            0,
+            Math.PI * 2
+          );
           ctx.fill();
-          
+
           // Draw logo
           ctx.save();
           ctx.beginPath();
-          ctx.arc(canvas.width / 2, canvas.height / 2, logoSize / 2, 0, Math.PI * 2);
+          ctx.arc(
+            canvas.width / 2,
+            canvas.height / 2,
+            logoSize / 2,
+            0,
+            Math.PI * 2
+          );
           ctx.clip();
           ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
           ctx.restore();
         };
       } catch (error) {
-        console.error('Error generating QR code:', error);
+        console.error("Error generating QR code:", error);
       }
     };
 
@@ -144,7 +165,7 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
       return;
     }
 
-    const duration = expTime.diff(genTime, 'seconds');
+    const duration = expTime.diff(genTime, "seconds");
     const left = calculateTimeLeft();
 
     if (duration <= 0 || left <= 0) {
@@ -155,15 +176,15 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
 
     qrDuration.current = duration;
     setTimeLeft(left);
-    
+
     // Calculate initial progress based on elapsed time
     const elapsedTime = duration - left;
     const initialProgress = elapsedTime / duration;
     setProgress(initialProgress);
-    
+
     // Store animation start time
     animationStartTimeRef.current = Date.now();
-    
+
     // Animate progress smoothly using requestAnimationFrame
     const animate = () => {
       const currentLeft = calculateTimeLeft();
@@ -181,24 +202,38 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
       const currentLeft = calculateTimeLeft();
       if (currentLeft >= 0) {
         setTimeLeft(currentLeft);
-        
+
         if (currentLeft <= 0) {
           setTimeRemaining("Expired");
         } else {
-          const duration = moment.duration(currentLeft, 'seconds');
+          const duration = moment.duration(currentLeft, "seconds");
           const days = duration.days();
-          const hours = String(duration.hours()).padStart(2, '0');
-          const minutes = String(duration.minutes()).padStart(2, '0');
-          const seconds = String(duration.seconds()).padStart(2, '0');
+          const hours = String(duration.hours()).padStart(2, "0");
+          const minutes = String(duration.minutes()).padStart(2, "0");
+          const seconds = String(duration.seconds()).padStart(2, "0");
 
           if (days > 0) {
-            setTimeRemaining(`${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`);
+            setTimeRemaining(
+              `${days}${t("common.days")} ${hours}${t(
+                "common.hours"
+              )} ${minutes}${t("common.minutes")} ${seconds}${t(
+                "common.seconds"
+              )}`
+            );
           } else if (duration.hours() > 0) {
-            setTimeRemaining(`${hours} hours ${minutes} minutes ${seconds} seconds`);
+            setTimeRemaining(
+              `${hours}${t("common.hours")} ${minutes}${t(
+                "common.minutes"
+              )} ${seconds}${t("common.seconds")}`
+            );
           } else if (duration.minutes() > 0) {
-            setTimeRemaining(`${minutes} minutes ${seconds} seconds`);
+            setTimeRemaining(
+              `${minutes}${t("common.minutes")} ${seconds}${t(
+                "common.seconds"
+              )}`
+            );
           } else if (duration.seconds() > 0 && days === 0) {
-            setTimeRemaining(`${seconds} seconds`);
+            setTimeRemaining(`${seconds}${t("common.seconds")}`);
           }
         }
       }
@@ -208,10 +243,14 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
         onRefresh();
       }
     }, 1000);
-  }, [cleanup, qrData, generatedAt, expireAt, calculateTimeLeft, onRefresh]);
+  }, [cleanup, qrData, generatedAt, expireAt, calculateTimeLeft, onRefresh, t]);
 
   // Memoize time range regex to avoid recreating on each render
-  const timeRangeRegex = useMemo(() => /^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]-([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/, []);
+  const timeRangeRegex = useMemo(
+    () =>
+      /^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]-([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/,
+    []
+  );
 
   // Reset progress when QR data changes (like the React Native version)
   useEffect(() => {
@@ -225,7 +264,10 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
   // Process time range with memoization
   const processedTimeRange = useMemo(() => {
     if (!qrTimeRange) return null;
-    if (timeRangeRegex.test(qrTimeRange) && qrTimeRange !== "00:00:00-00:00:00") {
+    if (
+      timeRangeRegex.test(qrTimeRange) &&
+      qrTimeRange !== "00:00:00-00:00:00"
+    ) {
       return qrTimeRange;
     }
     return null;
@@ -268,26 +310,22 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
           <button
             onClick={handleLogout}
             className="absolute top-0 right-2.5 z-[999] w-8 h-8 cursor-pointer"
-            style={{ 
-              background: 'transparent', 
-              border: 'none',
-              padding: 0
+            style={{
+              background: "transparent",
+              border: "none",
+              padding: 0,
             }}
           >
-            <img 
-              src={commonIcons.logoutIcon} 
-              alt="Logout" 
+            <img
+              src={commonIcons.logoutIcon}
+              alt="Logout"
               className="w-full h-full"
             />
           </button>
         )}
 
         {/* Progress Circle */}
-        <svg
-          width={RADIUS * 2}
-          height={RADIUS * 2}
-          className="absolute"
-        >
+        <svg width={RADIUS * 2} height={RADIUS * 2} className="absolute">
           {/* Background circle */}
           <circle
             cx={RADIUS}
@@ -318,7 +356,7 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
           style={{
             width: QR_SIZE,
             height: QR_SIZE,
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
           }}
         >
           <div style={{ opacity: !!qrData && timeLeft > 2 ? 1 : 0.1 }}>
@@ -332,40 +370,43 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
       </div>
 
       {/* Timer Display for EXTERNAL_USER */}
-      {expireAt && timeRemaining && page === 'EXTERNAL_USER' && (
-        <p
+      {expireAt && timeRemaining && page === "EXTERNAL_USER" && (
+        <Text
           className="text-center mb-4"
           style={{
-            fontSize: '12px',
-            color: timeRemaining === "Expired" ? '#EF4444' : textColor || '#4F8DFB',
-            fontWeight: timeRemaining === "Expired" ? "600" : "400"
+            fontSize: "12px",
+            color:
+              timeRemaining === "Expired" ? "#EF4444" : textColor || "#4F8DFB",
+            fontWeight: timeRemaining === "Expired" ? "600" : "400",
           }}
         >
-          {timeRemaining === "Expired" ? 'QR Code Expired' : `Remaining Time: ${timeRemaining}`}
-        </p>
+          {timeRemaining === "Expired"
+            ? t("externalUser.qrExpired")
+            : `${t("profile.remainingTime")}: ${timeRemaining}`}
+        </Text>
       )}
 
       {/* Timer Display for other pages */}
-      {expireAt && timeRemaining && page !== 'EXTERNAL_USER' && (
+      {expireAt && timeRemaining && page !== "EXTERNAL_USER" && (
         <div className="mt-2">
-          <p
+          <Text
             className="mb-1"
             style={{
-              fontSize: '16px',
-              color: textColor || '#D1D5DB',
+              fontSize: "16px",
+              color: textColor || "#D1D5DB",
             }}
           >
-            Remaining Time
-          </p>
-          <p
+            {t("profile.remainingTime")}
+          </Text>
+          <Text
             className="font-bold"
             style={{
-              fontSize: '24px',
-              color: textColor || '#D1D5DB',
+              fontSize: "24px",
+              color: textColor || "#D1D5DB",
             }}
           >
-            {timeLeft > 0 ? `${timeLeft} seconds` : ''}
-          </p>
+            {timeLeft > 0 ? `${timeLeft} ${t("profile.seconds")}` : ""}
+          </Text>
         </div>
       )}
 
@@ -373,13 +414,15 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
       {timeRange && (
         <p
           className="text-center"
-          style={{ fontSize: '12px', color: '#4F8DFB' }}
+          style={{ fontSize: "12px", color: "#4F8DFB" }}
         >
           {(() => {
-            const [start, end] = timeRange.split('-');
-            const startMoment = moment(start, 'HH:mm:ss');
-            const endMoment = moment(end, 'HH:mm:ss');
-            return `Can be used from ${startMoment.format('hh:mm A')} to ${endMoment.format('hh:mm A')}`;
+            const [start, end] = timeRange.split("-");
+            const startMoment = moment(start, "HH:mm:ss");
+            const endMoment = moment(end, "HH:mm:ss");
+            return t("externalUser.canUseInTimeRange")
+              .replace("{start}", startMoment.format("hh:mm A"))
+              .replace("{end}", endMoment.format("hh:mm A"));
           })()}
         </p>
       )}
