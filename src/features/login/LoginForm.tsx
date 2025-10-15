@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/card"
 import MyForm, { type FormFieldItem } from "@/components/ui/custom/my-form/MyForm"
 import { Input } from "@/components/ui/input"
-import { toast } from "sonner"
 import useLoaderStore from "@/store/useLoaderStore"
 import { User, Lock, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -28,10 +27,15 @@ const loginSchema = z.object({
     })
 })
 
+interface LoginFormProps extends React.ComponentPropsWithoutRef<"div"> {
+    t: (key: string) => string;
+}
+
 export function LoginForm({
+    t,
     className,
     ...props
-}: Readonly<React.ComponentPropsWithoutRef<"div">>) {
+}: Readonly<LoginFormProps>) {
     const { login } = useAuthStore();
     const { startLoading, stopLoading } = useLoaderStore();
     const navigate = useNavigate()
@@ -40,10 +44,8 @@ export function LoginForm({
         try {
             startLoading();
             await login(values.username, values.password);
-            toast.success("Login Successful");
         } catch (error) {
             console.error("Login error:", error);
-            toast.error("Login failed. Please check your credentials.");
         } finally {
             stopLoading();
         }
@@ -53,13 +55,13 @@ export function LoginForm({
 
     const formItemData: FormFieldItem<Login>[] = [
         {
-            label: "Student Number or ID",
+            label: t('auth.studentId'),
             name: "username",
             render: ({ field }) => (
                 <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input
-                        placeholder="Enter your username"
+                        placeholder={t('auth.enterStudentId')}
                         className="pl-10 h-12"
                         {...field}
                     />
@@ -67,14 +69,14 @@ export function LoginForm({
             )
         },
         {
-            label: "Password",
+            label: t('auth.password'),
             name: "password",
             render: ({ field, form }) => (
                 <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
+                        placeholder={t('auth.enterPassword')}
                         className="pl-10 pr-10 h-12"
                         {...field}
                         disabled={!form.watch("username")}
@@ -99,16 +101,16 @@ export function LoginForm({
     ];
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
-            <Card className="border-0 shadow-md">
+            <Card className="border-0 shadow-2xl">
                 <CardHeader className="space-y-6">
 
                     {/* Welcome Text */}
                     <div className="text-center space-y-2">
-                        <CardTitle className="text-3xl font-bold">
-                            Welcome Back
+                        <CardTitle className="text-2xl font-bold">
+                            {t('auth.greeting')}
                         </CardTitle>
                         <CardDescription className="text-base text-muted-foreground">
-                            Sign in to continue
+                            {t('auth.signInMessage')}
                         </CardDescription>
                     </div>
                 </CardHeader>
@@ -128,14 +130,14 @@ export function LoginForm({
                                     type="submit"
                                     className="w-full h-12 text-base font-semibold text-secondary bg-primary hover:bg-primary/80 cursor-pointer"
                                 >
-                                    Login
+                                     {t('auth.login')}
                                 </Button>
                                 <Button
                                     type="submit"
                                     className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
                                     onClick={()=> navigate("/one-day-pass")}
                                 >
-                                    One Day Pass Request
+                                    {t('externalUser.title')}
                                 </Button>
                             </div>
                         }

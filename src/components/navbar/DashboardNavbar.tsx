@@ -152,7 +152,7 @@ export function DashbaordNavbar() {
 
           {/* Right Icons */}
           <div className="flex items-center space-x-4 pointer-events-auto">
-            <LanguageToggle onToggle={handleLanguageToggle} />
+            <LanguageToggle onToggle={handleLanguageToggle} fillColor="background"/>
             <Image
               src={commonIcons.homeIcon}
               onClick={() => navigate("/")}

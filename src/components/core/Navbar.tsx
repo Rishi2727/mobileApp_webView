@@ -31,6 +31,7 @@ export function Navbar() {
         <div className="flex items-center space-x-4">
           <LanguageToggle
             onToggle={handleLanguageToggle}
+            fillColor="background"
           />
           <Image
             src={commonIcons.homeIcon}

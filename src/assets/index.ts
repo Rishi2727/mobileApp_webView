@@ -26,6 +26,7 @@ import southKoreaFlag from './icons/country-south_korea.svg'
 import usaFlag from './icons/country-usa.svg'
 import questionMark from './icons/status_question.svg'
 import handiCaped from './icons/HandiCaped.svg'
+import loginBgIcon from './images/Dashboard_Background.png'
 
 // Booking related icons
 import pcIcon from './icons/pc.svg'
@@ -100,6 +101,7 @@ export const commonIcons = {
      handiCaped,
      logoutIcon,
      qrLogo,
+     loginBgIcon,
      // Booking related icons
      pcIcon,
      kioskIcon,
