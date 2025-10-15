@@ -9,10 +9,11 @@ import Text from "@/components/ui/custom/text";
 import { useFavouriteSeatStore, maxFavouriteSeatsLimit, type FavouriteSeat } from "@/store/FavouriteSeat";
 import { useBookingsStore } from "@/store/BookingsStore";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 
 export default function PreferredSeat() {
   const breadcrumbItems = metadata.PreferredSeatSetting.breadcrumbItems || [];
-
+ const {t} = useTranslation();
   const {
     favouriteSeats,
     checkLimit,
@@ -125,8 +126,8 @@ export default function PreferredSeat() {
       {/* Header */}
       <div className="p-4 flex justify-between items-center">
         <div>
-          <Text className="text-lg font-bold">My Favourite Seats</Text>
-          <Text className="text-sm text-gray-600">Quick access to your preferred seats</Text>
+          <Text className="text-lg font-bold">{t('favouriteSeat.myFavoriteSeats')}</Text>
+          <Text className="text-sm text-gray-600">{t('favouriteSeat.quickAccess')}</Text>
         </div>
         <div className="border border-blue-200 bg-blue-100 rounded-xl px-3 py-1">
           <Text className="text-blue-700 font-semibold text-sm">
@@ -170,7 +171,7 @@ export default function PreferredSeat() {
                   {/* Seat Info */}
                   <div className="text-center">
                     <Text className="text-xs text-gray-500 truncate mb-1">
-                      {seat.room.floorName} | Desk: {seat.deskNo}
+                      {seat.room.floorName} | {t('favouriteSeat.desk')}: {seat.deskNo}
                     </Text>
                     <Text className="font-medium text-sm truncate">
                       {seat.room.roomName}
@@ -193,9 +194,9 @@ export default function PreferredSeat() {
               >
                 <CardContent className="p-3 text-center">
                   <Plus className="w-8 h-8 text-blue-500 mb-2 mx-auto" />
-                  <Text className="font-semibold text-sm">Add Favorite</Text>
+                  <Text className="font-semibold text-sm">{t('favouriteSeat.addFavorite')}</Text>
                   <Text className="text-xs text-gray-500">
-                    {maxFavouriteSeatsLimit - favouriteSeats.length} slots left
+                    {maxFavouriteSeatsLimit - favouriteSeats.length} {t('favouriteSeat.slotsLeft')}
                   </Text>
                 </CardContent>
               </Card>
@@ -208,16 +209,16 @@ export default function PreferredSeat() {
           <div className="text-center py-16">
             <Heart className="w-16 h-16 text-gray-300 mb-4 mx-auto" />
             <Text className="text-lg font-semibold text-gray-900 mb-2">
-              No favorite seats
+              {t('favouriteSeat.noFavoriteSeats')}
             </Text>
             <Text className="text-gray-500 mb-4">
-              Add seats to your favorites for quick access
+             {t('favouriteSeat.addSeatsToFavorites')}
             </Text>
             <button
               onClick={handleAddNew}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
             >
-              Add Favorite Seat
+             {t('favouriteSeat.addFavoriteSeat')}
             </button>
           </div>
         )}
@@ -225,7 +226,7 @@ export default function PreferredSeat() {
         {/* Suggestions */}
         {checkLimit() && suggestedFavourite.length > 0 && (
           <div className="mt-8">
-            <Text className="font-semibold mb-3">Suggested for You</Text>
+            <Text className="font-semibold mb-3">{t('favouriteSeat.suggestedForYou')}</Text>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {suggestedFavourite.slice(0, 4).map((item) => (
                 <Card
@@ -240,10 +241,10 @@ export default function PreferredSeat() {
                     />
                     <div className="flex-1">
                       <Text className="font-medium text-sm">
-                        Desk {item.desk.deskNo} - {item.desk.room.roomName}
+                        {t('favouriteSeat.desk')} {item.desk.deskNo} - {item.desk.room.roomName}
                       </Text>
                       <Text className="text-xs text-gray-500">
-                        Used {item.times} times in {item.days} days
+                        {t('favouriteSeat.usedTimes')} {item.times} {t('favouriteSeat.timesSuffix')} {item.days} {t('favouriteSeat.daysSuffix')}
                       </Text>
                     </div>
                     <Plus className="w-5 h-5 text-blue-600" />
