@@ -316,9 +316,7 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
               padding: 0,
             }}
           >
-            <img
-              src={commonIcons.logoutIcon}
-              alt="Logout"
+            <commonIcons.LogoutIcon
               className="w-full h-full"
             />
           </button>

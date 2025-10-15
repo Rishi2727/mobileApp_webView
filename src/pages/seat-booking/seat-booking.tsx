@@ -1,6 +1,5 @@
 import { commonIcons } from "@/assets";
 import { Button } from "@/components/ui/button";
-import { Image } from "@/components/ui/custom/image";
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import Text from "@/components/ui/custom/text";
 import { metadata } from "@/config/metadata";
@@ -149,9 +148,7 @@ const SeatBooking = () => {
                 <Text className="text-md font-bold text-border-accent">
                   {seat.floor}
                 </Text>
-                <Image
-                  src={commonIcons.seatTableIcon}
-                  alt="Seat Table"
+                <commonIcons.SeatTableIcon
                   width={20}
                   height={20}
                 />

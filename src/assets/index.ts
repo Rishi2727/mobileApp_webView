@@ -1,49 +1,50 @@
-import profileIcon from './dashboardIcons/profile.svg'
-import bellIcon from './icons/bell.svg'
-import bookIcon from './dashboardIcons/book.svg'
-import messageIcon from './dashboardIcons/messages.svg'
-import seatIcon from './dashboardIcons/seat.svg'
-import groupIcon from './dashboardIcons/group.svg'
-import bookLoanIcon from './dashboardIcons/bookLoan.svg'
-import settingIcon from './dashboardIcons/setting.svg'
-import bookRequestIcon from './dashboardIcons/bookRequest.svg'
-import loanHistoryIcon from './dashboardIcons/bookLoanHistory.svg'
-import eBookIcon from './dashboardIcons/eBook.svg'
-import carrelIcon from './dashboardIcons/carrel.svg'
-import homeIcon from './icons/homeIcon.svg'
-import languageIconKo from './icons/lang-kr.svg'
-import languageIconEn from './icons/lang-eng.svg'
-import dirBackIcon from './icons/dirBack.svg'
+import ProfileIcon from './dashboardIcons/profile.svg?react'
+import BellIcon from './icons/bell.svg?react'
+import BookIcon from './dashboardIcons/book.svg?react'
+import MessageIcon from './dashboardIcons/messages.svg?react'
+import SeatIcon from './dashboardIcons/seat.svg?react'
+import GroupIcon from './dashboardIcons/group.svg?react'
+import BookLoanIcon from './dashboardIcons/bookLoan.svg?react'
+import SettingIcon from './dashboardIcons/setting.svg?react'
+import BookRequestIcon from './dashboardIcons/bookRequest.svg?react'
+import LoanHistoryIcon from './dashboardIcons/bookLoanHistory.svg?react'
+import EBookIcon from './dashboardIcons/eBook.svg?react'
+import CarrelIcon from './dashboardIcons/carrel.svg?react'
+import HomeIcon from './icons/homeIcon.svg?react'
+import LanguageIconKo from './icons/lang-kr.svg?react'
+import LanguageIconEn from './icons/lang-eng.svg?react'
+import DirBackIcon from './icons/dirBack.svg?react'
 import splashLogo from './images/splash_logo.png'
-import brandLogo from './icons/brandLogo.svg'
+import BrandLogo from './icons/brandLogo.svg?react'
 import dashboardBg from './images/dash_background.png'
-import logoutIcon from './icons/logout.svg'
+import LogoutIcon from './icons/logout.svg?react'
 import qrLogo from './images/QR_Logo.jpg'
 import bannarImage from './images/banner2_white.png'
 import weatherIcon01d from './images/WEATHER_01d.png'
-import seatTableIcon from './icons/seatTable.svg'
-import southKoreaFlag from './icons/country-south_korea.svg'
-import usaFlag from './icons/country-usa.svg'
-import questionMark from './icons/status_question.svg'
-import handiCaped from './icons/HandiCaped.svg'
-import loginBgIcon from './images/Dashboard_Background.png'
+import SeatTableIcon from './icons/seatTable.svg?react'
+import SouthKoreaFlag from './icons/country-south_korea.svg?react'
+import UsaFlag from './icons/country-usa.svg?react'
+import QuestionMark from './icons/status_question.svg?react'
+import HandiCaped from './icons/HandiCaped.svg?react'
 
 // Booking related icons
-import pcIcon from './icons/pc.svg'
-import kioskIcon from './icons/kiosk.svg'
-import webIcon from './icons/web.svg'
-import mobileIcon from './icons/mobile.svg'
-import dirCollapseIcon from './icons/dirCollapse.svg'
-import dirExpandIcon from './icons/dirExpand.svg'
-import fellowMemberIcon from './icons/fellow-member.svg'
-import bookingsGoleIcon from './icons/BookingsGole.svg'
-import favouriteIcon from './icons/favourite.svg'
+import PcIcon from './icons/pc.svg?react'
+import KioskIcon from './icons/kiosk.svg?react'
+import WebIcon from './icons/web.svg?react'
+import MobileIcon from './icons/mobile.svg?react'
+import DirCollapseIcon from './icons/dirCollapse.svg?react'
+import DirExpandIcon from './icons/dirExpand.svg?react'
+import FellowMemberIcon from './icons/fellow-member.svg?react'
+import BookingsGoleIcon from './icons/BookingsGole.svg?react'
+import FavouriteIcon from './icons/favourite.svg?react'
 
 // Status icons
-import statusErrorIcon from './icons/status_error.svg'
-import statusInfoIcon from './icons/status_info.svg'
-import statusSuccessIcon from './icons/status_success.svg'
-import statusWarningIcon from './icons/status_warning.svg'
+import StatusErrorIcon from './icons/status_error.svg?react'
+import StatusInfoIcon from './icons/status_info.svg?react'
+import StatusSuccessIcon from './icons/status_success.svg?react'
+import StatusWarningIcon from './icons/status_warning.svg?react'
+
+import loginBgIcon from './images/Dashboard_Background.png'
 
 // Room Map Images
 import rm566 from './store/RM-566-20250710.png'
@@ -85,52 +86,52 @@ import weatherIcon50d from './images/WEATHER_50d.png'
 import weatherIcon50n from './images/WEATHER_50n.png'
 
 export const commonIcons = {
-     bellIcon,
-     homeIcon,
-     languageIconKo,
-     languageIconEn,
-     dirBackIcon,
+     BellIcon,
+     HomeIcon,
+     LanguageIconKo,
+     LanguageIconEn,
+     DirBackIcon,
      splashLogo,
-     brandLogo,
+     BrandLogo,
      dashboardBg,
      bannarImage,
-     seatTableIcon,
-     southKoreaFlag,
-     usaFlag,
-     questionMark,
-     handiCaped,
-     logoutIcon,
+     SeatTableIcon,
+     SouthKoreaFlag,
+     UsaFlag,
+     QuestionMark,
+     HandiCaped,
+     LogoutIcon,
      qrLogo,
      loginBgIcon,
      // Booking related icons
-     pcIcon,
-     kioskIcon,
-     webIcon,
-     mobileIcon,
-     dirCollapseIcon,
-     dirExpandIcon,
-     fellowMemberIcon,
-     bookingsGoleIcon,
-     favouriteIcon,
+     PcIcon,
+     KioskIcon,
+     WebIcon,
+     MobileIcon,
+     DirCollapseIcon,
+     DirExpandIcon,
+     FellowMemberIcon,
+     BookingsGoleIcon,
+     FavouriteIcon,
      // Status icons
-     statusErrorIcon,
-     statusInfoIcon,
-     statusSuccessIcon,
-     statusWarningIcon,
+     StatusErrorIcon,
+     StatusInfoIcon,
+     StatusSuccessIcon,
+     StatusWarningIcon,
 }
 export const dashboardIcons = {
-     profileIcon,
-     bookIcon,
-     messageIcon,
-     seatIcon,
-     groupIcon,
-     carrelIcon,
-     bellIcon,
-     bookLoanIcon,
-     bookRequestIcon,
-     loanHistoryIcon,
-     eBookIcon,
-     settingIcon,
+     ProfileIcon,
+     BookIcon,
+     MessageIcon,
+     SeatIcon,
+     GroupIcon,
+     CarrelIcon,
+     BellIcon,
+     BookLoanIcon,
+     BookRequestIcon,
+     LoanHistoryIcon,
+     EBookIcon,
+     SettingIcon,
 }
 export const weatherIcon = {
      weatherIcon01d,

@@ -1,6 +1,5 @@
 import { commonIcons } from "@/assets";
 import { Card, CardContent } from "@/components/ui/card";
-import { Image } from "@/components/ui/custom/image";
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import { metadata } from "@/config/metadata";
 import { Trash2, Heart, Plus } from "lucide-react";
@@ -13,7 +12,7 @@ import { useNavigate } from "react-router";
 
 export default function PreferredSeat() {
   const breadcrumbItems = metadata.PreferredSeatSetting.breadcrumbItems || [];
-  
+
   const {
     favouriteSeats,
     checkLimit,
@@ -23,7 +22,7 @@ export default function PreferredSeat() {
     prependFavouriteSeat,
     suggestedFavourite
   } = useFavouriteSeatStore();
-  
+
   const { createBooking } = useBookingsStore();
   const router = useNavigate();
 
@@ -50,7 +49,7 @@ export default function PreferredSeat() {
           type: 'SEAT',
           bookingStartFromNow: true
         });
-        
+
         if (result?.success) {
           await ShowAlert({
             title: "Success",
@@ -63,7 +62,7 @@ export default function PreferredSeat() {
         await ShowAlert({
           title: "Error",
           description: error instanceof Error ? error.message : "Failed to book seat",
-          confirmText: "OK", 
+          confirmText: "OK",
           isDangerous: true,
         });
       }
@@ -76,7 +75,7 @@ export default function PreferredSeat() {
       title: "Remove Favorite",
       description: `Remove ${seat.room.roomName} Desk ${seat.deskNo} from favorites?`,
       confirmText: "Yes",
-      cancelText: "No", 
+      cancelText: "No",
       isDangerous: true,
     });
 
@@ -98,7 +97,7 @@ export default function PreferredSeat() {
     }
 
     const confirmed = await ShowAlert({
-      title: "Add Favorite", 
+      title: "Add Favorite",
       description: `Add ${seat.room.roomName} Desk ${seat.deskNo} to favorites?`,
       confirmText: "Yes",
       cancelText: "No",
@@ -143,50 +142,48 @@ export default function PreferredSeat() {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
             {/* Favorite Seats */}
             {favouriteSeats.map((seat) => (
-            <Card
-              key={seat.deskCode}
-              className="relative h-36 cursor-pointer hover:bg-gray-50"
-              onClick={() => handleBookSeat(seat)}
-            >
-              {/* Remove Button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemoveFavorite(seat);
-                }}
-                className="absolute top-2 right-2 bg-red-50 hover:bg-red-100 text-red-500 rounded-full p-1.5 z-10"
+              <Card
+                key={seat.deskCode}
+                className="relative h-36 cursor-pointer hover:bg-gray-50"
+                onClick={() => handleBookSeat(seat)}
               >
-                <Trash2 className="w-4 h-4" />
-              </button>
+                {/* Remove Button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveFavorite(seat);
+                  }}
+                  className="absolute top-2 right-2 bg-red-50 hover:bg-red-100 text-red-500 rounded-full p-1.5 z-10"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
 
-              <CardContent className="p-3 flex flex-col items-center justify-center h-full">
-                {/* Seat Icon */}
-                <div className="mb-2">
-                  <Image
-                    src={commonIcons.seatTableIcon}
-                    alt="seat"
-                    width={32}
-                    height={32}
-                  />
+                <CardContent className="p-3 flex flex-col items-center justify-center h-full">
+                  {/* Seat Icon */}
+                  <div className="mb-2">
+                    <commonIcons.SeatTableIcon
+                      width={32}
+                      height={32}
+                    />
+                  </div>
+
+                  {/* Seat Info */}
+                  <div className="text-center">
+                    <Text className="text-xs text-gray-500 truncate mb-1">
+                      {seat.room.floorName} | Desk: {seat.deskNo}
+                    </Text>
+                    <Text className="font-medium text-sm truncate">
+                      {seat.room.roomName}
+                    </Text>
+                  </div>
+                </CardContent>
+
+                {/* Status */}
+                <div className="absolute bottom-0 left-0 right-0 bg-green-500 text-center py-1">
+                  <Text className="text-xs font-semibold text-white">Available</Text>
                 </div>
-
-                {/* Seat Info */}
-                <div className="text-center">
-                  <Text className="text-xs text-gray-500 truncate mb-1">
-                    {seat.room.floorName} | Desk: {seat.deskNo}
-                  </Text>
-                  <Text className="font-medium text-sm truncate">
-                    {seat.room.roomName}
-                  </Text>
-                </div>
-              </CardContent>
-
-              {/* Status */}
-              <div className="absolute bottom-0 left-0 right-0 bg-green-500 text-center py-1">
-                <Text className="text-xs font-semibold text-white">Available</Text>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            ))}
 
             {/* Add New Button - Show at the end when there are existing favorites */}
             {checkLimit() && (
@@ -237,9 +234,7 @@ export default function PreferredSeat() {
                   onClick={() => handleAddFavorite(item.desk)}
                 >
                   <div className="flex items-center space-x-3">
-                    <Image
-                      src={commonIcons.seatTableIcon}
-                      alt="seat"
+                    <commonIcons.SeatTableIcon
                       width={24}
                       height={24}
                     />

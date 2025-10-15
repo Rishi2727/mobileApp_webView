@@ -4,9 +4,10 @@ export type MentaDataTypeProps = {
     [key: string]: {
         title: string;
         path: string;
+        queryParams?: string;
         icon?: IconName;
-        image?: string;
-        animetedImage?: string;
+        image?: string | React.ComponentType<any>;
+        animetedImage?: string | React.ComponentType<any>;
         isVisible?: boolean;
         borderAnimation?: boolean;
         borderColor?: string;
@@ -31,8 +32,8 @@ export const metadata: MentaDataTypeProps = {
     },
     profile: {
         title: "dashboard.profile.title",
-        image: dashboardIcons.profileIcon,
-        animetedImage: dashboardIcons.profileIcon,
+        image: dashboardIcons.ProfileIcon,
+        animetedImage: dashboardIcons.ProfileIcon,
         path: "/profile",
         isVisible: true,
         borderAnimation: false,
@@ -52,8 +53,8 @@ export const metadata: MentaDataTypeProps = {
     },
     booking: {
         title: "dashboard.bookings.title",
-        image: dashboardIcons.bookIcon,
-        animetedImage: dashboardIcons.bookIcon,
+        image: dashboardIcons.BookIcon,
+        animetedImage: dashboardIcons.BookIcon,
         path: "/bookings",
         isVisible: true,
         borderAnimation: false,
@@ -72,8 +73,8 @@ export const metadata: MentaDataTypeProps = {
     },
     notice: {
         title: "dashboard.notices.title",
-        image: dashboardIcons.messageIcon,
-        animetedImage: dashboardIcons.messageIcon,
+        image: dashboardIcons.MessageIcon,
+        animetedImage: dashboardIcons.MessageIcon,
         path: "/notices",
         isVisible: true,
         borderAnimation: false,
@@ -92,9 +93,10 @@ export const metadata: MentaDataTypeProps = {
     },
     seatBooking: {
         title: "dashboard.reserveSeatAndPC.title",
-        image: dashboardIcons.seatIcon,
-        animetedImage: dashboardIcons.seatIcon,
-        path: "/seat-booking",
+        image: dashboardIcons.SeatIcon,
+        animetedImage: dashboardIcons.SeatIcon,
+        path: "/ticketing/RoomSelection",
+        queryParams: "?catCodes=401,402&hideFloor=true&hideCategory=true",
         isVisible: true,
         borderAnimation: false,
         borderColor: "border-accent",
@@ -132,9 +134,10 @@ export const metadata: MentaDataTypeProps = {
     },
     groupBooking: {
         title: "dashboard.reserveGroup.title",
-        image: dashboardIcons.groupIcon,
-        animetedImage: dashboardIcons.groupIcon,
-        path: "/group-bookings",
+        image: dashboardIcons.GroupIcon,
+        animetedImage: dashboardIcons.GroupIcon,
+        path: "/ticketing/RoomSelection",
+        queryParams: "?catCodes=403&hideFloor=true",
         isVisible: true,
         borderAnimation: false,
         borderColor: "border-accent",
@@ -195,9 +198,10 @@ export const metadata: MentaDataTypeProps = {
     },
     carrelBooking: {
         title: "dashboard.reserveCarrel.title",
-        image: dashboardIcons.carrelIcon,
-        animetedImage: dashboardIcons.carrelIcon,
-        path: "/carrel-booking",
+        image: dashboardIcons.CarrelIcon,
+        animetedImage: dashboardIcons.CarrelIcon,
+        path: "/ticketing/RoomSelection",
+        queryParams: "?catCodes=404&hideFloor=true",
         isVisible: true,
         borderAnimation: false,
         borderColor: "border-accent",
@@ -236,8 +240,8 @@ export const metadata: MentaDataTypeProps = {
     },
     message: {
         title: "dashboard.push.title",
-        image: commonIcons.bellIcon,
-        animetedImage: dashboardIcons.bellIcon,
+        image: commonIcons.BellIcon,
+        animetedImage: dashboardIcons.BellIcon,
         path: "/messages",
         isVisible: true,
         borderAnimation: false,
@@ -257,8 +261,8 @@ export const metadata: MentaDataTypeProps = {
     },
     bookSearch: {
         title: "dashboard.bookSearch.title",
-        image: dashboardIcons.bookLoanIcon,
-        animetedImage: dashboardIcons.bookLoanIcon,
+        image: dashboardIcons.BookLoanIcon,
+        animetedImage: dashboardIcons.BookLoanIcon,
         path: "/book-search",
         externalUrl: (kmouSecretSecret?: string) => `https://library.kmou.ac.kr/appLogin?encText=${kmouSecretSecret}&retUrl=/searchTotal/result?st=KWRD%26si=TOTAL%26q=`,
         isExternal: true,
@@ -276,8 +280,8 @@ export const metadata: MentaDataTypeProps = {
     },
     bookPurchase: {
         title: "dashboard.bookRequest.title",
-        image: dashboardIcons.bookRequestIcon,
-        animetedImage: dashboardIcons.bookRequestIcon,
+        image: dashboardIcons.BookRequestIcon,
+        animetedImage: dashboardIcons.BookRequestIcon,
         path: "/book-purchase",
         externalUrl: (kmouSecretSecret?: string) => `https://library.kmou.ac.kr/appLogin?encText=${kmouSecretSecret}&retUrl=/webcontent/info/13`,
         isExternal: true,
@@ -295,8 +299,8 @@ export const metadata: MentaDataTypeProps = {
     },
     loanHistory: {
         title: "dashboard.loanHistory.title",
-        image: dashboardIcons.loanHistoryIcon,
-        animetedImage: dashboardIcons.loanHistoryIcon,
+        image: dashboardIcons.LoanHistoryIcon,
+        animetedImage: dashboardIcons.LoanHistoryIcon,
         path: "/loan-history",
         externalUrl: (kmouSecretSecret?: string) => `https://library.kmou.ac.kr/appLogin?encText=${kmouSecretSecret}&retUrl=/myloan/list`,
         isExternal: true,
@@ -314,8 +318,8 @@ export const metadata: MentaDataTypeProps = {
     },
     eBook: {
         title: "E-Books",
-        image: dashboardIcons.eBookIcon,
-        animetedImage: dashboardIcons.eBookIcon,
+        image: dashboardIcons.EBookIcon,
+        animetedImage: dashboardIcons.EBookIcon,
         path: "/e-books",
         externalUrl: (kmouSecretSecret?: string) => `https://library.kmou.ac.kr/appLogin?encText=${kmouSecretSecret}&retUrl=/webcontent/info/72`,
         isExternal: true,
@@ -333,8 +337,8 @@ export const metadata: MentaDataTypeProps = {
     },
     setting: {
         title: "dashboard.appSettings.title",
-        image: dashboardIcons.settingIcon,
-        animetedImage: dashboardIcons.settingIcon,
+        image: dashboardIcons.SettingIcon,
+        animetedImage: dashboardIcons.SettingIcon,
         path: "/settings",
         isVisible: true,
         borderAnimation: false,

@@ -8,9 +8,7 @@ import Dashboard from "@/pages/dashboard/Dashboard";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import MyBookings from "@/pages/my-bookings/my-bookings";
 import Notice from "@/pages/notice/notice";
-import SeatBooking from "@/pages/seat-booking/seat-booking";
 import SeatBookingPage from "@/pages/seat-booking/seat-booking-page";
-import GroupBooking from "@/pages/group-booking/group-booking";
 import CarrelBooking from "@/pages/carrel-booking/carrel-booking";
 import Message from "@/pages/message/message";
 import Setting from "@/pages/setting/setting";
@@ -19,6 +17,7 @@ import TimeSelection from "@/pages/group-booking/time-selection";
 import CarrelTimeSelection from "@/pages/carrel-booking/carrelTimeSelection";
 import Reservation from "@/pages/group-booking/reservation";
 import ExternalUser from "@/pages/external-user/external-user";
+import RoomSelection from "@/features/ticketing/RoomSelection";
 
 export type RouteObjectExtend = RouteObject & {
   title: string;
@@ -63,7 +62,7 @@ export const routeMapping: RouteObjectExtend[] = [
       {
         title: metadata.seatBooking.title,
         path: metadata.seatBooking.path,
-        element: <SeatBooking />,
+        element: <RoomSelection />,
       },
       {
         title: metadata.seatBookingPage.title,
@@ -73,7 +72,7 @@ export const routeMapping: RouteObjectExtend[] = [
       {
         title: metadata.groupBooking.title,
         path: metadata.groupBooking.path,
-        element: <GroupBooking />,
+        element: <RoomSelection />,
       },
       {
         title: metadata.timeSelection.title,
@@ -83,7 +82,7 @@ export const routeMapping: RouteObjectExtend[] = [
       {
         title: metadata.carrelBooking.title,
         path: metadata.carrelBooking.path,
-        element: <CarrelBooking />,
+        element: <RoomSelection />,
       },
       {
         title: metadata.message.title,

@@ -2,7 +2,6 @@ import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import { metadata } from "@/config/metadata";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Image } from "@/components/ui/custom/image";
 import { commonIcons } from "@/assets";
 import Text from "@/components/ui/custom/text";
 import { useNavigate } from "react-router";
@@ -61,9 +60,7 @@ const GroupBooking = () => {
             </div>
             <div>
               {room.accessible && (
-                <Image
-                  src={commonIcons.handiCaped}
-                  alt="handicaped"
+                <commonIcons.HandiCaped
                   width={18}
                   height={18}
                 />

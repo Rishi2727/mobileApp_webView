@@ -152,23 +152,18 @@ export function DashbaordNavbar() {
 
           {/* Right Icons */}
           <div className="flex items-center space-x-4 pointer-events-auto">
-            <LanguageToggle onToggle={handleLanguageToggle} fillColor="background"/>
-            <Image
-              src={commonIcons.homeIcon}
+            <LanguageToggle onToggle={handleLanguageToggle} />
+            <commonIcons.HomeIcon
               onClick={() => navigate("/")}
-              alt="Home"
               width={isMobile ? 20 : 24}
               height={isMobile ? 20 : 24}
               className="text-background cursor-pointer"
             />
-            <Image
-              src={commonIcons.bellIcon}
+            <commonIcons.BellIcon
               onClick={() => navigate("/messages")}
-
-              alt="Notifications"
               width={isMobile ? 20 : 24}
               height={isMobile ? 20 : 24}
-              className="text-background"
+              className="text-background cursor-pointer"
             />
           </div>
         </div>

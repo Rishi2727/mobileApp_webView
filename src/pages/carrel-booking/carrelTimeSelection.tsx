@@ -5,7 +5,6 @@ import { metadata } from "@/config/metadata";
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import Text from "@/components/ui/custom/text";
 import { useState } from "react";
-import { Image } from "@/components/ui/custom/image";
 import { ShowAlert } from "@/components/ui/custom/my-alert";
 import { commonIcons } from "@/assets";
 
@@ -63,9 +62,7 @@ const handleBooking = async (room: string, time: string) => {
   const confirmed = await ShowAlert({
     title: (
       <div className="flex justify-center mb-2">
-        <Image
-          src={commonIcons.questionMark}
-          alt="question mark"
+        <commonIcons.QuestionMark
           width={40}
           height={40}
         />

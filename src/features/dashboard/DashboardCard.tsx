@@ -1,3 +1,4 @@
+import React from "react";
 import { Card } from "@/components/ui/card";
 import { Image } from "@/components/ui/custom/image";
 import Text from "@/components/ui/custom/text";
@@ -8,8 +9,9 @@ import { useAuthStore } from "@/store/AuthStore";
 
 type DashboardCardProps = {
   title: string;
-  image?: string;
+  image?: string | React.ComponentType<any>;
   path: string;
+  queryParams?: string;
   borderColor?: string;
   iconFillColor?: string;
   backgroundColor?: string;
@@ -26,6 +28,7 @@ type DashboardCardProps = {
 const DashboardCard = ({
   title,
   path,
+  queryParams,
   image,
   iconFillColor,
   backgroundColor,
@@ -53,9 +56,11 @@ const DashboardCard = ({
 
 
 
-  const cardContent = (
-    <div className="flex flex-col items-center justify-center gap-4">
-      {image && (
+  const renderImage = () => {
+    if (!image) return null;
+    
+    if (typeof image === 'string') {
+      return (
         <Image
           src={image}
           alt={title}
@@ -63,7 +68,24 @@ const DashboardCard = ({
           height={height || 38}
           className={cn(`text-${iconFillColor}`, `bg-${backgroundColor}`, `rounded-${borderRadius}`, `p-${padding}`,)}
         />
-      )}
+      );
+    } else {
+      // If image is a React component, render it directly
+      const ImageComponent = image;
+      return (
+        <div className={cn(`text-${iconFillColor}`, `bg-${backgroundColor}`, `rounded-${borderRadius}`, `p-${padding}`,)}>
+          <ImageComponent 
+            width={width || 38}
+            height={height || 38}
+          />
+        </div>
+      );
+    }
+  };
+
+  const cardContent = (
+    <div className="flex flex-col items-center justify-center gap-4">
+      {renderImage()}
       <Text variant="subtitle">{t(title)}</Text>
     </div>
   );
@@ -80,7 +102,7 @@ const DashboardCard = ({
           {cardContent}
         </button>
       ) : (
-        <Link to={path}>
+        <Link to={queryParams ? `${path}?${queryParams}` : path}>
           {cardContent}
         </Link>
       )}

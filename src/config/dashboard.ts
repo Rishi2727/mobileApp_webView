@@ -2,8 +2,9 @@ import { metadata } from "./metadata";
 export type DashboardTypeProps = {
     title: string;
     path: string;
-    image?: string;
-    animetedImage?: string;
+    queryParams?: string;
+    image?: string | React.ComponentType<any>;
+    animetedImage?: string | React.ComponentType<any>;
     isVisible?: boolean;
     borderAnimation?: boolean;
     borderColor?: string;
@@ -29,12 +30,12 @@ export const dashboard: DashboardTypeProps[] = [
         borderColor: metadata.profile.borderColor,
         iconFillColor: metadata.profile.iconFillColor,
         iconStrokeColor: metadata.profile.iconStrokeColor,
-        backgroundColor: metadata.profile.backgroundColor,  
+        backgroundColor: metadata.profile.backgroundColor,
         borderRadius: metadata.profile.borderRadius,
         padding: metadata.profile.padding,
         width: metadata.profile.width,
         height: metadata.profile.height
-        
+
     },
     {
         title: metadata.booking.title,
@@ -46,7 +47,7 @@ export const dashboard: DashboardTypeProps[] = [
         borderColor: metadata.profile.borderColor,
         iconFillColor: metadata.profile.iconFillColor,
         iconStrokeColor: metadata.profile.iconStrokeColor,
-        backgroundColor: metadata.profile.backgroundColor,  
+        backgroundColor: metadata.profile.backgroundColor,
         borderRadius: metadata.profile.borderRadius,
         padding: metadata.profile.padding,
         width: metadata.profile.width,
@@ -62,7 +63,7 @@ export const dashboard: DashboardTypeProps[] = [
         borderColor: metadata.profile.borderColor,
         iconFillColor: metadata.profile.iconFillColor,
         iconStrokeColor: metadata.profile.iconStrokeColor,
-        backgroundColor: metadata.profile.backgroundColor,  
+        backgroundColor: metadata.profile.backgroundColor,
         borderRadius: metadata.profile.borderRadius,
         padding: metadata.profile.padding,
         width: metadata.profile.width,
@@ -72,13 +73,14 @@ export const dashboard: DashboardTypeProps[] = [
         title: metadata.seatBooking.title,
         image: metadata.seatBooking.image,
         path: metadata.seatBooking.path,
+        queryParams: metadata.seatBooking.queryParams,
         animetedImage: metadata.profile.animetedImage,
         isVisible: metadata.profile.isVisible,
         borderAnimation: metadata.profile.borderAnimation,
         borderColor: metadata.profile.borderColor,
         iconFillColor: metadata.profile.iconFillColor,
         iconStrokeColor: metadata.profile.iconStrokeColor,
-        backgroundColor: metadata.profile.backgroundColor,  
+        backgroundColor: metadata.profile.backgroundColor,
         borderRadius: metadata.profile.borderRadius,
         padding: metadata.profile.padding,
         width: metadata.profile.width,
@@ -88,13 +90,14 @@ export const dashboard: DashboardTypeProps[] = [
         title: metadata.groupBooking.title,
         image: metadata.groupBooking.image,
         path: metadata.groupBooking.path,
+        queryParams: metadata.groupBooking.queryParams,
         animetedImage: metadata.profile.animetedImage,
         isVisible: metadata.profile.isVisible,
         borderAnimation: metadata.profile.borderAnimation,
         borderColor: metadata.profile.borderColor,
         iconFillColor: metadata.profile.iconFillColor,
         iconStrokeColor: metadata.profile.iconStrokeColor,
-        backgroundColor: metadata.profile.backgroundColor,  
+        backgroundColor: metadata.profile.backgroundColor,
         borderRadius: metadata.profile.borderRadius,
         padding: metadata.profile.padding,
         width: metadata.profile.width,
@@ -104,13 +107,14 @@ export const dashboard: DashboardTypeProps[] = [
         title: metadata.carrelBooking.title,
         image: metadata.carrelBooking.image,
         path: metadata.carrelBooking.path,
+        queryParams: metadata.carrelBooking.queryParams,
         animetedImage: metadata.profile.animetedImage,
         isVisible: metadata.profile.isVisible,
         borderAnimation: metadata.profile.borderAnimation,
         borderColor: metadata.profile.borderColor,
         iconFillColor: metadata.profile.iconFillColor,
         iconStrokeColor: metadata.profile.iconStrokeColor,
-        backgroundColor: metadata.profile.backgroundColor,  
+        backgroundColor: metadata.profile.backgroundColor,
         borderRadius: metadata.profile.borderRadius,
         padding: metadata.profile.padding,
         width: metadata.profile.width,
@@ -126,7 +130,7 @@ export const dashboard: DashboardTypeProps[] = [
         borderColor: metadata.profile.borderColor,
         iconFillColor: metadata.profile.iconFillColor,
         iconStrokeColor: metadata.profile.iconStrokeColor,
-        backgroundColor: metadata.profile.backgroundColor,  
+        backgroundColor: metadata.profile.backgroundColor,
         borderRadius: metadata.profile.borderRadius,
         padding: metadata.profile.padding,
         width: metadata.profile.width,
@@ -218,12 +222,12 @@ export const dashboard: DashboardTypeProps[] = [
         borderColor: metadata.profile.borderColor,
         iconFillColor: metadata.profile.iconFillColor,
         iconStrokeColor: metadata.profile.iconStrokeColor,
-        backgroundColor: metadata.profile.backgroundColor,  
+        backgroundColor: metadata.profile.backgroundColor,
         borderRadius: metadata.profile.borderRadius,
         padding: metadata.profile.padding,
         width: metadata.profile.width,
         height: metadata.profile.height
     }
-    
-    
+
+
 ]

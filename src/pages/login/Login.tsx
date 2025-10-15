@@ -7,14 +7,14 @@ import { useTranslation } from "react-i18next";
 
 export default function Page() {
   const { setLanguage } = useLanguage();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const handleLanguageToggle = (newLanguage: string) => {
     console.log("Language changed to:", newLanguage);
     setLanguage(newLanguage);
   };
   return (
     <div className="relative min-h-svh w-full flex items-center justify-center p-6 md:p-10 bg-gradient-to-br from-background via-background to-muted/20 overflow-hidden ">
-      
+
       {/* Background image positioned at bottom */}
       <div className="absolute top-[50%] z-0 w-[130%] opacity-10">
         <Image
@@ -25,14 +25,14 @@ export default function Page() {
       </div>
 
       {/* Login form on top */}
-        <div className="absolute top-0 right-0 p-10">
-        <LanguageToggle onToggle={handleLanguageToggle} fillColor="foreground"/>
-        </div>
+      <div className="absolute top-0 right-0 p-10">
+        <LanguageToggle onToggle={handleLanguageToggle} />
+      </div>
       <div className="relative z-10 w-full max-w-md shadow-4xl">
         <div className="flex justify-center items-center">
-        <Image src={commonIcons.brandLogo} alt="brand logo" className="mb-10"/>
+          <commonIcons.BrandLogo className="mb-10" />
         </div>
-        <LoginForm t={t}/>
+        <LoginForm t={t} />
       </div>
     </div>
   )

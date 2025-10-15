@@ -6,24 +6,23 @@ import { useMessagesStore } from "@/store/MessagesStore";
 import { useLanguage } from "@/contexts/useLanguage";
 import moment from "moment";
 import Text from "@/components/ui/custom/text";
-import { Image } from "@/components/ui/custom/image";
 
 const getPageConfig = (t: (key: string) => string) => ({
   METHODS: {
     ALL_USERS: {
       color: "#10B981",
       name: t("pushNotifications.notices"),
-      icon: commonIcons.bellIcon,
+      icon: commonIcons.BellIcon,
     },
     IDENTITY_WISE: {
       color: "#3B82F6",
       name: t("pushNotifications.group"),
-      icon: commonIcons.bellIcon,
+      icon: commonIcons.BellIcon,
     },
     USER_SPECIFIC: {
       color: "#8B5CF6",
       name: t("pushNotifications.personal"),
-      icon: commonIcons.bellIcon,
+      icon: commonIcons.BellIcon,
     },
   },
   CLASSIFICATIONS: {
@@ -31,31 +30,31 @@ const getPageConfig = (t: (key: string) => string) => ({
       code: null,
       color: "#27304B",
       name: t("bookings.category.all"),
-      icon: commonIcons.bellIcon,
+      icon: commonIcons.BellIcon,
     },
     "1": {
       code: [401, 402],
       color: "#27304B",
       name: t("bookings.category.seat"),
-      icon: dashboardIcons.seatIcon,
+      icon: dashboardIcons.SeatIcon,
     },
     "2": {
       code: [403],
       color: "#27304B",
       name: t("bookings.category.group"),
-      icon: dashboardIcons.groupIcon,
+      icon: dashboardIcons.GroupIcon,
     },
     "3": {
       code: [404],
       color: "#27304B",
       name: t("bookings.category.carrel"),
-      icon: dashboardIcons.carrelIcon,
+      icon: dashboardIcons.CarrelIcon,
     },
     "4": {
       code: [1, 2, 3],
       color: "#27304B",
       name: t("pushNotifications.notices"),
-      icon: dashboardIcons.messageIcon,
+      icon: dashboardIcons.MessageIcon,
     },
   },
 });
@@ -139,9 +138,7 @@ const Message = () => {
                     : "bg-background text-primary-400 hover:bg-primary-50"
                 }`}
               >
-                <Image
-                  src={classification.icon}
-                  alt={classification.name}
+                <classification.icon
                   width={15}
                   height={15}
                   className="mb-1"
