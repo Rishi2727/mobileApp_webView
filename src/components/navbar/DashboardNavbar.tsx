@@ -1,6 +1,7 @@
 import { commonIcons, weatherIcon } from "@/assets";
 import { Image } from "../ui/custom/image";
 import { useIsMobile } from "@/hooks/use-mobile";
+import BrandLogo from "@/assets/icons/brandLogo.svg?react";
 import { useEffect, useState } from "react";
 import { useMainStore } from "@/store/MainStore";
 import { DATE_FORMATS, formatDate } from "@/lib/dateUtils";
@@ -34,7 +35,7 @@ export function DashbaordNavbar() {
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
   const { setLanguage } = useLanguage();
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const currentWeather = useMainStore((state) => state.currentWeather);
   const fetchInitialData = useMainStore((state) => state.fetchInitialData);
@@ -147,9 +148,7 @@ export function DashbaordNavbar() {
         {/* Top Navigation Bar */}
         <div className="relative flex justify-between items-center px-4 py-3">
           <div className="flex items-center">
-            <Image
-              src={commonIcons.brandLogo}
-              alt="university Logo"
+            <BrandLogo
               width={isMobile ? 170 : 300}
               height={isMobile ? 40 : 60}
               className="text-background"
@@ -159,24 +158,23 @@ export function DashbaordNavbar() {
           {/* Right Icons */}
           <div className="flex items-center space-x-4 pointer-events-auto">
             <LanguageToggle onToggle={handleLanguageToggle} />
-            <div onClick={handleHomeClick}>
-              <Image
-                src={commonIcons.homeIcon}
-                alt="Home"
-                width={isMobile ? 20 : 24}
-                height={isMobile ? 20 : 24}
-                className="text-background cursor-pointer"
-              />
-            </div>
-            <div onClick={handleBellClick}>
-              <Image
-                src={commonIcons.bellIcon}
-                alt="language"
-                width={isMobile ? 20 : 24}
-                height={isMobile ? 20 : 24}
-                className="text-background"
-              />
-            </div>
+            <Image
+              src={commonIcons.homeIcon}
+              onClick={() => navigate("/")}
+              alt="Home"
+              width={isMobile ? 20 : 24}
+              height={isMobile ? 20 : 24}
+              className="text-background cursor-pointer"
+            />
+            <Image
+              src={commonIcons.bellIcon}
+              onClick={() => navigate("/messages")}
+
+              alt="Notifications"
+              width={isMobile ? 20 : 24}
+              height={isMobile ? 20 : 24}
+              className="text-background"
+            />
           </div>
         </div>
       </div>
