@@ -26,7 +26,7 @@ export default function Page() {
 
       {/* Login form on top */}
       <div className="absolute top-0 right-0 p-10">
-        <LanguageToggle onToggle={handleLanguageToggle} />
+        <LanguageToggle onToggle={handleLanguageToggle} fillColor="text-black" />
       </div>
       <div className="relative z-10 w-full max-w-md shadow-4xl">
         <div className="flex justify-center items-center">

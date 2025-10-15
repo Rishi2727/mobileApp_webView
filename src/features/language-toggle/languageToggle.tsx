@@ -6,13 +6,15 @@ import { useLanguage } from '@/contexts/useLanguage';
 interface LanguageToggleProps {
   onToggle?: (newLanguage: string) => void;
   className?: string;
+  fillColor?: string;
 }
 
 export const LanguageToggle: React.FC<LanguageToggleProps> = ({
   onToggle,
   className,
+  fillColor = "text-white",
 }) => {
-  const { language } = useLanguage(); 
+  const { language } = useLanguage();
   const [isAnimating, setIsAnimating] = useState(false);
   const [rotated, setRotated] = useState(language === 'en');
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -25,9 +27,9 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
   const toggleLanguage = () => {
     if (isAnimating) return;
 
-    setHasInteracted(true); 
+    setHasInteracted(true);
     setIsAnimating(true);
-    
+
     const newRotated = !rotated;
     const newLanguage = newRotated ? 'en' : 'ko';
 
@@ -37,7 +39,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
         onToggle(newLanguage);
       }
       setIsAnimating(false);
-      setHasInteracted(false); 
+      setHasInteracted(false);
     }, 500);
   };
 
@@ -59,9 +61,10 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
     >
       <LanguageIcon
         className={cn(
-          'w-7 h-7 invert brightness-0',
+          'w-7 h-7',
           'transition-transform duration-500 ease-in-out transform',
-          isAnimating && (rotated ? 'rotate-[360deg]' : 'rotate-[-360deg]')
+          isAnimating && (rotated ? 'rotate-[360deg]' : 'rotate-[-360deg]'),
+          fillColor
         )}
       />
     </button>
