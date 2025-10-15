@@ -3,13 +3,14 @@ import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import { readFileSync } from "fs"
+import svgr from "vite-plugin-svgr"
 
 // Read package.json to get version
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), svgr()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
