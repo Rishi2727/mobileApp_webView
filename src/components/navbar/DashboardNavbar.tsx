@@ -6,8 +6,8 @@ import { useMainStore } from "@/store/MainStore";
 import { DATE_FORMATS, formatDate } from "@/lib/dateUtils";
 import { LanguageToggle } from "@/features/language-toggle/languageToggle";
 import { useLanguage } from "@/contexts/useLanguage";
+import { useNavigate } from "react-router";
 
-// Weather icon mapping (matching your native implementation)
 const weatherIconMap: Record<string, string> = {
   "01d": weatherIcon.weatherIcon01d,
   "01n": weatherIcon.weatherIcon01n,
@@ -33,8 +33,8 @@ export function DashbaordNavbar() {
   const isMobile = useIsMobile();
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
-  const {  setLanguage } = useLanguage();
-  // Get weather data and fetch function from store
+  const { setLanguage } = useLanguage();
+ const navigate = useNavigate();
 
   const currentWeather = useMainStore((state) => state.currentWeather);
   const fetchInitialData = useMainStore((state) => state.fetchInitialData);
@@ -55,7 +55,6 @@ export function DashbaordNavbar() {
     };
   }, [fetchInitialData]);
 
-  // Get weather icon source - with fallback
   const getWeatherIcon = () => {
     if (currentWeather?.weather?.[0]?.icon) {
       return (
@@ -66,7 +65,6 @@ export function DashbaordNavbar() {
     return weatherIcon.weatherIcon01d;
   };
 
-  // Get weather data with fallbacks
   const cityName = currentWeather?.name || "Seoul";
   const weatherDescription =
     currentWeather?.weather?.[0]?.description || "clear sky";
@@ -87,11 +85,15 @@ export function DashbaordNavbar() {
     return () => clearInterval(timer);
   }, []);
   const handleLanguageToggle = (newLanguage: string) => {
-    console.log('Language changed to:', newLanguage);
+    console.log("Language changed to:", newLanguage);
     setLanguage(newLanguage);
-    // Add your language change logic here
   };
-
+  const handleHomeClick = () => {
+    navigate("/");
+  };
+  const handleBellClick = () => {
+    navigate("/messages");
+  };
   return (
     <div className="fixed top-0 left-0 w-full z-50">
       {/* Main Container */}
@@ -157,20 +159,24 @@ export function DashbaordNavbar() {
           {/* Right Icons */}
           <div className="flex items-center space-x-4 pointer-events-auto">
             <LanguageToggle onToggle={handleLanguageToggle} />
-            <Image
-              src={commonIcons.homeIcon}
-              alt="home"
-              width={isMobile ? 20 : 24}
-              height={isMobile ? 20 : 24}
-              className="text-background"
-            />
-            <Image
-              src={commonIcons.bellIcon}
-              alt="notification"
-              width={isMobile ? 20 : 24}
-              height={isMobile ? 20 : 24}
-              className="text-background"
-            />
+            <div onClick={handleHomeClick}>
+              <Image
+                src={commonIcons.homeIcon}
+                alt="Home"
+                width={isMobile ? 20 : 24}
+                height={isMobile ? 20 : 24}
+                className="text-background cursor-pointer"
+              />
+            </div>
+            <div onClick={handleBellClick}>
+              <Image
+                src={commonIcons.bellIcon}
+                alt="language"
+                width={isMobile ? 20 : 24}
+                height={isMobile ? 20 : 24}
+                className="text-background"
+              />
+            </div>
           </div>
         </div>
       </div>

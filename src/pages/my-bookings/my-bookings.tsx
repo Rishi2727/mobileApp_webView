@@ -456,13 +456,13 @@ const MyBookings = () => {
 
         {/* Dynamic Bookings */}
         <div className="bg-background p-2">
-          <Loader isLoading={isLoadingMore.current || bookings.length === 0} />
+          <Loader isLoading={bookings.length === 0} />
           {bookings.length === 0 && !haveMore ? (
             <Text className="text-muted-foreground text-center mt-4">{t("bookings.noBookings")}</Text>
           ) : (
             <div
               ref={scrollContainerRef}
-              className="max-h-[45vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
+              className="max-h-[55vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
             >
               {bookings.map((item) => {
                 const isSelected = item.bookingId === selectedBookingId;
