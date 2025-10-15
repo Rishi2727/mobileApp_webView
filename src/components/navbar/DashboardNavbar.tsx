@@ -89,12 +89,7 @@ export function DashbaordNavbar() {
     console.log("Language changed to:", newLanguage);
     setLanguage(newLanguage);
   };
-  const handleHomeClick = () => {
-    navigate("/");
-  };
-  const handleBellClick = () => {
-    navigate("/messages");
-  };
+
   return (
     <div className="fixed top-0 left-0 w-full z-50">
       {/* Main Container */}

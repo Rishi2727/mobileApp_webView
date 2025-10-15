@@ -133,7 +133,7 @@ const Message = () => {
               <div
                 key={key}
                 onClick={() => setSelectedClassification(classification.code)}
-                className={`w-[40px] h-[40px] flex flex-col items-center justify-center p-1 rounded-md transition-colors ${
+                className={`min-w-[30px] h-[40px] flex flex-col items-center justify-center p-1 rounded-md transition-colors ${
                   isSelected
                     ? "text-primary-900 bg-surface-tertiary border-2 border-border-accent"
                     : "bg-background text-primary-400 hover:bg-primary-50"
@@ -146,7 +146,7 @@ const Message = () => {
                   height={15}
                   className="mb-1"
                 />
-                <Text className="text-[10px] font-medium">{classification.name}</Text>
+                <Text className=" text-[10px] font-medium">{classification.name}</Text>
               </div>
             );
           })}
