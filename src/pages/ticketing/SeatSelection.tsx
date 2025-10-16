@@ -12,6 +12,10 @@ import { Image } from '@/components/ui/custom/image';
 import SwitchIcon from '@/assets/icons/switch.svg?react';
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import { metadata } from "@/config/metadata";
+import { useNavbarHeight } from '@/hooks/useNavbarHeight';
+import { useIsMobile } from '@/hooks/use-mobile';
+// Framer Motion available for future enhancements
+// import { motion, useAnimation, type PanInfo } from 'framer-motion';
 
 // Import color constants to match old version exactly
 const SEAT = {
@@ -84,7 +88,7 @@ const SeatBox: React.FC<SeatBoxProps> = ({ seats, room }) => {
   const { favouriteSeats, checkLimit, prependFavouriteSeat } = useFavouriteSeatStore();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  
+
   const bookingId = searchParams.get('bookingId');
   const newFavourite = searchParams.get('newFavourite');
 
@@ -172,11 +176,11 @@ const SeatBox: React.FC<SeatBoxProps> = ({ seats, room }) => {
     const bkId = (bookingId && bookingId !== '') ? bookingId : undefined;
     // Conditional favorite button logic matching old version exactly
     const favoriteBtn = (checkLimit() && !bkId && !favouriteSeats.some(fav => fav.deskCode === desk.deskCode));
-    
+
     newAlert({
       disableOnClick: true,
-      message: (!bkId) 
-        ? `${t('seatSelection.areYouSureBookPrefix')} ${desk.deskNo}${t('seatSelection.areYouSureBookSuffix')}` 
+      message: (!bkId)
+        ? `${t('seatSelection.areYouSureBookPrefix')} ${desk.deskNo}${t('seatSelection.areYouSureBookSuffix')}`
         : `${t('seatSelection.areYouSureChangeSeatPrefix')}${desk.deskNo}${t('seatSelection.areYouSureChangeSeatSuffix')}`,
       icon: 'question',
       buttons: [
@@ -271,7 +275,7 @@ const SeatBox: React.FC<SeatBoxProps> = ({ seats, room }) => {
           isFavourite = true;
         }
         const { top, left, width, height } = parseCoords(seat.deskCoords);
-        
+
         return (
           <div
             key={idx}
@@ -334,20 +338,23 @@ const SeatSelectionScreen = () => {
   const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  
+
+  // Calculate navbar height to ensure proper viewport usage
+  const { remainingHeight } = useNavbarHeight('simple');
+
   const catCode = searchParams.get('catCode');
   const roomCode = searchParams.get('roomCode');
   const title = searchParams.get('title');
   const bookingId = searchParams.get('bookingId');
   const configSeatchange = searchParams.get('configSeatchange');
-  
+
   const [mapFile, setMapFile] = useState<string | null>(null);
   const [mapFileName, setMapFileName] = useState<string | null>(null);
   const [imageLoading, setImageLoading] = useState<boolean>(true);
   const [navMapFile, setNavMapFile] = useState<string | null>(null);
   const [navMapFileName, setNavMapFileName] = useState<string | null>(null);
-  
-  // Zoom and pan state matching ReactNativeZoomableView behavior
+
+  // Enhanced zoom and pan state with smooth animations
   const [zoom, setZoom] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -355,12 +362,24 @@ const SeatSelectionScreen = () => {
   const [isPinching, setIsPinching] = useState(false);
   const [initialPinchDistance, setInitialPinchDistance] = useState(0);
   const [initialZoom, setInitialZoom] = useState(1);
-  
+  const [velocity, setVelocity] = useState({ x: 0, y: 0 });
+  const [lastPanTime, setLastPanTime] = useState(0);
+  const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isInteracting, setIsInteracting] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
-  
+
   const { init, stopAndClear, DesksData } = useRoomTimePicker();
   const { getCachedFileUri } = useCategoryWiseRoomsStore();
+  const isMobile = useIsMobile();
+
+  // Helper function for cursor style
+  const getCursorStyle = () => {
+    if (zoom <= 1) return 'default';
+    return isDragging ? 'grabbing' : 'grab';
+  };
 
   // Calculate screen dimensions matching old version
   const screenWidth = window.innerWidth;
@@ -380,7 +399,7 @@ const SeatSelectionScreen = () => {
     const room = DesksData.rooms[0];
     const mapFilePath = room.roomMap;
     const navMapFilePath = room.roomNavigationMap;
-    
+
     if (!mapFileName || mapFileName !== mapFilePath) {
       setMapFileName(mapFilePath);
     }
@@ -415,76 +434,295 @@ const SeatSelectionScreen = () => {
     })();
   }, [getCachedFileUri, navMapFileName]);
 
-  // Zoom handlers matching ReactNativeZoomableView behavior
-  // maxZoom=4, minZoom=1, zoomStep=4, animatePin=true
-  const handleWheel = useCallback((e: React.WheelEvent) => {
+  // Enhanced wheel handling for smoother zooming
+  const handleWheel = useCallback((e: WheelEvent) => {
     e.preventDefault();
-    const delta = e.deltaY * -0.01;
-    const newZoom = Math.min(Math.max(1, zoom + delta), 4);
-    setZoom(newZoom);
     
-    // Reset position when zooming out to 1 (bindToBorders behavior)
-    if (newZoom === 1) {
-      setPosition({ x: 0, y: 0 });
+    // More responsive zoom delta - increased for faster zooming
+    const delta = e.deltaY * -0.008; // Increased for faster zoom response
+    const newZoom = Math.min(Math.max(1, zoom + delta), 4);
+    
+    // Get mouse position relative to container
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) {
+      setZoom(newZoom);
+      return;
     }
-  }, [zoom]);
-
-  // Pan handlers
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (zoom > 1) {
-      setIsDragging(true);
-      setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
-    }
-  }, [zoom, position]);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (isDragging && zoom > 1) {
-      const newX = e.clientX - dragStart.x;
-      const newY = e.clientY - dragStart.y;
+    
+    const mouseX = e.clientX - rect.left - rect.width / 2;
+    const mouseY = e.clientY - rect.top - rect.height / 2;
+    
+    // Zoom towards mouse position
+    if (newZoom !== zoom) {
+      const zoomFactor = newZoom / zoom;
+      const newX = position.x - mouseX * (zoomFactor - 1);
+      const newY = position.y - mouseY * (zoomFactor - 1);
       
-      // bindToBorders: limit panning to image bounds
-      const maxX = (widthOrg * (zoom - 1)) / 2;
-      const maxY = (heightOrg * (zoom - 1)) / 2;
+      // Apply boundary constraints
+      const maxX = (widthOrg * (newZoom - 1)) / 2;
+      const maxY = (heightOrg * (newZoom - 1)) / 2;
       
       setPosition({
         x: Math.min(Math.max(newX, -maxX), maxX),
         y: Math.min(Math.max(newY, -maxY), maxY),
       });
     }
-  }, [isDragging, dragStart, zoom, widthOrg, heightOrg]);
+    
+    setZoom(newZoom);
+    
+    // Reset position when zooming out to 1 (bindToBorders behavior)
+    if (newZoom === 1) {
+      setPosition({ x: 0, y: 0 });
+    }
+  }, [zoom, position, widthOrg, heightOrg]);
 
+  // Set up wheel event listener with passive: false
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, [handleWheel]);
+
+  // Enhanced pan handlers with momentum - optimized for live dragging
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (zoom > 1) {
+      e.preventDefault();
+      setIsDragging(true);
+      setIsInteracting(true);
+      setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
+      setLastPanTime(Date.now());
+      setLastPosition({ x: e.clientX, y: e.clientY });
+      setVelocity({ x: 0, y: 0 });
+    }
+  }, [zoom, position]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (isDragging && zoom > 1) {
+      e.preventDefault();
+      
+      // Direct update without requestAnimationFrame for immediate response
+      const currentTime = Date.now();
+      const timeDelta = currentTime - lastPanTime;
+      
+      if (timeDelta > 0) {
+        const newVelocity = {
+          x: (e.clientX - lastPosition.x) / timeDelta,
+          y: (e.clientY - lastPosition.y) / timeDelta,
+        };
+        setVelocity(newVelocity);
+      }
+      
+      const newX = e.clientX - dragStart.x;
+      const newY = e.clientY - dragStart.y;
+
+      // Enhanced boundary checking with minimal elastic effect for faster response
+      const maxX = (widthOrg * (zoom - 1)) / 2;
+      const maxY = (heightOrg * (zoom - 1)) / 2;
+
+      // Apply minimal elastic resistance for faster dragging
+      let constrainedX = newX;
+      let constrainedY = newY;
+
+      if (newX > maxX) {
+        const overshoot = newX - maxX;
+        constrainedX = maxX + overshoot * 0.1; // Minimal resistance for faster feel
+      } else if (newX < -maxX) {
+        const overshoot = -maxX - newX;
+        constrainedX = -maxX - overshoot * 0.1;
+      }
+
+      if (newY > maxY) {
+        const overshoot = newY - maxY;
+        constrainedY = maxY + overshoot * 0.1;
+      } else if (newY < -maxY) {
+        const overshoot = -maxY - newY;
+        constrainedY = -maxY - overshoot * 0.1;
+      }
+
+      setPosition({ x: constrainedX, y: constrainedY });
+      setLastPanTime(currentTime);
+      setLastPosition({ x: e.clientX, y: e.clientY });
+    }
+  }, [isDragging, dragStart, zoom, widthOrg, heightOrg, lastPanTime, lastPosition]);
+
+  // Enhanced mouse up with momentum animation
   const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
+    if (isDragging && zoom > 1) {
+      setIsDragging(false);
+      setIsInteracting(false);
+      
+        // Apply momentum based on velocity - reduced for faster response  
+        const momentumMultiplier = 100; // Further reduced for snappier feel
+        const momentumX = velocity.x * momentumMultiplier;
+        const momentumY = velocity.y * momentumMultiplier;      if (Math.abs(momentumX) > 10 || Math.abs(momentumY) > 10) {
+        const finalX = position.x + momentumX;
+        const finalY = position.y + momentumY;
+        
+        // Constrain to boundaries
+        const maxX = (widthOrg * (zoom - 1)) / 2;
+        const maxY = (heightOrg * (zoom - 1)) / 2;
+        
+        const constrainedFinalX = Math.min(Math.max(finalX, -maxX), maxX);
+        const constrainedFinalY = Math.min(Math.max(finalY, -maxY), maxY);
+        
+        setIsAnimating(true);
+        
+          // Animate to final position - faster animation
+          const startTime = Date.now();
+          const startPosition = { ...position };
+          
+          const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const duration = 300; // Reduced from 600ms for faster response
+            
+            if (elapsed < duration) {
+            // Easing function (ease-out cubic)
+            const t = elapsed / duration;
+            const eased = 1 - (1 - t) ** 3;
+            
+            setPosition({
+              x: startPosition.x + (constrainedFinalX - startPosition.x) * eased,
+              y: startPosition.y + (constrainedFinalY - startPosition.y) * eased,
+            });
+            
+            requestAnimationFrame(animate);
+          } else {
+            setPosition({ x: constrainedFinalX, y: constrainedFinalY });
+            setIsAnimating(false);
+          }
+        };
+        
+        requestAnimationFrame(animate);
+      }
+      
+      // Bounce back to boundaries if exceeded
+      const maxX = (widthOrg * (zoom - 1)) / 2;
+      const maxY = (heightOrg * (zoom - 1)) / 2;
+      
+      if (position.x > maxX || position.x < -maxX || position.y > maxY || position.y < -maxY) {
+        setIsAnimating(true);
+        const targetX = Math.min(Math.max(position.x, -maxX), maxX);
+        const targetY = Math.min(Math.max(position.y, -maxY), maxY);
+        
+        const startTime = Date.now();
+        const startPosition = { ...position };
+        
+        const bounceAnimate = () => {
+          const elapsed = Date.now() - startTime;
+          const duration = 200; // Faster bounce animation
+          
+          if (elapsed < duration) {
+            const t = elapsed / duration;
+            const eased = 1 - (1 - t) ** 2; // Ease-out quadratic
+            
+            setPosition({
+              x: startPosition.x + (targetX - startPosition.x) * eased,
+              y: startPosition.y + (targetY - startPosition.y) * eased,
+            });
+            
+            requestAnimationFrame(bounceAnimate);
+          } else {
+            setPosition({ x: targetX, y: targetY });
+            setIsAnimating(false);
+          }
+        };
+        
+        requestAnimationFrame(bounceAnimate);
+      }
+    } else {
+      setIsDragging(false);
+      setIsInteracting(false);
+    }
+    
+    setVelocity({ x: 0, y: 0 });
+  }, [isDragging, zoom, velocity, position, widthOrg, heightOrg]);
 
-  // Touch handlers for mobile (matching ReactNativeZoomableView)
+  // Enhanced mouse leave handler to ensure proper cleanup
+  const handleMouseLeave = useCallback(() => {
+    if (isDragging || isPinching) {
+      handleMouseUp();
+    }
+  }, [isDragging, isPinching, handleMouseUp]);
+
+  // Enhanced touch handlers for mobile with smooth animations
   const getTouchDistance = (touches: React.TouchList): number => {
     const dx = touches[0].clientX - touches[1].clientX;
     const dy = touches[0].clientY - touches[1].clientY;
-    return Math.sqrt(dx * dx + dy * dy);
+    return Math.hypot(dx, dy); // Using Math.hypot for better performance
+  };
+
+  const getTouchCenter = (touches: React.TouchList) => {
+    return {
+      x: (touches[0].clientX + touches[1].clientX) / 2,
+      y: (touches[0].clientY + touches[1].clientY) / 2,
+    };
   };
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    e.preventDefault(); // Prevent browser zoom/scroll
+    
     if (e.touches.length === 2) {
-      // Pinch zoom
+      // Enhanced pinch zoom with center point
       setIsPinching(true);
+      setIsDragging(false);
+      setIsInteracting(true);
       setInitialPinchDistance(getTouchDistance(e.touches));
       setInitialZoom(zoom);
+      
+      // Store the center point for zoom-to-point functionality
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (rect) {
+        const center = getTouchCenter(e.touches);
+        const relativeX = center.x - rect.left - rect.width / 2;
+        const relativeY = center.y - rect.top - rect.height / 2;
+        setDragStart({ x: relativeX, y: relativeY });
+      }
     } else if (e.touches.length === 1 && zoom > 1) {
-      // Pan
+      // Pan with momentum tracking
       setIsDragging(true);
+      setIsPinching(false);
+      setIsInteracting(true);
+      const touch = e.touches[0];
       setDragStart({
-        x: e.touches[0].clientX - position.x,
-        y: e.touches[0].clientY - position.y,
+        x: touch.clientX - position.x,
+        y: touch.clientY - position.y,
       });
+      setLastPanTime(Date.now());
+      setLastPosition({ x: touch.clientX, y: touch.clientY });
+      setVelocity({ x: 0, y: 0 });
     }
   }, [zoom, position]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    
     if (isPinching && e.touches.length === 2) {
+      // Direct update for immediate pinch zoom response
       const currentDistance = getTouchDistance(e.touches);
       const scale = currentDistance / initialPinchDistance;
       const newZoom = Math.min(Math.max(1, initialZoom * scale), 4);
+      
+      // Zoom towards the pinch center
+      if (newZoom !== zoom) {
+        const zoomFactor = newZoom / zoom;
+        const newX = position.x - dragStart.x * (zoomFactor - 1);
+        const newY = position.y - dragStart.y * (zoomFactor - 1);
+        
+        // Apply boundary constraints
+        const maxX = (widthOrg * (newZoom - 1)) / 2;
+        const maxY = (heightOrg * (newZoom - 1)) / 2;
+        
+        setPosition({
+          x: Math.min(Math.max(newX, -maxX), maxX),
+          y: Math.min(Math.max(newY, -maxY), maxY),
+        });
+      }
+      
       setZoom(newZoom);
       
       // Reset position when zooming out to 1
@@ -492,24 +730,160 @@ const SeatSelectionScreen = () => {
         setPosition({ x: 0, y: 0 });
       }
     } else if (isDragging && e.touches.length === 1 && zoom > 1) {
-      const newX = e.touches[0].clientX - dragStart.x;
-      const newY = e.touches[0].clientY - dragStart.y;
+      // Direct update for immediate touch response
+      const currentTime = Date.now();
+      const timeDelta = currentTime - lastPanTime;
+      const touch = e.touches[0];
       
-      // bindToBorders: limit panning to image bounds
+      if (timeDelta > 0) {
+        const newVelocity = {
+          x: (touch.clientX - lastPosition.x) / timeDelta,
+          y: (touch.clientY - lastPosition.y) / timeDelta,
+        };
+        setVelocity(newVelocity);
+      }
+      
+      const newX = touch.clientX - dragStart.x;
+      const newY = touch.clientY - dragStart.y;
+
+      // Enhanced boundary checking with minimal elastic effect for faster response
       const maxX = (widthOrg * (zoom - 1)) / 2;
       const maxY = (heightOrg * (zoom - 1)) / 2;
-      
-      setPosition({
-        x: Math.min(Math.max(newX, -maxX), maxX),
-        y: Math.min(Math.max(newY, -maxY), maxY),
-      });
-    }
-  }, [isDragging, isPinching, dragStart, zoom, initialPinchDistance, initialZoom, widthOrg, heightOrg]);
 
-  const handleTouchEnd = useCallback(() => {
-    setIsDragging(false);
-    setIsPinching(false);
-  }, []);
+      // Apply minimal elastic resistance for faster dragging
+      let constrainedX = newX;
+      let constrainedY = newY;
+
+      if (newX > maxX) {
+        const overshoot = newX - maxX;
+        constrainedX = maxX + overshoot * 0.1; // Minimal resistance for faster feel
+      } else if (newX < -maxX) {
+        const overshoot = -maxX - newX;
+        constrainedX = -maxX - overshoot * 0.1;
+      }
+
+      if (newY > maxY) {
+        const overshoot = newY - maxY;
+        constrainedY = maxY + overshoot * 0.1;
+      } else if (newY < -maxY) {
+        const overshoot = -maxY - newY;
+        constrainedY = -maxY - overshoot * 0.1;
+      }
+
+      setPosition({ x: constrainedX, y: constrainedY });
+      setLastPanTime(currentTime);
+      setLastPosition({ x: touch.clientX, y: touch.clientY });
+    }
+  }, [isDragging, isPinching, dragStart, zoom, initialPinchDistance, initialZoom, widthOrg, heightOrg, position, lastPanTime, lastPosition]);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 0) {
+      // All touches ended - apply momentum and bounce back
+      if (isDragging && zoom > 1) {
+        setIsInteracting(false);
+        // Apply momentum based on velocity - reduced for faster response
+        const momentumMultiplier = 100; // Further reduced for snappier feel
+        const momentumX = velocity.x * momentumMultiplier;
+        const momentumY = velocity.y * momentumMultiplier;
+        
+        if (Math.abs(momentumX) > 10 || Math.abs(momentumY) > 10) {
+          const finalX = position.x + momentumX;
+          const finalY = position.y + momentumY;
+          
+          // Constrain to boundaries
+          const maxX = (widthOrg * (zoom - 1)) / 2;
+          const maxY = (heightOrg * (zoom - 1)) / 2;
+          
+          const constrainedFinalX = Math.min(Math.max(finalX, -maxX), maxX);
+          const constrainedFinalY = Math.min(Math.max(finalY, -maxY), maxY);
+          
+          setIsAnimating(true);
+          
+          // Animate to final position with momentum
+          const startTime = Date.now();
+          const startPosition = { ...position };
+          
+          const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const duration = 300; // Faster momentum animation
+            
+            if (elapsed < duration) {
+              const t = elapsed / duration;
+              const eased = 1 - (1 - t) ** 3; // Ease-out cubic
+              
+              setPosition({
+                x: startPosition.x + (constrainedFinalX - startPosition.x) * eased,
+                y: startPosition.y + (constrainedFinalY - startPosition.y) * eased,
+              });
+              
+              requestAnimationFrame(animate);
+            } else {
+              setPosition({ x: constrainedFinalX, y: constrainedFinalY });
+              setIsAnimating(false);
+            }
+          };
+          
+          requestAnimationFrame(animate);
+        }
+        
+        // Bounce back to boundaries if exceeded
+        const maxX = (widthOrg * (zoom - 1)) / 2;
+        const maxY = (heightOrg * (zoom - 1)) / 2;
+        
+        if (position.x > maxX || position.x < -maxX || position.y > maxY || position.y < -maxY) {
+          setIsAnimating(true);
+          const targetX = Math.min(Math.max(position.x, -maxX), maxX);
+          const targetY = Math.min(Math.max(position.y, -maxY), maxY);
+          
+          const startTime = Date.now();
+          const startPosition = { ...position };
+          
+          const bounceAnimate = () => {
+            const elapsed = Date.now() - startTime;
+            const duration = 200; // Faster bounce animation
+            
+            if (elapsed < duration) {
+              const t = elapsed / duration;
+              const eased = 1 - (1 - t) ** 2; // Ease-out quadratic
+              
+              setPosition({
+                x: startPosition.x + (targetX - startPosition.x) * eased,
+                y: startPosition.y + (targetY - startPosition.y) * eased,
+              });
+              
+              requestAnimationFrame(bounceAnimate);
+            } else {
+              setPosition({ x: targetX, y: targetY });
+              setIsAnimating(false);
+            }
+          };
+          
+          requestAnimationFrame(bounceAnimate);
+        }
+      }
+      
+      setIsDragging(false);
+      setIsPinching(false);
+      setVelocity({ x: 0, y: 0 });
+    } else if (e.touches.length === 1) {
+      // One touch remaining, switch from pinch to pan
+      setIsPinching(false);
+      if (zoom > 1) {
+        setIsDragging(true);
+        // Keep isInteracting true when switching from pinch to pan
+        const touch = e.touches[0];
+        setDragStart({
+          x: touch.clientX - position.x,
+          y: touch.clientY - position.y,
+        });
+        setLastPanTime(Date.now());
+        setLastPosition({ x: touch.clientX, y: touch.clientY });
+        setVelocity({ x: 0, y: 0 });
+      } else {
+        setIsInteracting(false);
+      }
+    }
+  }, [isDragging, isPinching, zoom, velocity, position, widthOrg, heightOrg]);
 
   const handleChangeRoom = () => {
     // Match old: router.replace({ pathname: "/ticketing/RoomSelection", params })
@@ -539,142 +913,148 @@ const SeatSelectionScreen = () => {
   }
 
   const breadcrumbItems = metadata.ticketingSeatSelection?.breadcrumbItems || [];
-
   return (
-    <div className="min-h-[90vh] bg-primary-50">
+    <div
+      className="w-screen overflow-hidden flex flex-col bg-primary-50"
+      style={{ height: remainingHeight }}
+    >
       <MyBreadcrumb
         items={breadcrumbItems}
         title={title || "Seat Selection"}
         showBackButton={true}
       />
-      
-      <div 
-        className="flex-1 flex flex-col" 
-        style={{ 
-          backgroundColor: SURFACE.DEFAULT, 
+      <div
+        className="flex-1 flex flex-col overflow-hidden"
+        style={{
+          backgroundColor: SURFACE.DEFAULT,
           opacity: imageLoading ? 0 : 1,
-          transition: 'opacity 200ms'
+          transition: 'opacity 200ms',
+          width: '100vw',
+          maxWidth: '100vw'
         }}
       >
-      <div className="flex-1 flex flex-col" style={{ gap: `${scale(8)}px` }}>
-        {/* Header */}
-        <div 
-          className="flex justify-between items-start" 
-          style={{ 
-            justifyContent: 'space-between', 
-            alignItems: 'flex-start', 
-            paddingTop: `${moderateVerticalScale(12)}px`, 
-            paddingLeft: `${scale(8)}px`,
-            paddingRight: `${scale(8)}px`
-          }}
-        >
-          <div className="flex flex-col" style={{ gap: `${scale(4)}px` }}>
-            <Text style={{ fontSize: `${moderateScale(12)}px`, color: TEXT.SECONDARY, fontWeight: 'bold' }}>
-              {t(DesksData.rooms[0].roomName)}
-            </Text>
-          </div>
-          {(bookingId && typeof bookingId === 'string' && bookingId !== '' && (!configSeatchange || (configSeatchange && typeof configSeatchange === 'string' && configSeatchange === 'SAME_CATEGORY'))) && (
-            <button onClick={handleChangeRoom}>
-              <div
-                style={{
-                  padding: `${scale(2)}px`,
-                  margin: 0,
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  borderColor: BORDER.MEDIUM,
-                  borderRadius: `${scale(8)}px`,
-                  backgroundColor: SURFACE.LIGHTER,
-                  paddingLeft: `${scale(8)}px`,
-                  paddingRight: `${scale(8)}px`,
-                }}
-              >
-                <div className="flex flex-col items-center" style={{ alignItems: 'center', gap: `${scale(1)}px` }}>
-                  <SwitchIcon width={scale(16)} height={scale(16)} color={TEXT.DARK} />
-                  <Text style={{ fontSize: '8px', color: TEXT.DARK }}>{t('seatSelection.changeRoom')}</Text>
-                </div>
-              </div>
-            </button>
-          )}
-        </div>
-
-        {/* Zoomable Area */}
-        <div
-          ref={containerRef}
-          className="flex-1 overflow-hidden relative select-none"
-          onWheel={handleWheel}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          style={{
-            cursor: zoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
-          }}
-        >
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Header */}
           <div
+            className="flex justify-between items-start p-2"
+          >
+            <div className="flex flex-col">
+              <Text className='text-primary-400 font-bold'>
+                {t(DesksData.rooms[0].roomName)}
+              </Text>
+            </div>
+            {(bookingId && typeof bookingId === 'string' && bookingId !== '' && (!configSeatchange || (configSeatchange && typeof configSeatchange === 'string' && configSeatchange === 'SAME_CATEGORY'))) && (
+              <button onClick={handleChangeRoom}>
+                <div
+                  style={{
+                    padding: `${scale(2)}px`,
+                    margin: 0,
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    borderColor: BORDER.MEDIUM,
+                    borderRadius: `${scale(8)}px`,
+                    backgroundColor: SURFACE.LIGHTER,
+                    paddingLeft: `${scale(8)}px`,
+                    paddingRight: `${scale(8)}px`,
+                  }}
+                >
+                  <div className="flex flex-col items-center" style={{ alignItems: 'center', gap: `${scale(1)}px` }}>
+                    <SwitchIcon width={scale(16)} height={scale(16)} color={TEXT.DARK} />
+                    <Text style={{ fontSize: '8px', color: TEXT.DARK }}>{t('seatSelection.changeRoom')}</Text>
+                  </div>
+                </div>
+              </button>
+            )}
+          </div>
+
+          {/* Zoomable Area */}
+          <div
+            ref={containerRef}
+            className="flex-1 overflow-hidden relative select-none smooth-zoom-container custom-scroll"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseLeave}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
             style={{
-              width: `${widthOrg}px`,
-              height: `${heightOrg}px`,
-              position: 'relative',
-              transform: `translate(${position.x}px, ${position.y}px) scale(${zoom})`,
-              transformOrigin: 'center center',
-              transition: isDragging || isPinching ? 'none' : 'transform 0.2s ease-out',
+              cursor: getCursorStyle(),
+              touchAction: 'none', // Prevent browser gestures
             }}
           >
-            <img
-              ref={imageRef}
-              src={mapFile}
-              alt={mapFile || undefined}
-              className="w-full h-full absolute"
-              onLoadStart={() => setImageLoading(true)}
-              onLoad={() => setTimeout(() => setImageLoading(false), 200)}
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                position: 'absolute',
-                objectFit: 'contain'
+            <div
+              className="smooth-zoom-content"
+              style={{
+                width: `${widthOrg}px`,
+                height: `${heightOrg}px`,
+                position: 'relative',
+                transform: `translate3d(${position.x}px, ${position.y}px, 0) scale(${zoom})`,
+                transformOrigin: 'center center',
+                transition: (isInteracting || isDragging || isPinching || isAnimating) 
+                  ? 'none' 
+                  : 'transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+                perspective: 1000,
               }}
-            />
-            <SeatBox seats={DesksData.rawData} room={DesksData.rooms[0]} />
+            >
+              <img
+                ref={imageRef}
+                src={mapFile}
+                alt={mapFile || undefined}
+                className="w-full h-full absolute"
+                onLoad={() => setTimeout(() => setImageLoading(false), 200)}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  position: 'absolute',
+                  objectFit: 'contain'
+                }}
+              />
+              <SeatBox seats={DesksData.rawData} room={DesksData.rooms[0]} />
+            </div>
           </div>
-        </div>
 
-        {/* Legend and Navigation Map */}
-        <div 
-          className="flex items-center justify-between" 
-          style={{ 
-            paddingLeft: `${scale(20)}px`, 
-            paddingBottom: `${moderateVerticalScale(40)}px`, 
-            alignItems: 'center', 
-            justifyContent: 'space-between' 
-          }}
-        >
-          <div className="flex flex-col" style={{ gap: `${scale(1)}px` }}>
-            <Indicator label={t('seatSelection.available')} color={getSeatColor('AVAILABLE')} />
-            <Indicator label={t('seatSelection.inUse')} color={getSeatColor('booked')} />
-            <Indicator label={t('seatSelection.fixed')} color={getSeatColor('fixed')} />
+          {/* Legend and Navigation Map */}
+          <div
+            className="flex items-center justify-between"
+            style={{
+              paddingLeft: `${scale(4)}px`,
+              paddingRight: `${scale(4)}px`,
+              paddingTop: `${moderateVerticalScale(2)}px`,
+              paddingBottom: `${moderateVerticalScale(2)}px`,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              minHeight: 'auto',
+              height: 'fit-content'
+            }}
+          >
+            <div className={`flex ${isMobile? "flex-col": "flex-row"} gap-1`}>
+              <Indicator label={t('seatSelection.available')} color={getSeatColor('AVAILABLE')} />
+              <Indicator label={t('seatSelection.inUse')} color={getSeatColor('booked')} />
+              <Indicator label={t('seatSelection.fixed')} color={getSeatColor('fixed')} />
+            </div>
+            <Image
+              src={navMapFile}
+              alt="Navigation Map"
+              style={{ width: '15%', maxWidth: '120px', height: 'auto', objectFit: 'contain' }}
+              onError={(error) =>
+                console.warn('Error loading image:', error)
+              }
+            />
           </div>
-          <Image
-            src={navMapFile}
-            alt="Navigation Map"
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-            onError={(error) =>
-              console.warn('Error loading image:', error)
-            }
-          />
         </div>
-      </div>
       </div>
     </div>
+
   );
 };
 
 const Indicator = ({ label, color }: { label: string; color: string }) => (
-  <div className="flex items-center" style={{ margin: `${scale(4)}px`, alignItems: 'center', gap: `${scale(4)}px` }}>
-    <div style={{ width: `${scale(14)}px`, height: `${scale(14)}px`, borderRadius: `${scale(4)}px`, backgroundColor: color }} />
-    <Text style={{ fontSize: `${moderateScale(10)}px` }}>{label}</Text>
+  <div className="flex items-center" style={{ margin: `${scale(1)}px`, alignItems: 'center', gap: `${scale(3)}px` }}>
+    <div style={{ width: `${scale(10)}px`, height: `${scale(10)}px`, borderRadius: `${scale(2)}px`, backgroundColor: color }} />
+    <Text style={{ fontSize: `${moderateScale(8)}px` }}>{label}</Text>
   </div>
 );
 
