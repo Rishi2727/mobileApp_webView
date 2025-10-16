@@ -10,6 +10,8 @@ import { useBookingsStore } from "@/store/BookingsStore";
 import type { MyBookingModel } from "@/store/api/ResponseModels";
 import Text from "@/components/ui/custom/text";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
+import { metadata } from "@/config/metadata";
 
 const SLOT_STATES = [
   { state: 'Available', color: '#E0F2FE', fontColor: '#0F172A' },
@@ -228,13 +230,22 @@ const DisplayTimeChart = () => {
     );
   }
 
+  const breadcrumbItems = metadata.ticketingDisplayTimeChart?.breadcrumbItems || [];
+
   return (
-    <div className="p-3 bg-gray-50 flex flex-col h-screen overflow-hidden">
-      {/* Days Row */}
-      <div 
-        className="mb-2"
-        style={{ display: (DesksData?.catFeature.dayWiseBooking) ? 'none' : 'block' }}
-      >
+    <div className="min-h-[90vh] bg-primary-50">
+      <MyBreadcrumb
+        items={breadcrumbItems}
+        title={title || "Time Chart"}
+        showBackButton={true}
+      />
+      
+      <div className="p-3 bg-gray-50 flex flex-col overflow-hidden">
+        {/* Days Row */}
+        <div 
+          className="mb-2"
+          style={{ display: (DesksData?.catFeature.dayWiseBooking) ? 'none' : 'block' }}
+        >
         <div className="flex flex-col">
           <div className="flex justify-around mb-2.5">
             {availableDays.map((day, idx) => (
@@ -447,6 +458,7 @@ const DisplayTimeChart = () => {
           </div>
         </>
       )}
+      </div>
     </div>
   );
 };

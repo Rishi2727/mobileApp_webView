@@ -10,6 +10,8 @@ import { useLanguage } from '@/contexts/useLanguage';
 import Text from '@/components/ui/custom/text';
 import { Image } from '@/components/ui/custom/image';
 import SwitchIcon from '@/assets/icons/switch.svg?react';
+import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
+import { metadata } from "@/config/metadata";
 
 // Import color constants to match old version exactly
 const SEAT = {
@@ -335,6 +337,7 @@ const SeatSelectionScreen = () => {
   
   const catCode = searchParams.get('catCode');
   const roomCode = searchParams.get('roomCode');
+  const title = searchParams.get('title');
   const bookingId = searchParams.get('bookingId');
   const configSeatchange = searchParams.get('configSeatchange');
   
@@ -535,15 +538,24 @@ const SeatSelectionScreen = () => {
     );
   }
 
+  const breadcrumbItems = metadata.ticketingSeatSelection?.breadcrumbItems || [];
+
   return (
-    <div 
-      className="flex-1 flex flex-col" 
-      style={{ 
-        backgroundColor: SURFACE.DEFAULT, 
-        opacity: imageLoading ? 0 : 1,
-        transition: 'opacity 200ms'
-      }}
-    >
+    <div className="min-h-[90vh] bg-primary-50">
+      <MyBreadcrumb
+        items={breadcrumbItems}
+        title={title || "Seat Selection"}
+        showBackButton={true}
+      />
+      
+      <div 
+        className="flex-1 flex flex-col" 
+        style={{ 
+          backgroundColor: SURFACE.DEFAULT, 
+          opacity: imageLoading ? 0 : 1,
+          transition: 'opacity 200ms'
+        }}
+      >
       <div className="flex-1 flex flex-col" style={{ gap: `${scale(8)}px` }}>
         {/* Header */}
         <div 
@@ -653,6 +665,7 @@ const SeatSelectionScreen = () => {
             }
           />
         </div>
+      </div>
       </div>
     </div>
   );

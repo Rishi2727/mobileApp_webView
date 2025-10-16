@@ -10,6 +10,8 @@ import { useModelStore } from "@/store/ModelStore";
 import Text from "@/components/ui/custom/text";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
+import { metadata } from "@/config/metadata";
 
 type StudentField = {
   userId: string;
@@ -357,9 +359,18 @@ const TimeAndUserPicker = () => {
     }
   }, [DesksData, selectedRoomCode, slotStartTime, validateFields, newAlert, t, title, students, myProfile, selectedSlot, masterSlots, createBooking, navigate, catCode]);
 
+  const breadcrumbItems = metadata.ticketingTimeAndUserPicker?.breadcrumbItems || [];
+
   return (
-    <div className="flex-1 bg-gray-50 overflow-y-auto pb-12">
-      <div className="flex-1 p-2">
+    <div className="min-h-[90vh] bg-primary-50">
+      <MyBreadcrumb
+        items={breadcrumbItems}
+        title={title || "Time & User Picker"}
+        showBackButton={true}
+      />
+      
+      <div className="flex-1 bg-gray-50 overflow-y-auto pb-12">
+        <div className="flex-1 p-2">
         <div className="w-full max-w-[328px] px-2 py-2 bg-white rounded mb-2">
           <Text className="font-bold text-blue-900" style={{ fontSize: '14px' }}>
             {title ? t(title) : ''}
@@ -492,6 +503,7 @@ const TimeAndUserPicker = () => {
             </Button>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
