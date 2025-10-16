@@ -386,6 +386,24 @@ const SeatSelectionScreen = () => {
   const heightOrg = (screenWidth * 800) / 1200;
   const widthOrg = screenWidth;
 
+  // Handle wheel zoom
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = e.deltaY * -0.01;
+      setZoom(prevZoom => Math.min(Math.max(prevZoom + delta, 1), 3));
+    };
+
+    const element = containerRef.current;
+    element.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      element.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
+
   useEffect(() => {
     const roomCodes = roomCode ? String(roomCode).split(',') : [];
     if (catCode === '' || roomCodes.length === 0) return;
