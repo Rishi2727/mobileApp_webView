@@ -102,7 +102,7 @@ const DashboardCard = ({
           {cardContent}
         </button>
       ) : (
-        <Link to={queryParams ? `${path}?${queryParams}` : path}>
+        <Link to={queryParams ? `${path}${queryParams}` : path}>
           {cardContent}
         </Link>
       )}

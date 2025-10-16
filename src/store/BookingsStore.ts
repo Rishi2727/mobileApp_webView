@@ -6,7 +6,7 @@ import isEqual from 'lodash/isEqual';
 
 
 let refreshTimer: ReturnType<typeof setInterval> | null = null;
-const intervalMs = 3000;
+const intervalMs = 5000;
 
 type BookingsStore = {
     init: () => void;
@@ -44,8 +44,8 @@ export const useBookingsStore = create<BookingsStore>((set, get) => ({
     },
 
     getMyBookingsList: async (pageNumber: number | null) => {
-        let page = (pageNumber !== null) ? pageNumber : get().loadedPages + 1;
-        let catCode = get().selectedCategory;
+        const page = (pageNumber !== null) ? pageNumber : get().loadedPages + 1;
+        const catCode = get().selectedCategory;
         const res = await getMyBookings(
             {
                 page: page,
@@ -55,7 +55,7 @@ export const useBookingsStore = create<BookingsStore>((set, get) => ({
             });
         if (res?.data && catCode?.join(',') === get().selectedCategory?.join(',')) {
             let bookings = get().myBookings || [];
-            let newBookings = res?.data?.content || [];
+            const newBookings = res?.data?.content || [];
             // const isSame = newBookings.every((newBooking, index) => JSON.stringify(newBooking) === JSON.stringify(bookings?.[index]));
             const isSame = newBookings.every((newBooking, index) => isEqual(newBooking, bookings[index]));
             if (!isSame) {

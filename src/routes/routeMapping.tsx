@@ -8,16 +8,14 @@ import Dashboard from "@/pages/dashboard/Dashboard";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import MyBookings from "@/pages/my-bookings/my-bookings";
 import Notice from "@/pages/notice/notice";
-import SeatBookingPage from "@/pages/seat-booking/seat-booking-page";
-import CarrelBooking from "@/pages/carrel-booking/carrel-booking";
 import Message from "@/pages/message/message";
 import Setting from "@/pages/setting/setting";
 import PreferredSeat from "@/pages/setting/preferred-seat";
-import TimeSelection from "@/pages/group-booking/time-selection";
-import CarrelTimeSelection from "@/pages/carrel-booking/carrelTimeSelection";
-import Reservation from "@/pages/group-booking/reservation";
 import ExternalUser from "@/pages/external-user/external-user";
-import RoomSelection from "@/features/ticketing/RoomSelection";
+import RoomSelection from "@/pages/ticketing/RoomSelection";
+import SeatSelection from "@/pages/ticketing/SeatSelection";
+import DisplayTimeChart from "@/pages/ticketing/DisplayTimeChart";
+import TimeAndUserPicker from "@/pages/ticketing/TimeAndUserPicker";
 
 export type RouteObjectExtend = RouteObject & {
   title: string;
@@ -65,19 +63,9 @@ export const routeMapping: RouteObjectExtend[] = [
         element: <RoomSelection />,
       },
       {
-        title: metadata.seatBookingPage.title,
-        path: metadata.seatBookingPage.path,
-        element: <SeatBookingPage />,
-      },
-      {
         title: metadata.groupBooking.title,
         path: metadata.groupBooking.path,
         element: <RoomSelection />,
-      },
-      {
-        title: metadata.timeSelection.title,
-        path: metadata.timeSelection.path,
-        element: <TimeSelection />,
       },
       {
         title: metadata.carrelBooking.title,
@@ -100,20 +88,26 @@ export const routeMapping: RouteObjectExtend[] = [
         path: metadata.PreferredSeatSetting.path,
         element: <PreferredSeat />,
       },
+      // Ticketing System Routes
       {
-        title: metadata.carrelBooking.title,
-        path: metadata.carrelBooking.path,
-        element: <CarrelBooking />,
+        title: metadata.ticketingRoomSelection.title,
+        path: metadata.ticketingRoomSelection.path,
+        element: <RoomSelection />,
       },
       {
-        title: metadata.carrelTimeSelection.title,
-        path: metadata.carrelTimeSelection.path,
-        element: <CarrelTimeSelection />,
+        title: metadata.ticketingSeatSelection.title,
+        path: metadata.ticketingSeatSelection.path,
+        element: <SeatSelection />,
       },
       {
-        title: metadata.reservaton.title,
-        path: metadata.reservaton.path,
-        element: <Reservation />,
+        title: metadata.ticketingDisplayTimeChart.title,
+        path: metadata.ticketingDisplayTimeChart.path,
+        element: <DisplayTimeChart />,
+      },
+      {
+        title: metadata.ticketingTimeAndUserPicker.title,
+        path: metadata.ticketingTimeAndUserPicker.path,
+        element: <TimeAndUserPicker />,
       },
     ],
   },

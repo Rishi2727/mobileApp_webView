@@ -80,9 +80,9 @@ const groupKeyCalculator = (r: CategoryWiseAvailabilityRoom) => {
 export const useCategoryWiseRoomsStore = create<CatCategoryWiseRoomsStore>((set, get) => ({
   init: (catCodes, includeAvailability) => {
     if (refreshTimer) return; // already started
-    let choice = get().CategoriesWiseDesksChoice;
+    const choice = get().CategoriesWiseDesksChoice;
     set({ CategoriesWiseDesksChoice: { catCodes, payload: { includeAvailability } }, });
-    let choiceAfter = get().CategoriesWiseDesksChoice;
+    const choiceAfter = get().CategoriesWiseDesksChoice;
     if (!isEqual(choice, choiceAfter)) { set({ categoriesWiseGroupedData: null }); }
     if (catCodes.length > 0) { get().getCategoryWiseDesks?.(); }
     refreshTimer = setInterval(() => {
@@ -110,7 +110,7 @@ export const useCategoryWiseRoomsStore = create<CatCategoryWiseRoomsStore>((set,
   CategoriesWiseDesksChoice: { catCodes: [], payload: { includeAvailability: true } },
   setCategoriesWiseDesksChoice: (catCodes: string[], payload: CatWiseRooms) => { set({ CategoriesWiseDesksChoice: { catCodes, payload } }); },
   getCategoryWiseDesks: async () => {
-    let choice = get().CategoriesWiseDesksChoice;
+    const choice = get().CategoriesWiseDesksChoice;
     const res = await getCategoryWiseDesks(choice.catCodes.join(','), choice.payload);
     if (res?.success && res.data && choice === get().CategoriesWiseDesksChoice) {
       const raw = res.data;

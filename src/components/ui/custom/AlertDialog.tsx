@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -16,46 +14,40 @@ import { cn } from "@/lib/utils";
 type DialogButton = NonNullable<DialogOptions["buttons"]>[number];
 
 export function GlobalAlertDialog() {
-  const { showAlertDialog, setShowAlertDialog, options } = useModelStore();
-  const [loadingButton, setLoadingButton] = useState<string | null>(null);
+  const { showAlertDialog, setShowAlertDialog, options, newAlert } = useModelStore();
+  const [buttonsClicked, setButtonsClicked] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
-    if (!showAlertDialog) {
-      setLoadingButton(null);
+    if (options) {
+      newAlert(options);
+      setButtonsClicked({});
     }
-  }, [showAlertDialog]);
+  }, [options, newAlert, showAlertDialog]);
 
   const handleClose = () => {
-    if (!options?.disableOnClick) {
-      setShowAlertDialog(false);
-    }
+    setShowAlertDialog(false);
   };
 
-  const handleButtonClick = async (button: DialogButton) => {
-    if (button.onClickLoading) {
-      setLoadingButton(button.title);
-    }
-
+  const handleButtonClick = async (button: DialogButton, index: number) => {
     try {
+      // Prevent multiple clicks on the same button
+      setButtonsClicked((prev) => ({ ...prev, [index]: true }));
       const result = await button.action();
-
-      if (button.onSuccess) {
-        button.onSuccess(result);
+      setButtonsClicked((prev) => ({ ...prev, [index]: false }));
+      if (button.closeOnSuccess !== false) {
+        handleClose();
       }
-
-      if (button.closeOnSuccess) {
-        setShowAlertDialog(false);
-      }
+      setTimeout(() => {
+        button?.onSuccess?.(result);
+      }, 100); // Delay to allow UI updates
     } catch (error) {
-      if (button.onFailure) {
-        button.onFailure(error);
+      if (button.closeOnFailure !== false) {
+        handleClose();
       }
-
-      if (button.closeOnFailure) {
-        setShowAlertDialog(false);
-      }
-    } finally {
-      setLoadingButton(null);
+      setButtonsClicked((prev) => ({ ...prev, [index]: false }));
+      setTimeout(() => {
+        button?.onFailure?.(error);
+      }, 100); // Delay to allow UI updates
     }
   };
 
@@ -76,79 +68,76 @@ export function GlobalAlertDialog() {
 
     return (
       <div className="flex justify-center mb-4">
-        <IconSrc className="w-16 h-16" />
+        <IconSrc className="w-12 h-12" />
       </div>
     );
   };
 
-  if (!options) return null;
+  const btnColor = (color: "primary" | "secondary" | "positive" | "negative" | "default" | undefined) => {
+    switch (color) {
+      case "primary":
+        return "bg-primary hover:bg-primary/90 text-primary-foreground";
+      case "secondary":
+        return "bg-secondary hover:bg-secondary/80 text-secondary-foreground";
+      case "positive":
+        return "bg-green-600 hover:bg-green-700 text-white";
+      case "negative":
+        return "bg-destructive hover:bg-destructive/90 text-destructive-foreground";
+      default:
+        return "bg-primary hover:bg-primary/90 text-primary-foreground";
+    }
+  };
+
+  if (!options || !showAlertDialog) return null;
 
   return (
-    <AlertDialog open={showAlertDialog} onOpenChange={handleClose}>
+    <AlertDialog
+      open={showAlertDialog}
+      onOpenChange={options.allowOutsideClick ? handleClose : undefined}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
           {getIcon()}
           {options.title && (
-            <AlertDialogTitle className="text-center">
+            <AlertDialogTitle className="text-center text-sm font-semibold">
               {options.title}
             </AlertDialogTitle>
           )}
-          <AlertDialogDescription className="text-center">
-            {options.message}
-          </AlertDialogDescription>
+          {options.message && (
+            <AlertDialogDescription className="text-center text-xs py-2">
+              {options.message}
+            </AlertDialogDescription>
+          )}
         </AlertDialogHeader>
-        <AlertDialogFooter className="flex-row justify-center gap-2">
+        <AlertDialogFooter className="flex-row justify-center gap-2 sm:justify-center">
           {options.buttons?.map((button, index) => {
             if (button.hidden) return null;
 
-            const isLoading = loadingButton === button.title;
-
-            // Determine button class based on color
-            const buttonClassName = cn(
-              button.color === "primary" && "bg-primary text-primary-foreground hover:bg-primary/90",
-              button.color === "secondary" && "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-              button.color === "positive" && "bg-success text-white hover:bg-success/90",
-              button.color === "negative" && "bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            );
-
-            // Determine if this is a cancel/no button
-            const isCancel =
-              button.title.toLowerCase() === "cancel" ||
-              button.title.toLowerCase() === "no";
-
-            if (isCancel) {
-              return (
-                <AlertDialogCancel
-                  key={index}
-                  onClick={() => {
-                    if (button.action) {
-                      button.action();
-                    }
-                  }}
-                  disabled={isLoading || !!loadingButton}
-                  className="mt-0"
-                >
-                  {button.title}
-                </AlertDialogCancel>
-              );
-            }
+            const isLoading = buttonsClicked[index] && button.onClickLoading;
+            const isAnyButtonLoading = options.disableOnClick && Object.values(buttonsClicked).some((clicked) => clicked);
 
             return (
-              <AlertDialogAction
+              <button
                 key={index}
-                onClick={() => handleButtonClick(button)}
-                disabled={isLoading || !!loadingButton}
-                className={buttonClassName}
+                onClick={() => handleButtonClick(button, index)}
+                disabled={isAnyButtonLoading}
+                className={cn(
+                  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors",
+                  "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+                  "disabled:pointer-events-none disabled:opacity-50",
+                  "h-9 px-4 py-2 w-[40%]",
+                  btnColor(button.color)
+                )}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    {button.title}
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>{button.title}</span>
                   </div>
                 ) : (
                   button.title
                 )}
-              </AlertDialogAction>
+              </button>
             );
           })}
         </AlertDialogFooter>

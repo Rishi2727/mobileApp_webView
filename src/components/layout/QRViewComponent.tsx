@@ -50,10 +50,6 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
   const [timeRange, setTimeRange] = useState<string | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<string>("");
 
-  useEffect(() => {
-    console.log("QRViewComponent mounted", { generatedAt, expireAt });
-  }, [expireAt, generatedAt]);
-
   const cleanup = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);

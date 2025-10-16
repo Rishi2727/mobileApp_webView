@@ -7,6 +7,7 @@ interface ImportMetaEnv {
   readonly VITE_API_X_API_KEY: string
   readonly VITE_APP_VERSION: string
   readonly VITE_RUNTIME_VERSION: string
+  readonly VITE_DEV: boolean
 }
 
 interface ImportMeta {
