@@ -101,7 +101,7 @@ const ActionButtons = ({ selectedBookingData }: { selectedBookingData: MyBooking
     (booking: MyBookingModel, action: "CONFIRM" | "CANCEL" | "EXTEND" | "SEATCHANGE" | "RETURN") => {
       if (action === "SEATCHANGE") {
         navigate(
-          `/seat-booking?roomCode=${booking.roomCode}&catCode=${booking.roomcatCode}&title=${booking.roomName}&bookingId=${booking.bookingId}&configSeatchange=${booking.configSeatchange}`
+          `/ticketing/SeatSelection?roomCode=${booking.roomCode}&catCode=${booking.roomcatCode}&title=${booking.roomName}&bookingId=${booking.bookingId}&configSeatchange=${booking.configSeatchange}`
         );
         return;
       }
