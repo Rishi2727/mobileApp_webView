@@ -238,6 +238,43 @@ export const metadata: MentaDataTypeProps = {
 
         ],
     },
+    // Ticketing System Routes
+    ticketingRoomSelection: {
+        title: "Room Selection",
+        path: "/ticketing/RoomSelection",
+        breadcrumbItems: [
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "Room Selection" },
+        ],
+    },
+    ticketingSeatSelection: {
+        title: "Seat Selection",
+        path: "/ticketing/SeatSelection",
+        breadcrumbItems: [
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "Room Selection" },
+            { id: 3, label: "header.SeatSelection" },
+        ],
+    },
+    ticketingDisplayTimeChart: {
+        title: "Time Chart",
+        path: "/ticketing/DisplayTimeChart",
+        breadcrumbItems: [
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "Room Selection" },
+            { id: 3, label: "header.DisplayTimeChart" },
+        ],
+    },
+    ticketingTimeAndUserPicker: {
+        title: "Time & User Picker",
+        path: "/ticketing/TimeAndUserPicker",
+        breadcrumbItems: [
+            { id: 1, label: "header.dashboard" },
+            { id: 2, label: "Room Selection" },
+            { id: 3, label: "header.DisplayTimeChart" },
+            { id: 4, label: "header.TimeAndUserPicker" },
+        ],
+    },
     message: {
         title: "dashboard.push.title",
         image: commonIcons.BellIcon,

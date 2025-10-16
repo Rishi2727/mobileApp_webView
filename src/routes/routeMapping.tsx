@@ -18,6 +18,9 @@ import CarrelTimeSelection from "@/pages/carrel-booking/carrelTimeSelection";
 import Reservation from "@/pages/group-booking/reservation";
 import ExternalUser from "@/pages/external-user/external-user";
 import RoomSelection from "@/features/ticketing/RoomSelection";
+import SeatSelection from "@/pages/ticketing/SeatSelection";
+import DisplayTimeChart from "@/pages/ticketing/DisplayTimeChart";
+import TimeAndUserPicker from "@/pages/ticketing/TimeAndUserPicker";
 
 export type RouteObjectExtend = RouteObject & {
   title: string;
@@ -114,6 +117,27 @@ export const routeMapping: RouteObjectExtend[] = [
         title: metadata.reservaton.title,
         path: metadata.reservaton.path,
         element: <Reservation />,
+      },
+      // Ticketing System Routes
+      {
+        title: metadata.ticketingRoomSelection.title,
+        path: metadata.ticketingRoomSelection.path,
+        element: <RoomSelection />,
+      },
+      {
+        title: metadata.ticketingSeatSelection.title,
+        path: metadata.ticketingSeatSelection.path,
+        element: <SeatSelection />,
+      },
+      {
+        title: metadata.ticketingDisplayTimeChart.title,
+        path: metadata.ticketingDisplayTimeChart.path,
+        element: <DisplayTimeChart />,
+      },
+      {
+        title: metadata.ticketingTimeAndUserPicker.title,
+        path: metadata.ticketingTimeAndUserPicker.path,
+        element: <TimeAndUserPicker />,
       },
     ],
   },

@@ -257,7 +257,7 @@ const RoomSelection = () => {
 
     const handleRoomSelect = useCallback((type: 'SEAT' | 'ROOM', roomcode: string, catCode: number, title: string) => {
         const bkId = (bookingId && bookingId !== '') ? bookingId : undefined;
-        const path = (type === 'SEAT') ? "/seat-booking-page" : "/time-selection";
+        const path = (type === 'SEAT') ? "/ticketing/SeatSelection" : "/ticketing/DisplayTimeChart";
         const params = new URLSearchParams({
             roomCode: roomcode,
             catCode: String(catCode),
@@ -334,9 +334,9 @@ const RoomSelection = () => {
             const zeroIndex = item[0];
 
             let title = t(item[0].roomName);
-            let persons = zeroIndex.featureMultiUserBooking && (zeroIndex?.roomMaxUsers || -1) > 0 ? ' ' + zeroIndex.roomMaxUsers + ' ' + t('roomSelection.people') : '';
-            let fullCatName = pageConfig.CATEGORY[String(zeroIndex.roomcatCode) as ColorKeys]?.fullname || '';
-            let shortCatName = pageConfig.CATEGORY[String(zeroIndex.roomcatCode) as ColorKeys]?.name || '';
+            const persons = zeroIndex.featureMultiUserBooking && (zeroIndex?.roomMaxUsers || -1) > 0 ? ' ' + zeroIndex.roomMaxUsers + ' ' + t('roomSelection.people') : '';
+            const fullCatName = pageConfig.CATEGORY[String(zeroIndex.roomcatCode) as ColorKeys]?.fullname || '';
+            const shortCatName = pageConfig.CATEGORY[String(zeroIndex.roomcatCode) as ColorKeys]?.name || '';
 
             title = (persons === '') ? fullCatName : `${(selectedCatCode === 'all' && (categoriesWiseGroupedData?.counts.categories.length || 0) > 1) ? shortCatName : t(fullCatName)} ${t('roomSelection.for')}${persons}`;
             title += (selectedLibCode === 'all' && (categoriesWiseGroupedData?.counts.libraries.length || 0) > 1) ? ` - ${t(zeroIndex.libName)}` : '';
