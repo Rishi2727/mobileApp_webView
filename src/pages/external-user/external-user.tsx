@@ -17,12 +17,13 @@ import { KeyRound, Loader2, Phone, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import z from "zod";
-import { motion, AnimatePresence } from "framer-motion";;
+import { motion, AnimatePresence } from "framer-motion";
 import { QRViewComponent } from "@/components/layout/QRViewComponent";
 import useExternalUserStore from "@/store/ExternalUserStore";
 import { useTranslation } from "react-i18next";
 
 import type { OneDayPass, OtpInfo } from "@/types/models";
+import moment from "moment";
 
 const oneDayPassSchema = z.object({
   username: z.string().min(2, {
@@ -39,7 +40,6 @@ const otpInfo = z.object({
   }),
 });
 
-
 // Define step type as const
 const ExternalUserStep = {
   ENTER_DETAILS: "ENTER_DETAILS",
@@ -47,13 +47,15 @@ const ExternalUserStep = {
   SHOW_QR: "SHOW_QR",
 } as const;
 
-type ExternalUserStepType = typeof ExternalUserStep[keyof typeof ExternalUserStep];
+type ExternalUserStepType =
+  (typeof ExternalUserStep)[keyof typeof ExternalUserStep];
 
 // OTP Timer Component with proper types
 interface OtpExpireProps {
   expireAt: string | null;
   t: (key: string) => string;
 }
+
 
 // OTP Timer Component
 const OtpExpire: React.FC<OtpExpireProps> = ({ expireAt, t }) => {
@@ -63,16 +65,17 @@ const OtpExpire: React.FC<OtpExpireProps> = ({ expireAt, t }) => {
     if (!expireAt) return;
 
     const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const expTime = new Date(expireAt).getTime();
-      const diff = expTime - now;
+      const now = moment();
+      const expTime = moment(expireAt.replace(' ', 'T'));
+      const diff = expTime.diff(now);
 
       if (diff <= 0) {
         setExpTxt(t ? t("externalUser.otpExpired") : "OTP Expired");
         clearInterval(timer);
       } else {
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        const duration = moment.duration(diff);
+        const minutes = Math.floor(duration.asMinutes());
+        const seconds = duration.seconds();
         setExpTxt(
           t
             ? `${t("externalUser.otpExpiresIn")} ${minutes}m ${seconds}s`
@@ -84,8 +87,14 @@ const OtpExpire: React.FC<OtpExpireProps> = ({ expireAt, t }) => {
     return () => clearInterval(timer);
   }, [expireAt, t]);
 
-  return <div className="text-sm text-center mt-2 text-muted-foreground">{expTxt}</div>;
+  return (
+    <div className="text-sm text-center mt-2 text-muted-foreground">
+      {expTxt}
+    </div>
+  );
 };
+
+
 export default function ExternalUser() {
   const navigate = useNavigate();
   const [consentAllowed, setConsentAllowed] = useState(false);
@@ -93,7 +102,7 @@ export default function ExternalUser() {
   const [currentStep, setCurrentStep] = useState<ExternalUserStepType>(
     ExternalUserStep.ENTER_DETAILS
   );
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   //store Data
   const {
@@ -140,7 +149,10 @@ export default function ExternalUser() {
   const handleSubmit = async (values: OneDayPass) => {
     console.log("Form submitted with values:", values);
     try {
-      await submitDetails({ name: values.username, phoneNumber: values.phoneno });
+      await submitDetails({
+        name: values.username,
+        phoneNumber: values.phoneno,
+      });
 
       if (isQrCodeGenerated()) {
         setCurrentStep(ExternalUserStep.SHOW_QR);
@@ -149,14 +161,11 @@ export default function ExternalUser() {
       }
     } catch (error) {
       console.error("Error submitting details:", error);
-
     }
   };
 
-
   // Handle OTP submit
   const handleOtpSubmit = async (values: OtpInfo) => {
-
     if (!encOtpTxnData || isOtpExpired()) {
       clearAllData();
       setCurrentStep(ExternalUserStep.ENTER_DETAILS);
@@ -169,7 +178,6 @@ export default function ExternalUser() {
       setCurrentStep(ExternalUserStep.SHOW_QR);
     } catch (error) {
       console.error("Error submitting OTP:", error);
-
     }
   };
 
@@ -277,7 +285,7 @@ export default function ExternalUser() {
 
             {/* STEP 1: Enter Details */}
             {currentStep === ExternalUserStep.ENTER_DETAILS && (
-              //  *Personal Info Consent  section 
+              //  *Personal Info Consent  section
 
               <CardContent className="space-y-6">
                 <MyForm
@@ -329,7 +337,7 @@ export default function ExternalUser() {
                               transition={{ duration: 0.2, ease: "easeInOut" }}
                               className="overflow-hidden"
                             >
-                              <p className="text-[11px] text-center mt-2">
+                              <p className="text-[11px] text-center ">
                                 We collect and use personal information as
                                 follows for the operation of QR services
                                 entering the library of the Korea Maritime
@@ -338,7 +346,7 @@ export default function ExternalUser() {
 
                               <div className="border rounded-lg mt-4">
                                 <div className="grid grid-cols-3 text-center border-b text-xs font-medium bg-muted">
-                                  <div className="border-r p-2">
+                                  <div className="border-r p-1">
                                     Purpose of Collection
                                   </div>
                                   <div className="border-r p-2">
@@ -347,18 +355,18 @@ export default function ExternalUser() {
                                   <div className="p-2">Expiration Date</div>
                                 </div>
                                 <div className="grid grid-cols-3 text-center text-xs">
-                                  <div className="border-r p-2">
+                                  <div className="border-r p-1">
                                     Provision of QR Service
                                   </div>
                                   <div className="border-r">
-                                    <div className="border-b p-2">
-                                      Requester Name
+                                    <div className="border-b p-1">
+                                     Name
                                     </div>
-                                    <div className="p-2">
-                                      Requester Phone Number
+                                    <div className="p-1">
+                                      Phone Number
                                     </div>
                                   </div>
-                                  <div className="p-2">Validity Period</div>
+                                  <div className="p-1">One day</div>
                                 </div>
                               </div>
 
@@ -447,7 +455,6 @@ export default function ExternalUser() {
                   }
                 />
               </CardContent>
-
             )}
 
             {/* QR Code section */}
@@ -455,8 +462,6 @@ export default function ExternalUser() {
               <CardContent>
                 {/* Title */}
                 <div className="flex flex-col items-center justify-center text-center ">
-              
-
                   {/* QR Circle */}
                   <div className="relative ">
                     <QRViewComponent
@@ -469,11 +474,7 @@ export default function ExternalUser() {
                       page="EXTERNAL_USER"
                       t={t}
                     />
-
-
                   </div>
-
-                  
                 </div>
                 <div className="grid grid-row-1 sm:grid-row-2 gap-2 mt-8">
                   <Button

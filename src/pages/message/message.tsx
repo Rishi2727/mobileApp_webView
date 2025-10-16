@@ -6,6 +6,7 @@ import { useMessagesStore } from "@/store/MessagesStore";
 import { useLanguage } from "@/contexts/useLanguage";
 import moment from "moment";
 import Text from "@/components/ui/custom/text";
+import { Loader } from "@/components/ui/custom/loader";
 
 const getPageConfig = (t: (key: string) => string) => ({
   METHODS: {
@@ -72,7 +73,7 @@ const Message = () => {
     selectedClassification,
     haveMore,
   } = useMessagesStore();
-  
+
   const { language, t } = useLanguage();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isLoadingMore = useRef(false);
@@ -111,15 +112,19 @@ const Message = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [haveMore]);
 
+  if (myNotifications == null) {
+    return <Loader />
+  }
+
   return (
-    <div className="bg-secondary min-h-[90vh]">
+    <div className="bg-secondary h-full flex flex-col">
       <MyBreadcrumb
         items={breadcrumbItems}
         title="Notifications"
         showBackButton={true}
       />
 
-      <div className="p-4">
+      <div className="p-4 flex-1">
         {/* Filter Buttons */}
         <div className="grid grid-cols-5 gap-2 mb-3">
           {(Object.keys(pageConfig.CLASSIFICATIONS) as ClassificationsKeys[]).map((key) => {
@@ -132,11 +137,10 @@ const Message = () => {
               <div
                 key={key}
                 onClick={() => setSelectedClassification(classification.code)}
-                className={`min-w-[30px] h-[40px] flex flex-col items-center justify-center p-1 rounded-md transition-colors ${
-                  isSelected
+                className={`min-w-[30px] h-[40px] flex flex-col items-center justify-center p-1 rounded-md transition-colors ${isSelected
                     ? "text-primary-900 bg-surface-tertiary border-2 border-border-accent"
                     : "bg-background text-primary-400 hover:bg-primary-50"
-                }`}
+                  }`}
               >
                 <classification.icon
                   width={15}
@@ -150,10 +154,10 @@ const Message = () => {
         </div>
 
         {/* Notifications List */}
-        <div className="max-h-[620px] overflow-y-auto" ref={scrollContainerRef}>
+        <div className="h-[calc(100vh-220px)] overflow-y-auto" ref={scrollContainerRef}>
           {myNotifications.length === 0 ? (
             <div className="flex items-center justify-center h-40">
-              <Text className="text-muted-foreground">No notifications found</Text>
+              <Loader timeout={3000} />
             </div>
           ) : (
             myNotifications.map((item, index) => (

@@ -86,7 +86,6 @@ export function DashbaordNavbar() {
     return () => clearInterval(timer);
   }, []);
   const handleLanguageToggle = (newLanguage: string) => {
-    console.log("Language changed to:", newLanguage);
     setLanguage(newLanguage);
   };
 
