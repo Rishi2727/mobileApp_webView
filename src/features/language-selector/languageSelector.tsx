@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Image } from "@/components/ui/custom/image";
 import MyDialog from "@/components/ui/custom/MyDialog";
 import { commonIcons } from "@/assets";
 import { useLanguage } from "@/contexts/useLanguage";
@@ -27,7 +26,7 @@ const LanguageSelector = ({ open, onOpenChange, setLanguage, language }: Languag
       >
         <div className="flex items-center justify-between border-b pb-2">
           <div className="flex items-center gap-2">
-            <Image src={commonIcons.usaFlag} alt="English" width={16} height={16} />
+            <commonIcons.UsaFlag width={16} height={16} />
             <Label className="text-sm font-medium">English</Label>
           </div>
           <RadioGroupItem value="en" />
@@ -35,7 +34,7 @@ const LanguageSelector = ({ open, onOpenChange, setLanguage, language }: Languag
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Image src={commonIcons.southKoreaFlag} alt="Korean" width={16} height={16} />
+            <commonIcons.SouthKoreaFlag width={16} height={16} />
             <Label className="text-sm font-medium">한국어</Label>
           </div>
           <RadioGroupItem value="ko" />

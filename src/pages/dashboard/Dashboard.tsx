@@ -13,6 +13,7 @@ const Dashboard = () => {
                 key={item.path}
                 title={item.title}
                 path={item.path}
+                queryParams={item.queryParams}
                 image={item.image}
                 iconFillColor={item.iconFillColor}
                 backgroundColor={item.backgroundColor}

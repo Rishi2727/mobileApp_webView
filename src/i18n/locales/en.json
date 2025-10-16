@@ -309,7 +309,8 @@
     "room": "Room",
     "for": "for",
     "totalRooms": "Total Rooms",
-    "24Open": "Room is open for 24 Hours"
+    "24Open": "Room is open for 24 Hours",
+    "noRoomsAvailable": "No rooms available for the selected criteria"
   },
   "bookLoan": {
     "guideTitle": "Guide to using Mobile Book Lending",

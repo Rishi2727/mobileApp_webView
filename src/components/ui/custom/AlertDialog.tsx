@@ -38,7 +38,7 @@ export function GlobalAlertDialog() {
 
     try {
       const result = await button.action();
-      
+
       if (button.onSuccess) {
         button.onSuccess(result);
       }
@@ -63,20 +63,20 @@ export function GlobalAlertDialog() {
     if (!options?.icon) return null;
 
     const iconMap = {
-      success: commonIcons.statusSuccessIcon,
-      error: commonIcons.statusErrorIcon,
-      warning: commonIcons.statusWarningIcon,
-      info: commonIcons.statusInfoIcon,
-      question: commonIcons.questionMark,
+      success: commonIcons.StatusSuccessIcon,
+      error: commonIcons.StatusErrorIcon,
+      warning: commonIcons.StatusWarningIcon,
+      info: commonIcons.StatusInfoIcon,
+      question: commonIcons.QuestionMark,
       download: null,
     };
 
-    const iconSrc = iconMap[options.icon];
-    if (!iconSrc) return null;
+    const IconSrc = iconMap[options.icon];
+    if (!IconSrc) return null;
 
     return (
       <div className="flex justify-center mb-4">
-        <img src={iconSrc} alt={options.icon} className="w-16 h-16" />
+        <IconSrc className="w-16 h-16" />
       </div>
     );
   };
@@ -102,7 +102,7 @@ export function GlobalAlertDialog() {
             if (button.hidden) return null;
 
             const isLoading = loadingButton === button.title;
-            
+
             // Determine button class based on color
             const buttonClassName = cn(
               button.color === "primary" && "bg-primary text-primary-foreground hover:bg-primary/90",

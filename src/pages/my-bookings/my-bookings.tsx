@@ -21,25 +21,25 @@ const getPageConfig = (t: (key: string) => string) => ({
       color: "#27304B",
       name: t("bookings.category.seat"),
       fullname: t("bookings.category.generalReadingRoom"),
-      icon: dashboardIcons.seatIcon,
+      icon: dashboardIcons.SeatIcon,
     },
     "402": {
       color: "#27304B",
       name: t("bookings.category.pc"),
       fullname: t("bookings.category.pcRoom"),
-      icon: commonIcons.pcIcon,
+      icon: commonIcons.PcIcon,
     },
     "403": {
       color: "#27304B",
       name: t("bookings.category.group"),
       fullname: t("bookings.category.groupStudyRoom"),
-      icon: dashboardIcons.groupIcon,
+      icon: dashboardIcons.GroupIcon,
     },
     "404": {
       color: "#27304B",
       name: t("bookings.category.carrel"),
       fullname: t("bookings.category.personalCarrelRoom"),
-      icon: dashboardIcons.carrelIcon,
+      icon: dashboardIcons.CarrelIcon,
     },
   },
   STATUS: {
@@ -467,7 +467,7 @@ const MyBookings = () => {
               {bookings.map((item) => {
                 const isSelected = item.bookingId === selectedBookingId;
                 const categoryColor = pageConfig.CATEGORY[String(item.roomcatCode) as ColorKeys]?.color || "#27304B";
-
+                const Icon = pageConfig.CATEGORY[String(item.roomcatCode) as ColorKeys]?.icon;
                 return (
                   <div
                     key={item.bookingId}
@@ -535,9 +535,7 @@ const MyBookings = () => {
 
                       <div className="flex flex-wrap items-center gap-1 mb-2">
                         <span className="flex items-center gap-1 bg-surface-light text-accent-second px-1 text-[13px]">
-                          <img
-                            src={pageConfig.CATEGORY[String(item.roomcatCode) as ColorKeys]?.icon}
-                            alt=""
+                          <Icon
                             className="w-3 h-3"
                           />
                           {pageConfig.CATEGORY[String(item.roomcatCode) as ColorKeys]?.name}
@@ -556,20 +554,20 @@ const MyBookings = () => {
 
                         {item.multiUserBooking === true && item.userId === myProfile?.userId && (
                           <span className="flex items-center gap-1 bg-surface-light text-accent-second px-1 text-[13px]">
-                            <img src={commonIcons.fellowMemberIcon} alt="" className="w-3 h-3" />
+                            <commonIcons.FellowMemberIcon className="w-3 h-3" />
                             {t("bookings.managerUser")}
                           </span>
                         )}
 
                         <span className="flex items-center gap-1 bg-surface-light text-accent-second px-1 text-sm">
                           {item.reservationMode === "K" && (
-                            <img src={commonIcons.kioskIcon} alt="Kiosk" className="w-5 h-5 text-primary-600" />
+                            <commonIcons.KioskIcon className="w-5 h-5 text-primary-600" />
                           )}
                           {item.reservationMode === "W" && (
-                            <img src={commonIcons.webIcon} alt="Web" className="w-5 h-5 text-primary-600" />
+                            <commonIcons.WebIcon className="w-5 h-5 text-primary-600" />
                           )}
                           {item.reservationMode === "M" && (
-                            <img src={commonIcons.mobileIcon} alt="Mobile" className="w-5 h-5 text-primary-600" />
+                            <commonIcons.MobileIcon className="w-5 h-5 text-primary-600" />
                           )}
                         </span>
                       </div>

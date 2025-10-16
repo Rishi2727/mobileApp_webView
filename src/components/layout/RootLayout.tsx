@@ -5,6 +5,8 @@ import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageProvider";
 import { GlobalAlertDialog } from "../ui/custom/AlertDialog";
 import moment from "moment";
+
+// @ts-ignore
 import "moment/dist/locale/ko";
 
 interface RootLayoutProps {

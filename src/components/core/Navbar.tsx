@@ -1,10 +1,9 @@
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Image } from "../ui/custom/image";
 import { commonIcons } from "@/assets";
-import BrandLogo from "@/assets/icons/brandLogo.svg?react";
 import { LanguageToggle } from "@/features/language-toggle/languageToggle";
 import { useLanguage } from "@/contexts/useLanguage";
 import { useNavigate } from "react-router";
+import { HomeIcon } from "lucide-react";
 
 export function Navbar() {
   const isMobile = useIsMobile();
@@ -20,7 +19,7 @@ export function Navbar() {
       <div className="relative flex justify-between items-center px-4 py-3 bg-border-accent h-[8vh]">
         {/* Logo Section */}
         <div className="flex items-center">
-          <BrandLogo
+          <commonIcons.BrandLogo
             width={isMobile ? 170 : 300}
             height={isMobile ? 40 : 60}
             className="text-background"
@@ -32,18 +31,14 @@ export function Navbar() {
           <LanguageToggle
             onToggle={handleLanguageToggle}
           />
-          <Image
-            src={commonIcons.homeIcon}
+          <HomeIcon
             onClick={() => navigate("/")}
-            alt="Home"
             width={isMobile ? 20 : 24}
             height={isMobile ? 20 : 24}
             className="text-background"
           />
-          <Image
-            src={commonIcons.bellIcon}
+          <commonIcons.BellIcon
             onClick={() => navigate("/messages")}
-            alt="Notifications"
             width={isMobile ? 20 : 24}
             height={isMobile ? 20 : 24}
             className="text-background"

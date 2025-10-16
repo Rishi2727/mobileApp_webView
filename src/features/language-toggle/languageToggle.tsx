@@ -6,13 +6,15 @@ import { useLanguage } from '@/contexts/useLanguage';
 interface LanguageToggleProps {
   onToggle?: (newLanguage: string) => void;
   className?: string;
+  fillColor?: string;
 }
 
 export const LanguageToggle: React.FC<LanguageToggleProps> = ({
   onToggle,
   className,
+  fillColor = "text-white",
 }) => {
-  const { language } = useLanguage(); 
+  const { language } = useLanguage();
   const [isAnimating, setIsAnimating] = useState(false);
   const [rotated, setRotated] = useState(language === 'en');
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -25,27 +27,25 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
   const toggleLanguage = () => {
     if (isAnimating) return;
 
-    setHasInteracted(true); 
+    setHasInteracted(true);
     setIsAnimating(true);
-    setRotated((prev) => {
-      const newRotated = !prev;
-      const newLanguage = newRotated ? 'en' : 'ko';
+
+    const newRotated = !rotated;
+    const newLanguage = newRotated ? 'en' : 'ko';
+
+    setTimeout(() => {
+      setRotated(newRotated);
       if (onToggle) {
         onToggle(newLanguage);
       }
-
-      return newRotated;
-    });
-
-    setTimeout(() => {
       setIsAnimating(false);
-      setHasInteracted(false); 
+      setHasInteracted(false);
     }, 500);
   };
 
-  const languageIcon = rotated
-    ? commonIcons.languageIconEn
-    : commonIcons.languageIconKo;
+  const LanguageIcon = rotated
+    ? commonIcons.LanguageIconEn
+    : commonIcons.LanguageIconKo;
 
   return (
     <button
@@ -59,13 +59,12 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
         className
       )}
     >
-      <img
-        src={languageIcon}
-        alt={rotated ? 'English language' : 'Korean language'}
+      <LanguageIcon
         className={cn(
-          'w-7 h-7 invert brightness-0',
-          isAnimating && 'transition-transform duration-500 ease-in-out transform',
-          isAnimating && (rotated ? 'rotate-[360deg]' : 'rotate-[-360deg]')
+          'w-7 h-7',
+          'transition-transform duration-500 ease-in-out transform',
+          isAnimating && (rotated ? 'rotate-[360deg]' : 'rotate-[-360deg]'),
+          fillColor
         )}
       />
     </button>
