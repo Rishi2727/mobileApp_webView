@@ -9,7 +9,6 @@ export default function Page() {
   const { setLanguage } = useLanguage();
   const { t } = useTranslation();
   const handleLanguageToggle = (newLanguage: string) => {
-    console.log("Language changed to:", newLanguage);
     setLanguage(newLanguage);
   };
   return (
