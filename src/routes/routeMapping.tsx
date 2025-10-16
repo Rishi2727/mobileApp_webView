@@ -17,7 +17,7 @@ import TimeSelection from "@/pages/group-booking/time-selection";
 import CarrelTimeSelection from "@/pages/carrel-booking/carrelTimeSelection";
 import Reservation from "@/pages/group-booking/reservation";
 import ExternalUser from "@/pages/external-user/external-user";
-import RoomSelection from "@/features/ticketing/RoomSelection";
+import RoomSelection from "@/pages/ticketing/RoomSelection";
 import SeatSelection from "@/pages/ticketing/SeatSelection";
 import DisplayTimeChart from "@/pages/ticketing/DisplayTimeChart";
 import TimeAndUserPicker from "@/pages/ticketing/TimeAndUserPicker";
