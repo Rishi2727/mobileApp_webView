@@ -10,7 +10,6 @@ import MyForm, {
   type FormFieldItem,
 } from "@/components/ui/custom/my-form/MyForm";
 import { Input } from "@/components/ui/input";
-
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { KeyRound, Loader2, Phone, User } from "lucide-react";
@@ -21,9 +20,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { QRViewComponent } from "@/components/layout/QRViewComponent";
 import useExternalUserStore from "@/store/ExternalUserStore";
 import { useTranslation } from "react-i18next";
+import { commonIcons } from "@/assets"
 
 import type { OneDayPass, OtpInfo } from "@/types/models";
 import moment from "moment";
+import { LanguageToggle } from "@/features/language-toggle/languageToggle";
+import { useLanguage } from "@/contexts/useLanguage";
+import { Image } from "@/components/ui/custom/image";
 
 const oneDayPassSchema = z.object({
   username: z.string().min(2, {
@@ -102,7 +105,12 @@ export default function ExternalUser() {
   const [currentStep, setCurrentStep] = useState<ExternalUserStepType>(
     ExternalUserStep.ENTER_DETAILS
   );
+
+  const { setLanguage } = useLanguage();
   const { t } = useTranslation();
+  const handleLanguageToggle = (newLanguage: string) => {
+    setLanguage(newLanguage);
+  };
 
   //store Data
   const {
@@ -210,13 +218,13 @@ export default function ExternalUser() {
 
   const formItemOtpData: FormFieldItem<OtpInfo>[] = [
     {
-      label: "OTP Code",
+      label: t("externalUser.otpCode"),
       name: "otp",
       render: ({ field }) => (
         <div className="relative">
           <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            placeholder="Enter 6-digit OTP"
+            placeholder={t("externalUser.enterOtpCode")}
             type="text"
             maxLength={6}
             className="pl-10 h-12 text-center text-lg tracking-widest"
@@ -229,13 +237,13 @@ export default function ExternalUser() {
 
   const formItemData: FormFieldItem<OneDayPass>[] = [
     {
-      label: "Full Name",
+      label: t("externalUser.fullName"),
       name: "username",
       render: ({ field }) => (
         <div className="relative">
           <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            placeholder="Enter your full name"
+            placeholder={t("externalUser.enterFullName")}
             className="pl-10 h-12"
             {...field}
           />
@@ -243,13 +251,13 @@ export default function ExternalUser() {
       ),
     },
     {
-      label: "Phone Number",
+      label: t("externalUser.phoneNumber"),
       name: "phoneno",
       render: ({ field }) => (
         <div className="relative">
           <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            placeholder="Enter your phone number"
+            placeholder={t("externalUser.enterPhoneNumber")}
             type="tel"
             className="pl-10 h-12"
             {...field}
@@ -260,252 +268,267 @@ export default function ExternalUser() {
   ];
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 bg-gradient-to-br from-background via-background to-muted/20 relative overflow-hidden">
-      <div className="w-full max-w-md relative z-10">
-        <div className={cn("flex flex-col gap-6")}>
-          <Card className="border-0 shadow-md">
-            <CardHeader className="space-y-6">
-              {/* Welcome Text */}
-              <div className="text-center space-y-2">
-                <CardTitle className="text-3xl font-bold">
-                  {currentStep === ExternalUserStep.SHOW_QR && userName
-                    ? userName
-                    : "One Day Pass Request"}
-                </CardTitle>
-                <CardDescription className="text-base text-muted-foreground">
-                  {currentStep === ExternalUserStep.ENTER_DETAILS &&
-                    "Enter your details to get started"}
-                  {currentStep === ExternalUserStep.ENTER_OTP &&
-                    "Enter the OTP for verification"}
-                  {currentStep === ExternalUserStep.SHOW_QR &&
-                    "Your QR Code for Library Access"}
-                </CardDescription>
-              </div>
-            </CardHeader>
+    <>
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 bg-gradient-to-br from-background via-background to-muted/20 relative overflow-hidden">
 
-            {/* STEP 1: Enter Details */}
-            {currentStep === ExternalUserStep.ENTER_DETAILS && (
-              //  *Personal Info Consent  section
+        {/* Background image positioned at bottom */}
+        <div className="absolute top-[50%] z-0 w-[130%] opacity-10">
+          <Image
+            src={commonIcons.loginBgIcon}
+            alt="login background"
+            className="w-full h-auto object-cover"
+          />
+        </div>
 
-              <CardContent className="space-y-6">
-                <MyForm
-                  formSchema={oneDayPassSchema}
-                  defaultValues={{
-                    username: "",
-                    phoneno: "",
-                  }}
-                  onSubmit={handleSubmit}
-                  formItemData={formItemData}
-                  buttonActions={
-                    <div className="grid grid-row-1 sm:grid-row-2 gap-2">
-                      {/* ✅ Consent and Table Section Added Below */}
-                      <div className="mt-6 space-y-4">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="consent"
-                              checked={consentAllowed}
-                              onCheckedChange={(checked) =>
-                                setConsentAllowed(checked === true)
-                              }
-                            />
-                            <label
-                              htmlFor="consent"
-                              className="text-sm text-muted-foreground"
+
+        <div className="absolute md:top-0 right-0 p-10 z-40 top-[-1.5rem]">
+          <LanguageToggle onToggle={handleLanguageToggle} fillColor="text-black" />
+        </div>
+        {/* Logo at the top */}
+        <div className="flex justify-center items-center mb-5 z-10 fixed md:top-11 top-14">
+          <commonIcons.BrandLogo className="md:w-110 w-80 h-auto" />
+        </div>
+
+
+
+        <div className="w-full max-w-md relative z-10 mt-12">
+          <div className={cn("flex flex-col gap-2")}>
+            <Card className="border-1 shadow-md">
+              <CardHeader >
+                {/* Welcome Text */}
+                <div className="text-center">
+                  <CardTitle className="text-3xl font-bold">
+                    {currentStep === ExternalUserStep.SHOW_QR && userName
+                      ? userName
+                      : t("externalUser.title")}
+                  </CardTitle>
+                  <CardDescription className="text-base text-muted-foreground">
+                    {currentStep === ExternalUserStep.ENTER_DETAILS &&
+                      t("externalUser.subtitle")}
+                    {currentStep === ExternalUserStep.ENTER_OTP &&
+                      t("externalUser.enterOtpTitle")}
+                    {currentStep === ExternalUserStep.SHOW_QR &&
+                      t("externalUser.showQrTitle")}
+                  </CardDescription>
+                </div>
+              </CardHeader>
+
+              {/* STEP 1: Enter Details */}
+              {currentStep === ExternalUserStep.ENTER_DETAILS && (
+                //  *Personal Info Consent  section
+
+                <CardContent className="">
+                  <MyForm
+                    formSchema={oneDayPassSchema}
+                    defaultValues={{
+                      username: "",
+                      phoneno: "",
+                    }}
+                    onSubmit={handleSubmit}
+                    formItemData={formItemData}
+                    buttonActions={
+                      <div className="grid grid-row-1 sm:grid-row-2 gap-2 ">
+                        {/* ✅ Consent and Table Section Added Below */}
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id="consent"
+                                checked={consentAllowed}
+                                onCheckedChange={(checked) =>
+                                  setConsentAllowed(checked === true)
+                                }
+                              />
+                              <label
+                                htmlFor="consent"
+                                className="text-[11px] text-muted-foreground"
+                              >
+                                {t("externalUser.checkboxText")}
+                              </label>
+                            </div>
+
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="text-sm"
+                              onClick={() => setShowTable(!showTable)}
                             >
-                              *Personal Info Consent (required)
-                            </label>
+                              {t("externalUser.viewButton")}
+                            </Button>
                           </div>
 
-                          <Button
-                            type="button"
-                            variant="outline"
-                            className="text-sm"
-                            onClick={() => setShowTable(!showTable)}
-                          >
-                            {showTable ? "Hide Details" : "View Details"}
-                          </Button>
+                          {/* ✅ Smooth Transition using AnimatePresence */}
+                          <AnimatePresence>
+                            {showTable && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.2, ease: "easeInOut" }}
+                                className="overflow-hidden"
+                              >
+                                <p className="text-[11px] text-center ">
+                                  {t("externalUser.consentInfo")}
+                                </p>
+
+                                <div className="border rounded-lg mt-4">
+                                  <div className="grid grid-cols-3 text-center border-b text-xs font-medium bg-muted">
+                                    <div className="border-r p-1">
+                                      {t("externalUser.purposeOfCollection")}
+                                    </div>
+                                    <div className="border-r p-1">
+                                      {t("externalUser.collectionItems")}
+                                    </div>
+                                    <div className="p-1">{t("externalUser.expirationDate")}</div>
+                                  </div>
+                                  <div className="grid grid-cols-3 text-center text-xs">
+                                    <div className="border-r ">
+                                      {t("externalUser.provisionOfQRService")}
+                                    </div>
+                                    <div className="border-r">
+                                      <div className="border-b ">
+                                      {t("externalUser.requestName")}
+                                      </div>
+                                      <div className="">
+                                       {t("externalUser.requestPhoneNumber")}
+                                      </div>
+                                    </div>
+                                    <div className="">{t("externalUser.validityPeriod")}</div>
+                                  </div>
+                                </div>
+
+                                <div className="mt-2 text-center md:text-[11px] text-[9px] bg-yellow-100 py-2 px-2 w-4/4 mx-auto rounded ">
+                                  {t("externalUser.bottomNoteLine1")}
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </div>
+                        {/* ✅ End of consent section */}
 
-                        {/* ✅ Smooth Transition using AnimatePresence */}
-                        <AnimatePresence>
-                          {showTable && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.2, ease: "easeInOut" }}
-                              className="overflow-hidden"
-                            >
-                              <p className="text-[11px] text-center ">
-                                We collect and use personal information as
-                                follows for the operation of QR services
-                                entering the library of the Korea Maritime
-                                University.
-                              </p>
-
-                              <div className="border rounded-lg mt-4">
-                                <div className="grid grid-cols-3 text-center border-b text-xs font-medium bg-muted">
-                                  <div className="border-r p-1">
-                                    Purpose of Collection
-                                  </div>
-                                  <div className="border-r p-2">
-                                    Collection Items
-                                  </div>
-                                  <div className="p-2">Expiration Date</div>
-                                </div>
-                                <div className="grid grid-cols-3 text-center text-xs">
-                                  <div className="border-r p-1">
-                                    Provision of QR Service
-                                  </div>
-                                  <div className="border-r">
-                                    <div className="border-b p-1">
-                                     Name
-                                    </div>
-                                    <div className="p-1">
-                                      Phone Number
-                                    </div>
-                                  </div>
-                                  <div className="p-1">One day</div>
-                                </div>
-                              </div>
-
-                              <div className="mt-2 text-center md:text-[12px] text-[10px] bg-yellow-100 py-2 px-2 w-3/4 mx-auto rounded mb-2">
-                                You have the right to disagree with the
-                                collection and use of personal information.
-                                However, if you disagree, daily pass
-                                applications may be restricted.
-                              </div>
-                            </motion.div>
+                        <Button
+                          type="submit"
+                          disabled={!consentAllowed || isSubmittingDetails}
+                          className={cn(
+                            "w-full h-12 text-base font-semibold transition-colors duration-300",
+                            consentAllowed && !isSubmittingDetails
+                              ? "bg-primary text-secondary hover:bg-primary/80 cursor-pointer"
+                              : "bg-gray-300 text-gray-500 cursor-not-allowed"
                           )}
-                        </AnimatePresence>
+                        >
+                          {isSubmittingDetails ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              
+                            </>
+                          ) : (
+                            t("externalUser.submitDetails")
+                          )}
+                        </Button>
+                        <Button
+                          className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
+                          onClick={handleBackToLogin}
+                        >
+                         {t("externalUser.backToLogin")}
+                        </Button>
                       </div>
-                      {/* ✅ End of consent section */}
+                    }
+                  />
+                </CardContent>
+              )}
+              {/* // OTP Card section */}
+              {currentStep === ExternalUserStep.ENTER_OTP && (
+                <CardContent className="space-y-6">
+                  <p className="text-md">
+                 {t("externalUser.otpHeaderText")}
+                  </p>
+                  <MyForm
+                    formSchema={otpInfo}
+                    defaultValues={{
+                      otp: "",
+                    }}
+                    onSubmit={handleOtpSubmit}
+                    formItemData={formItemOtpData}
+                    buttonActions={
+                      <div className="space-y-2">
+                        <OtpExpire expireAt={otpExpireAt} t={t} />
 
-                      <Button
-                        type="submit"
-                        disabled={!consentAllowed || isSubmittingDetails}
-                        className={cn(
-                          "w-full h-12 text-base font-semibold transition-colors duration-300",
-                          consentAllowed && !isSubmittingDetails
-                            ? "bg-primary text-secondary hover:bg-primary/80 cursor-pointer"
-                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        )}
-                      >
-                        {isSubmittingDetails ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Submitting...
-                          </>
-                        ) : (
-                          "Submit Details"
-                        )}
-                      </Button>
-                      <Button
-                        className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
-                        onClick={handleBackToLogin}
-                      >
-                        Back to Student Login
-                      </Button>
+                        <Button
+                          type="submit"
+                          disabled={isSubmittingOTP}
+                          className="w-full h-12 text-base font-semibold text-secondary bg-primary hover:bg-primary/80 cursor-pointer"
+                        >
+                          {isSubmittingOTP ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              
+                            </>
+                          ) : (
+                            t("externalUser.submitOtp")
+                          )}
+                        </Button>
+                        <Button
+                          type="button"
+                          className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
+                          onClick={handleBackToLogin}
+                        >
+                          {t("externalUser.backToLogin")}
+                        </Button>
+                      </div>
+                    }
+                  />
+                </CardContent>
+              )}
+
+              {/* QR Code section */}
+              {currentStep === ExternalUserStep.SHOW_QR && (
+                <CardContent>
+                  {/* Title */}
+                  <div className="flex flex-col items-center justify-center text-center ">
+                    {/* QR Circle */}
+                    <div className="relative ">
+                      <QRViewComponent
+                        qrData={encQrData || "No QR Generated"}
+                        generatedAt={qrGeneratedAt}
+                        expireAt={qrExpireAt}
+                        onRefresh={handleGenerateNewQR}
+                        qrTimeRange={qrTimeRange}
+                        handleLogout={handleLogout}
+                        page="EXTERNAL_USER"
+                        t={t}
+                      />
                     </div>
-                  }
-                />
-              </CardContent>
-            )}
-            {/* // OTP Card section */}
-            {currentStep === ExternalUserStep.ENTER_OTP && (
-              <CardContent className="space-y-6">
-                <p className="text-md">
-                  (OTP information will be sent to the phone number text message
-                  you entered.)
-                </p>
-                <MyForm
-                  formSchema={otpInfo}
-                  defaultValues={{
-                    otp: "",
-                  }}
-                  onSubmit={handleOtpSubmit}
-                  formItemData={formItemOtpData}
-                  buttonActions={
-                    <div className="space-y-2">
-                      <OtpExpire expireAt={otpExpireAt} t={t} />
-
-                      <Button
-                        type="submit"
-                        disabled={isSubmittingOTP}
-                        className="w-full h-12 text-base font-semibold text-secondary bg-primary hover:bg-primary/80 cursor-pointer"
-                      >
-                        {isSubmittingOTP ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Verifying...
-                          </>
-                        ) : (
-                          "Submit OTP"
-                        )}
-                      </Button>
-                      <Button
-                        type="button"
-                        className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
-                        onClick={handleBackToLogin}
-                      >
-                        Back to Student Login
-                      </Button>
-                    </div>
-                  }
-                />
-              </CardContent>
-            )}
-
-            {/* QR Code section */}
-            {currentStep === ExternalUserStep.SHOW_QR && (
-              <CardContent>
-                {/* Title */}
-                <div className="flex flex-col items-center justify-center text-center ">
-                  {/* QR Circle */}
-                  <div className="relative ">
-                    <QRViewComponent
-                      qrData={encQrData || "No QR Generated"}
-                      generatedAt={qrGeneratedAt}
-                      expireAt={qrExpireAt}
-                      onRefresh={handleGenerateNewQR}
-                      qrTimeRange={qrTimeRange}
-                      handleLogout={handleLogout}
-                      page="EXTERNAL_USER"
-                      t={t}
-                    />
                   </div>
-                </div>
-                <div className="grid grid-row-1 sm:grid-row-2 gap-2 mt-8">
-                  <Button
-                    type="button"
-                    disabled={isGeneratingQR}
-                    className="w-full h-12 text-base font-semibold text-secondary bg-primary hover:bg-primary/80 cursor-pointer"
-                    onClick={handleGenerateNewQR}
-                  >
-                    {isGeneratingQR ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      "Generate New QR Code"
-                    )}
-                  </Button>
-                  <Button
-                    type="button"
-                    className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
-                    onClick={handleLogout}
-                  >
-                    Back to Student Login
-                  </Button>
-                </div>
-              </CardContent>
-            )}
-            <div></div>
-          </Card>
+                  <div className="grid grid-row-1 sm:grid-row-2 gap-2 mt-8">
+                    <Button
+                      type="button"
+                      disabled={isGeneratingQR}
+                      className="w-full h-12 text-base font-semibold text-secondary bg-primary hover:bg-primary/80 cursor-pointer"
+                      onClick={handleGenerateNewQR}
+                    >
+                      {isGeneratingQR ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        
+                        </>
+                      ) : (
+                        t("externalUser.generateNewQr")
+                      )}
+                    </Button>
+                    <Button
+                      type="button"
+                      className="w-full h-12 text-base font-semibold bg-secondary text-primary hover:bg-primary/10 cursor-pointer"
+                      onClick={handleLogout}
+                    >
+                       {t("externalUser.backToLogin")}
+                    </Button>
+                  </div>
+                </CardContent>
+              )}
+              <div></div>
+            </Card>
+          </div>
         </div>
-      </div>
-    </div>
+      </div></>
   );
 }
