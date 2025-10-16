@@ -9,7 +9,7 @@ import { useModelStore } from "@/store/ModelStore";
 import { useBookingsStore } from "@/store/BookingsStore";
 import type { MyBookingModel } from "@/store/api/ResponseModels";
 import Text from "@/components/ui/custom/text";
-import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const SLOT_STATES = [
   { state: 'Available', color: '#E0F2FE', fontColor: '#0F172A' },
@@ -23,13 +23,19 @@ const getSlotState = (state: string) =>
 const ITEMS_PER_PAGE = 3;
 
 const DisplayTimeChart = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [selectedDate, setSelectedDate] = useState<Moment | null>(moment());
   const [availableDays, setAvailableDays] = useState<Moment[]>([]);
   const [roomCodes, setRoomCodes] = useState<string[]>([]);
   const [currentDisplayFrom, setCurrentDisplayFrom] = useState<number>(0);
+  
+  // Animation states
   const [isSliding, setIsSliding] = useState(false);
+  const [showTableLoading, setShowTableLoading] = useState(false);
   const [pageLength, setPageLength] = useState<number>(0);
+  const [buttonTransform, setButtonTransform] = useState<number>(0);
+  const [tableOpacity, setTableOpacity] = useState<number>(1);
+  const [overlayOpacity, setOverlayOpacity] = useState<number>(0);
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -48,7 +54,7 @@ const DisplayTimeChart = () => {
     setRoomCodes(rooms);
   }, [catCode, roomCode]);
 
-  // Init data
+  // Init data (useFocusEffect equivalent)
   useEffect(() => {
     if (!catCode || roomCodes.length === 0) return;
     init({ roomCodes, catCode: String(catCode), date: selectedDate?.format("YYYY-MM-DD") });
@@ -70,7 +76,7 @@ const DisplayTimeChart = () => {
     if (DesksData?.chart?.headers?.length) {
       setPageLength(Math.ceil(DesksData.chart.headers.length / ITEMS_PER_PAGE));
     }
-  }, [DesksData, selectedDate]);
+  }, [DesksData, selectedDate, language]);
 
   // Reset page on date change
   useEffect(() => {
@@ -89,8 +95,19 @@ const DisplayTimeChart = () => {
     const total = DesksData.chart.headers.length;
 
     setIsSliding(true);
+    setShowTableLoading(true);
 
-    // Update data with slight delay for transition effect
+    // Button slide feedback animation (matching Animated.sequence timing)
+    setButtonTransform(dir === 'right' ? -5 : 5);
+    setTimeout(() => {
+      setButtonTransform(0);
+    }, 100);
+
+    // Table loading animation (matching Animated.timing timing)
+    setTableOpacity(0.3);
+    setOverlayOpacity(0.8);
+
+    // Update data after loading animation starts (matching old timing)
     setTimeout(() => {
       if (dir === 'right' && canSlide('right')) {
         setCurrentDisplayFrom(prev => Math.min(prev + ITEMS_PER_PAGE, total - ITEMS_PER_PAGE));
@@ -98,7 +115,14 @@ const DisplayTimeChart = () => {
       if (dir === 'left' && canSlide('left')) {
         setCurrentDisplayFrom(prev => Math.max(prev - ITEMS_PER_PAGE, 0));
       }
-      setTimeout(() => setIsSliding(false), 200);
+
+      // Restore table opacity (matching Animated.timing duration: 200)
+      setTimeout(() => {
+        setTableOpacity(1);
+        setOverlayOpacity(0);
+        setIsSliding(false);
+        setShowTableLoading(false);
+      }, 200);
     }, 150);
   }, [DesksData?.chart?.headers, isSliding, canSlide]);
 
@@ -198,41 +222,40 @@ const DisplayTimeChart = () => {
 
   if (!DesksData) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50">
+      <div className="flex-1 flex items-center justify-center bg-gray-50 min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="p-3 bg-gray-50 flex flex-col h-full overflow-hidden">
+    <div className="p-3 bg-gray-50 flex flex-col h-screen overflow-hidden">
       {/* Days Row */}
       <div 
-        className="overflow-x-auto scrollbar-hide mb-2"
+        className="mb-2"
         style={{ display: (DesksData?.catFeature.dayWiseBooking) ? 'none' : 'block' }}
       >
-        <div className="flex flex-col min-w-max">
-          <div className="flex mb-2">
+        <div className="flex flex-col">
+          <div className="flex justify-around mb-2.5">
             {availableDays.map((day, idx) => (
-              <Text key={idx} className="flex-1 text-center" style={{ fontSize: '14px' }}>
+              <Text key={idx} className="flex-1 text-center text-sm">
                 {day.format("ddd")[0]}
               </Text>
             ))}
           </div>
-          <div className="flex mb-4">
+          <div className="flex justify-around mb-5">
             {availableDays.map((day) => (
               <div key={day.format("YYYY-MM-DD")}>
                 <button
                   onClick={() => setSelectedDate(day)}
-                  className={`p-2 mx-1 rounded-full border min-w-[30px] min-h-[30px] flex items-center justify-center transition-colors ${
+                  className={`p-2.5 mx-1 rounded-full border min-w-[30px] min-h-[30px] flex items-center justify-center transition-colors shadow-sm ${
                     selectedDate?.isSame(day, 'day')
                       ? 'bg-blue-900 border-blue-900'
                       : 'bg-transparent border-gray-300'
                   }`}
                 >
                   <Text 
-                    className={selectedDate?.isSame(day, 'day') ? 'text-white font-bold' : 'text-gray-900'}
-                    style={{ fontSize: '14px' }}
+                    className={`text-sm text-center ${selectedDate?.isSame(day, 'day') ? 'text-white font-bold' : 'text-gray-900'}`}
                   >
                     {day.format("DD")}
                   </Text>
@@ -243,46 +266,52 @@ const DisplayTimeChart = () => {
         </div>
       </div>
       
-      <div className="h-px bg-gray-300 my-1"></div>
+      <div className="h-px bg-gray-300 my-1.5"></div>
       
       {/* Navigation and Title */}
-      <div className="flex justify-between w-full mb-2">
+      <div className="flex justify-between w-full mb-3.5">
         <div>
-          <Button
+          <button
             onClick={() => slide('left')}
             disabled={!canSlide('left') || isSliding}
-            variant={canSlide('left') ? 'default' : 'outline'}
-            size="icon"
-            className={`h-10 w-10 rounded-lg shadow transition-transform ${
-              isSliding ? 'scale-95' : ''
+            className={`h-10 w-10 rounded-lg shadow flex items-center justify-center transition-transform duration-100 ${
+              canSlide('left') ? 'bg-blue-600' : 'bg-gray-400'
             }`}
+            style={{ 
+              padding: '10px',
+              transform: `translateX(${buttonTransform}px)`,
+              transition: 'transform 100ms'
+            }}
           >
             <Text className="text-white text-lg">{'<'}</Text>
-          </Button>
+          </button>
         </div>
         <div className="flex-1 flex justify-center items-center">
-          <Text className="font-bold text-center" style={{ fontSize: '16px' }}>
+          <Text className="font-bold text-center text-base mb-3.5">
             {title || ''}
           </Text>
         </div>
         <div>
-          <Button
+          <button
             onClick={() => slide('right')}
             disabled={!canSlide('right') || isSliding}
-            variant={canSlide('right') ? 'default' : 'outline'}
-            size="icon"
-            className={`h-10 w-10 rounded-lg shadow transition-transform ${
-              isSliding ? 'scale-95' : ''
+            className={`h-10 w-10 rounded-lg shadow flex items-center justify-center transition-transform duration-100 ${
+              canSlide('right') ? 'bg-blue-600' : 'bg-gray-400'
             }`}
+            style={{ 
+              padding: '10px',
+              transform: `translateX(${buttonTransform}px)`,
+              transition: 'transform 100ms'
+            }}
           >
             <Text className="text-white text-lg">{'>'}</Text>
-          </Button>
+          </button>
         </div>
       </div>
       
       {/* Table */}
       {!(DesksData && DesksData.chart && DesksData?.chart?.headers && DesksData?.chart?.data) ? (
-        <div className="flex-1 flex items-center justify-center min-h-[200px]">
+        <div className="flex-1 flex items-center justify-center" style={{ minHeight: '200px' }}>
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
       ) : (
@@ -295,29 +324,44 @@ const DisplayTimeChart = () => {
                   <div
                     key={index}
                     className="h-1 flex-1 rounded-full"
-                    style={{ backgroundColor: isActive ? '#60A5FA' : '#DBEAFE' }}
+                    style={{ backgroundColor: isActive ? '#93C5FD' : '#DBEAFE' }}
                   ></div>
                 );
               })}
             </div>
           )}
           
-          <div className="overflow-x-auto overflow-y-auto flex-1 scrollbar-hide">
-            <div className="relative">
-              {/* Table content with loading effect */}
-              <div
-                className={`transition-opacity duration-200 rounded-lg ${
-                  isSliding ? 'opacity-30' : 'opacity-100'
-                }`}
+          <div className="overflow-x-auto overflow-y-auto flex-1 relative">
+            {/* Table loading overlay */}
+            {showTableLoading && (
+              <div 
+                className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-white z-50 rounded-lg"
+                style={{ 
+                  opacity: overlayOpacity,
+                  transition: 'opacity 150ms'
+                }}
               >
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              </div>
+            )}
+
+            {/* Table content with loading effect */}
+            <div
+              className="rounded-lg"
+              style={{ 
+                opacity: tableOpacity,
+                transition: 'opacity 200ms'
+              }}
+            >
+              <ScrollArea className="h-full">
                 <div className="pb-80">
                   {/* Header */}
                   <div className="flex items-center mb-0.5 sticky top-0 bg-gray-50 z-10">
                     <div
-                      className="flex-1 rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 mr-1 ml-1"
+                      className="flex-1 rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 mr-1 ml-1 shadow-sm"
                       style={{ width: '65px', minHeight: '40px' }}
                     >
-                      <Text className="text-center font-bold text-blue-700" style={{ fontSize: '10px' }}>
+                      <Text className="text-center font-bold text-blue-700 text-[10px]">
                         {t('displayTimeChart.time')}
                       </Text>
                     </div>
@@ -326,13 +370,13 @@ const DisplayTimeChart = () => {
                         {visibleHeaders.map((header) => (
                           <div
                             key={header}
-                            className="rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 mr-1"
+                            className="rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 mr-1 shadow-sm"
                             style={{
                               width: `${getSingleRoomSize(DesksData?.chart?.headers)}px`,
                               minHeight: '40px'
                             }}
                           >
-                            <Text className="text-center font-bold text-blue-700" style={{ fontSize: '10px' }}>
+                            <Text className="text-center font-bold text-blue-700 text-[10px]">
                               {t(header)}
                             </Text>
                           </div>
@@ -344,10 +388,10 @@ const DisplayTimeChart = () => {
                   {Object.keys(DesksData.chart.data).length === 0 && (
                     <div className="mt-5">
                       <div className="w-full h-[50px] flex flex-col items-center justify-center">
-                        <Text className="font-semibold text-red-500 mb-2" style={{ fontSize: '16px' }}>
+                        <Text className="font-semibold text-red-500 mb-2 text-base">
                           {t('displayTimeChart.roomsClosed')}
                         </Text>
-                        <Text className="text-red-500" style={{ fontSize: '14px' }}>
+                        <Text className="text-red-500 text-sm">
                           {t('displayTimeChart.noOperationalHours')}
                         </Text>
                       </div>
@@ -360,7 +404,7 @@ const DisplayTimeChart = () => {
                         className="flex-1 flex items-center justify-center py-2 ml-1"
                         style={{ width: '65px' }}
                       >
-                        <Text className="font-bold text-gray-900" style={{ fontSize: '10px' }}>
+                        <Text className="font-bold text-gray-900 text-[10px]">
                           {formatTime(timeSlot)}
                         </Text>
                       </div>
@@ -380,13 +424,13 @@ const DisplayTimeChart = () => {
                                 style={{
                                   width: `${getSingleRoomSize(DesksData?.chart?.headers)}px`,
                                 }}
-                                className="flex items-center justify-center px-2 py-1"
+                                className="flex items-center justify-center px-2.5 py-1"
                                 disabled={!isAvailable}
                                 onClick={() => handleSlotPress(timeSlot, room)}
                               >
                                 <Text
-                                  className="font-semibold"
-                                  style={{ color: slotState.fontColor, fontSize: '10px' }}
+                                  className="font-semibold text-[10px]"
+                                  style={{ color: slotState.fontColor }}
                                 >
                                   {t(status)}
                                 </Text>
@@ -398,7 +442,7 @@ const DisplayTimeChart = () => {
                     </div>
                   ))}
                 </div>
-              </div>
+              </ScrollArea>
             </div>
           </div>
         </>

@@ -317,7 +317,10 @@ const TimeAndUserPicker = () => {
                 buttons: [
                   {
                     title: t('common.ok'),
-                    action: () => { navigate(`/bookings?bookingId=${result.bookingId}&catCode=${catCode}`); },
+                    action: () => { 
+                      // Match old: router.replace({ pathname: '/BookingHistory', params })
+                      navigate(`/bookings?bookingId=${result.bookingId}&catCode=${catCode}`, { replace: true }); 
+                    },
                     closeOnSuccess: true,
                     color: 'primary',
                   }
