@@ -19,11 +19,10 @@ const UniversityNotice = () => {
         }
 
         const encryptedData = await kmouSecretGenerate();
-        console.log(encryptedData)
         if (encryptedData) {
           const noticeUrl = `https://library.kmou.ac.kr/appLogin?encText=${encryptedData}&retUrl=/bbs/list/1`;
           setUrl(noticeUrl);
-          if (import.meta.env.DEV) console.log("KMOU Secret URL:", noticeUrl);
+          if (import.meta.env.VITE_DEV === "true") console.log("KMOU Secret URL:", import.meta.env.VITE_DEV, noticeUrl);
         } else {
           console.error("Failed to generate KMOU secret");
           setLoading(false);
@@ -49,15 +48,14 @@ const UniversityNotice = () => {
             e.preventDefault();
           }
         } catch (error) {
-          // If we can't access iframe history due to cross-origin, just let normal navigation happen
           console.log("Cannot access iframe history due to cross-origin policy");
         }
       }
     };
 
-    window.addEventListener('popstate', handlePopState);
+    globalThis.addEventListener('popstate', handlePopState);
     return () => {
-      window.removeEventListener('popstate', handlePopState);
+      globalThis.removeEventListener('popstate', handlePopState);
     };
   }, []);
 
