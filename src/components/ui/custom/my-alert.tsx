@@ -14,8 +14,8 @@ import {
 
 type MyAlertProps = {
     children?: React.ReactNode;
-    title: React.ReactNode; // ✅ Accept string or JSX
-    description: React.ReactNode; // ✅ Accept string or JSX
+    title: React.ReactNode;
+    description: React.ReactNode;
     onConfirm: () => void;
     onCancel?: () => void;
     confirmText?: string;
@@ -41,9 +41,15 @@ const MyAlert = ({
         <AlertDialog open={open} onOpenChange={onOpenChange}>
             {children && <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>}
             <AlertDialogContent className="max-w-md">
-                <AlertDialogHeader>
-                    <AlertDialogTitle>{title}</AlertDialogTitle>
-                    <AlertDialogDescription>{description}</AlertDialogDescription>
+                <AlertDialogHeader className="gap-2">
+                    <div className="w-full flex justify-center sm:justify-start">
+                        <AlertDialogTitle className="flex items-center">
+                            {title}
+                        </AlertDialogTitle>
+                    </div>
+                    <AlertDialogDescription className="text-center sm:text-left">
+                        {description}
+                    </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="gap-3">
                     <AlertDialogCancel
@@ -69,8 +75,8 @@ const MyAlert = ({
 };
 
 type AlertOptions = {
-    title: React.ReactNode; // ✅ Changed from string to ReactNode
-    description: React.ReactNode; // ✅ Changed from string to ReactNode
+    title: React.ReactNode;
+    description: React.ReactNode;
     confirmText?: string;
     cancelText?: string;
     isDangerous?: boolean;

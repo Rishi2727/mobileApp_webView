@@ -10,10 +10,13 @@ import { useFavouriteSeatStore, maxFavouriteSeatsLimit, type FavouriteSeat } fro
 import { useBookingsStore } from "@/store/BookingsStore";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
+import { Icon } from "@/components/ui/custom/icon";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function PreferredSeat() {
   const breadcrumbItems = metadata.PreferredSeatSetting.breadcrumbItems || [];
- const {t} = useTranslation();
+  const { t } = useTranslation();
+  const isMobile = useIsMobile();
   const {
     favouriteSeats,
     checkLimit,
@@ -73,8 +76,8 @@ export default function PreferredSeat() {
   // Remove from favorites
   const handleRemoveFavorite = useCallback(async (seat: FavouriteSeat) => {
     const confirmed = await ShowAlert({
-      title: "Remove Favorite",
-      description: `Remove ${seat.room.roomName} Desk ${seat.deskNo} from favorites?`,
+      title: <Icon name="CircleQuestionMark" />,
+      description: t('favouriteSeat.removeFromFavorites', { roomName: t(seat.room.roomName), deskNo: t(seat.deskNo) }),
       confirmText: "Yes",
       cancelText: "No",
       isDangerous: true,
@@ -174,14 +177,14 @@ export default function PreferredSeat() {
                       {seat.room.floorName} | {t('favouriteSeat.desk')}: {seat.deskNo}
                     </Text>
                     <Text className="font-medium text-sm truncate">
-                      {seat.room.roomName}
+                      {t(seat.room.roomName)}
                     </Text>
                   </div>
                 </CardContent>
 
                 {/* Status */}
                 <div className="absolute bottom-0 left-0 right-0 bg-green-500 text-center py-1">
-                  <Text className="text-xs font-semibold text-white">Available</Text>
+                  <Text className="text-xs font-semibold text-white">{t('favouriteSeat.available')}</Text>
                 </div>
               </Card>
             ))}
@@ -212,13 +215,13 @@ export default function PreferredSeat() {
               {t('favouriteSeat.noFavoriteSeats')}
             </Text>
             <Text className="text-gray-500 mb-4">
-             {t('favouriteSeat.addSeatsToFavorites')}
+              {t('favouriteSeat.addSeatsToFavorites')}
             </Text>
             <button
               onClick={handleAddNew}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
             >
-             {t('favouriteSeat.addFavoriteSeat')}
+              {t('favouriteSeat.addFavoriteSeat')}
             </button>
           </div>
         )}
