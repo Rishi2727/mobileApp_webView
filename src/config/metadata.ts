@@ -317,7 +317,7 @@ export const metadata: MentaDataTypeProps = {
         height: 38,
     },
     eBook: {
-        title: "E-Books",
+        title: "dashboard.eBook.title",
         image: dashboardIcons.EBookIcon,
         animetedImage: dashboardIcons.EBookIcon,
         path: "/e-books",
