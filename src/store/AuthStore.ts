@@ -145,7 +145,7 @@ export const useAuthStore = create<AuthStore>()(
             qrCodeUpdatedAt: 0,
             getQrCode: async () => {
                 const res = await getMyQrCode();
-                let qrCode = res?.data;
+                const qrCode = res?.data;
                 if (qrCode) {
                     qrCode.ExpireAt = moment(qrCode.ExpireAt).add(-10, 'seconds').format('YYYY-MM-DD HH:mm:ss');
                 }

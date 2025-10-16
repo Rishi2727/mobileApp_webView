@@ -116,7 +116,7 @@ export const useRoomTimePicker = create<RoomTimePickerStore>((set, get) => ({
     const res = await getRoomWiseDesks(reqData);
     if (!res || !res?.success || !res.data) { set({ DesksData: null }); return; }
 
-    let newData: displayData = {
+    const newData: displayData = {
       mode: mode,
       catFeature: catFeatures,
       rooms: filteredRooms,
@@ -124,21 +124,21 @@ export const useRoomTimePicker = create<RoomTimePickerStore>((set, get) => ({
     }
     if (mode === 'CHART' || catFeatures.roomWiseBooking) {
 
-      let minTime = moment.min(...filteredRooms.map(room => moment(room.roomOpenTime, 'HH:mm:ss')));
+      const minTime = moment.min(...filteredRooms.map(room => moment(room.roomOpenTime, 'HH:mm:ss')));
       let maxTime = moment.max(...filteredRooms.map(room => moment(room.roomCloseTime, 'HH:mm:ss')));
       maxTime = maxTime.isBefore(minTime) ? maxTime.clone().add(1, 'day') : maxTime; // Ensure maxTime is after minTime
       const maxTimeString = maxTime.format('HH:mm:ss') === '00:00:00' ? '24:00:00' : maxTime.format('HH:mm:ss'); // Handle 00:00:00 case
 
 
 
-      let minDate = moment.min(...res.data.map(room => moment(room.date)));
-      let maxDate = moment.max(...res.data.map(room => moment(room.date)));
+      const minDate = moment.min(...res.data.map(room => moment(room.date)));
+      const maxDate = moment.max(...res.data.map(room => moment(room.date)));
 
       let minDateTime = moment(`${minDate.format('YYYY-MM-DD')} ${minTime.format('HH:mm:ss')}`);
-      let maxDateTime = moment(`${maxDate.format('YYYY-MM-DD')} ${maxTimeString}`);
+      const maxDateTime = moment(`${maxDate.format('YYYY-MM-DD')} ${maxTimeString}`);
       minDateTime = minDateTime.isAfter(moment()) ? minDateTime : moment().get('minute') >= 30 ? moment().startOf('hour').add(1, 'hour') : moment().startOf('hour').add(30, 'minutes');
 
-      let intervals: moment.Moment[] = [];
+      const intervals: moment.Moment[] = [];
       if (catFeatures.dayWiseBooking) {
         const current = minDateTime.clone().startOf('day');
         //FixMe: may be have to use isSameOrBefore
@@ -154,7 +154,7 @@ export const useRoomTimePicker = create<RoomTimePickerStore>((set, get) => ({
         }
       }
 
-      let chart: chartData = {
+      const chart: chartData = {
         headers: filteredRooms.map(room => room.roomName),
         data: {
 
@@ -220,9 +220,9 @@ export const useRoomTimePicker = create<RoomTimePickerStore>((set, get) => ({
 
   init: (payload) => {
     if (refreshTimer) return; // already started
-    let choice = get().DesksDataChoice;
+    const choice = get().DesksDataChoice;
     set({ DesksDataChoice: payload });
-    let choiceAfter = get().DesksDataChoice;
+    const choiceAfter = get().DesksDataChoice;
     if (!isEqual(choice, choiceAfter)) { set({ DesksData: null }); }
     if (payload.roomCodes.length > 0 && payload.catCode.trim() !== '') { get().fetchDesksData(); }
     refreshTimer = setInterval(() => {
