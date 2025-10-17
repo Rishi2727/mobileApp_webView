@@ -457,7 +457,7 @@ const RoomSelection = () => {
                 />
                 <div>
                   <Text className="font-bold text-sm text-primary-800">{t(room.roomName)}</Text>
-                  <Text className={`text-xs ${statusMessage ? "text-seat-booked" : "text-secondary"}`}>
+                  <Text className={`text-xs flex-wrap flex-shrink ${statusMessage ? "text-seat-booked" : ""}`}>
                     {statusMessage ||
                       is24Hours ||
                       `${moment(room.roomOpenTime, "HH:mm:ss").format("LT")} - ${moment(
