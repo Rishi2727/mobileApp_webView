@@ -30,7 +30,7 @@ const DisplayTimeChart = () => {
   const [availableDays, setAvailableDays] = useState<Moment[]>([]);
   const [roomCodes, setRoomCodes] = useState<string[]>([]);
   const [currentDisplayFrom, setCurrentDisplayFrom] = useState<number>(0);
-  
+
   // Animation states
   const [isSliding, setIsSliding] = useState(false);
   const [showTableLoading, setShowTableLoading] = useState(false);
@@ -41,11 +41,11 @@ const DisplayTimeChart = () => {
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+
   const catCode = searchParams.get('catCode');
   const roomCode = searchParams.get('roomCode');
   const title = searchParams.get('title');
-  
+
   const { init, stopAndClear, DesksData } = useRoomTimePicker();
   const { newAlert } = useModelStore();
   const { createBooking } = useBookingsStore();
@@ -130,7 +130,7 @@ const DisplayTimeChart = () => {
 
   // Memoized date formatting
   const formatTime = useCallback((timeSlot: string) => {
-    return (timeSlot.length === 8) 
+    return (timeSlot.length === 8)
       ? moment(timeSlot, "HH:mm:ss").format("LT")
       : moment(timeSlot).format('ll').split(',')[0].split('년 ')?.[1] || moment(timeSlot).format('ll').split(',')[0].split('년 ')?.[0];
   }, []);
@@ -183,7 +183,7 @@ const DisplayTimeChart = () => {
               buttons: [
                 {
                   title: t('common.ok'),
-                  action: () => {},
+                  action: () => { },
                   closeOnSuccess: true,
                   color: 'primary',
                 }
@@ -239,153 +239,142 @@ const DisplayTimeChart = () => {
         title={title || "Time Chart"}
         showBackButton={true}
       />
-      
+
       <div className="p-3 bg-gray-50 flex flex-col overflow-hidden">
         {/* Days Row */}
-        <div 
+        <div
           className="mb-2"
           style={{ display: (DesksData?.catFeature.dayWiseBooking) ? 'none' : 'block' }}
         >
-        <div className="flex flex-col">
-          <div className="flex justify-around mb-2.5">
-            {availableDays.map((day, idx) => (
-              <Text key={idx} className="flex-1 text-center text-sm">
-                {day.format("ddd")[0]}
-              </Text>
-            ))}
-          </div>
-          <div className="flex justify-around mb-5">
-            {availableDays.map((day) => (
-              <div key={day.format("YYYY-MM-DD")}>
-                <button
-                  onClick={() => setSelectedDate(day)}
-                  className={`p-2.5 mx-1 rounded-full border min-w-[30px] min-h-[30px] flex items-center justify-center transition-colors shadow-sm ${
-                    selectedDate?.isSame(day, 'day')
+          <div className="flex flex-col justify-start w-fit">
+            <div className="grid grid-cols-7 gap-4 mb-2.5">
+              {availableDays.map((day, idx) => (
+                <Text key={idx} variant="subtitle" className="text-center w-[40px]">
+                  {day.format("ddd")[0]}
+                </Text>
+              ))}
+            </div>
+            <div className="grid grid-cols-7 gap-4 mb-5">
+              {availableDays.map((day) => (
+                <div key={day.format("YYYY-MM-DD")}>
+                  <button
+                    onClick={() => setSelectedDate(day)}
+                    className={`w-[40px] h-[40px] rounded-full border flex items-center justify-center transition-colors shadow-sm ${selectedDate?.isSame(day, 'day')
                       ? 'bg-blue-900 border-blue-900'
                       : 'bg-transparent border-gray-300'
-                  }`}
-                >
-                  <Text 
-                    className={`text-sm text-center ${selectedDate?.isSame(day, 'day') ? 'text-white font-bold' : 'text-gray-900'}`}
+                      }`}
                   >
-                    {day.format("DD")}
-                  </Text>
-                </button>
-              </div>
-            ))}
+                    <Text
+                      className={`text-sm text-center ${selectedDate?.isSame(day, 'day') ? 'text-white font-bold' : 'text-gray-900'}`}
+                    >
+                      {day.format("DD")}
+                    </Text>
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div className="h-px bg-gray-300 my-1.5"></div>
-      
-      {/* Navigation and Title */}
-      <div className="flex justify-between w-full mb-3.5">
-        <div>
-          <button
-            onClick={() => slide('left')}
-            disabled={!canSlide('left') || isSliding}
-            className={`h-10 w-10 rounded-lg shadow flex items-center justify-center transition-transform duration-100 ${
-              canSlide('left') ? 'bg-blue-600' : 'bg-gray-400'
-            }`}
-            style={{ 
-              padding: '10px',
-              transform: `translateX(${buttonTransform}px)`,
-              transition: 'transform 100ms'
-            }}
-          >
-            <Text className="text-white text-lg">{'<'}</Text>
-          </button>
+
+        <div className="h-px bg-gray-300 my-1.5"></div>
+
+        {/* Navigation and Title */}
+        <div className="flex justify-between w-full mb-3.5">
+          <div>
+            <button
+              onClick={() => slide('left')}
+              disabled={!canSlide('left') || isSliding}
+              className={`h-10 w-10 rounded-lg shadow flex items-center justify-center transition-transform duration-100 ${canSlide('left') ? 'bg-blue-600' : 'bg-gray-400'
+                }`}
+              style={{
+                padding: '10px',
+                transform: `translateX(${buttonTransform}px)`,
+                transition: 'transform 100ms'
+              }}
+            >
+              <Text className="text-white text-lg">{'<'}</Text>
+            </button>
+          </div>
+          <div className="flex-1 flex justify-center items-center">
+            <Text className="font-bold text-center text-base mb-3.5">
+              {title}
+            </Text>
+          </div>
+          <div>
+            <button
+              onClick={() => slide('right')}
+              disabled={!canSlide('right') || isSliding}
+              className={`h-10 w-10 rounded-lg shadow flex items-center justify-center transition-transform duration-100 ${canSlide('right') ? 'bg-blue-600' : 'bg-gray-400'
+                }`}
+              style={{
+                padding: '10px',
+                transform: `translateX(${buttonTransform}px)`,
+                transition: 'transform 100ms'
+              }}
+            >
+              <Text className="text-white text-lg">{'>'}</Text>
+            </button>
+          </div>
         </div>
-        <div className="flex-1 flex justify-center items-center">
-          <Text className="font-bold text-center text-base mb-3.5">
-            {title || ''}
-          </Text>
-        </div>
-        <div>
-          <button
-            onClick={() => slide('right')}
-            disabled={!canSlide('right') || isSliding}
-            className={`h-10 w-10 rounded-lg shadow flex items-center justify-center transition-transform duration-100 ${
-              canSlide('right') ? 'bg-blue-600' : 'bg-gray-400'
-            }`}
-            style={{ 
-              padding: '10px',
-              transform: `translateX(${buttonTransform}px)`,
-              transition: 'transform 100ms'
-            }}
-          >
-            <Text className="text-white text-lg">{'>'}</Text>
-          </button>
-        </div>
-      </div>
-      
-      {/* Table */}
-      {!(DesksData && DesksData.chart && DesksData?.chart?.headers && DesksData?.chart?.data) ? (
-        <div className="flex-1 flex items-center justify-center" style={{ minHeight: '200px' }}>
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        </div>
-      ) : (
-        <>
-          {pageLength > 2 && (
-            <div className="flex items-center gap-1 mb-2">
-              {[...Array(pageLength)].map((_, index) => {
-                const isActive = index === Math.ceil(currentDisplayFrom / ITEMS_PER_PAGE);
-                return (
-                  <div
-                    key={index}
-                    className="h-1 flex-1 rounded-full"
-                    style={{ backgroundColor: isActive ? '#93C5FD' : '#DBEAFE' }}
-                  ></div>
-                );
-              })}
-            </div>
-          )}
-          
-          <div className="overflow-x-auto overflow-y-auto flex-1 relative">
-            {/* Table loading overlay */}
-            {showTableLoading && (
-              <div 
-                className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-white z-50 rounded-lg"
-                style={{ 
-                  opacity: overlayOpacity,
-                  transition: 'opacity 150ms'
-                }}
-              >
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+
+        {/* Table */}
+        {!(DesksData && DesksData.chart && DesksData?.chart?.headers && DesksData?.chart?.data) ? (
+          <div className="flex-1 flex items-center justify-center" style={{ minHeight: '200px' }}>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        ) : (
+          <>
+            {pageLength > 2 && (
+              <div className="flex items-center gap-1 mb-2">
+                {[...Array(pageLength)].map((_, index) => {
+                  const isActive = index === Math.ceil(currentDisplayFrom / ITEMS_PER_PAGE);
+                  return (
+                    <div
+                      key={index}
+                      className="h-1 flex-1 rounded-full"
+                      style={{ backgroundColor: isActive ? '#93C5FD' : '#DBEAFE' }}
+                    ></div>
+                  );
+                })}
               </div>
             )}
 
-            {/* Table content with loading effect */}
-            <div
-              className="rounded-lg"
-              style={{ 
-                opacity: tableOpacity,
-                transition: 'opacity 200ms'
-              }}
-            >
-              <ScrollArea className="h-full">
-                <div className="pb-80">
-                  {/* Header */}
-                  <div className="flex items-center mb-0.5 sticky top-0 bg-gray-50 z-10">
-                    <div
-                      className="flex-1 rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 mr-1 ml-1 shadow-sm"
-                      style={{ width: '65px', minHeight: '40px' }}
-                    >
-                      <Text className="text-center font-bold text-blue-700 text-[10px]">
-                        {t('displayTimeChart.time')}
-                      </Text>
-                    </div>
-                    <div className="flex-[3]">
-                      <div className="flex">
+            <div className="overflow-x-auto overflow-y-auto flex-1 relative">
+              {/* Table loading overlay */}
+              {showTableLoading && (
+                <div
+                  className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-white z-50 rounded-lg"
+                  style={{
+                    opacity: overlayOpacity,
+                    transition: 'opacity 150ms'
+                  }}
+                >
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                </div>
+              )}
+
+              {/* Table content with loading effect */}
+              <div
+                className="rounded-lg"
+                style={{
+                  opacity: tableOpacity,
+                  transition: 'opacity 200ms'
+                }}
+              >
+                <ScrollArea className="h-full">
+                  <div className="pb-80">
+                    {/* Header */}
+                    <div className="grid grid-cols-[100px_1fr] gap-1 mb-0.5 sticky top-0 bg-gray-50 z-10">
+                      <div className="rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 shadow-sm h-[40px]">
+                        <Text className="text-center font-bold text-blue-700 text-[10px]">
+                          {t('displayTimeChart.time')}
+                        </Text>
+                      </div>
+                      <div className="grid" style={{ gridTemplateColumns: `repeat(${visibleHeaders.length}, 1fr)` }}>
                         {visibleHeaders.map((header) => (
                           <div
                             key={header}
-                            className="rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 mr-1 shadow-sm"
-                            style={{
-                              width: `${getSingleRoomSize(DesksData?.chart?.headers)}px`,
-                              minHeight: '40px'
-                            }}
+                            className="rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 shadow-sm h-[40px] mx-0.5"
                           >
                             <Text className="text-center font-bold text-blue-700 text-[10px]">
                               {t(header)}
@@ -394,70 +383,63 @@ const DisplayTimeChart = () => {
                         ))}
                       </div>
                     </div>
-                  </div>
-                  
-                  {Object.keys(DesksData.chart.data).length === 0 && (
-                    <div className="mt-5">
-                      <div className="w-full h-[50px] flex flex-col items-center justify-center">
-                        <Text className="font-semibold text-red-500 mb-2 text-base">
-                          {t('displayTimeChart.roomsClosed')}
-                        </Text>
-                        <Text className="text-red-500 text-sm">
-                          {t('displayTimeChart.noOperationalHours')}
-                        </Text>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {Object.keys(visibleTimeSlots).map((timeSlot) => (
-                    <div key={timeSlot} className="flex items-center rounded bg-white mb-0.5">
-                      <div
-                        className="flex-1 flex items-center justify-center py-2 ml-1"
-                        style={{ width: '65px' }}
-                      >
-                        <Text className="font-bold text-gray-900 text-[10px]">
-                          {formatTime(timeSlot)}
-                        </Text>
-                      </div>
 
-                      <div className="flex-1 flex">
-                        {visibleTimeSlots[timeSlot]?.rooms?.map((room: roomChart, roomIndex: number) => {
-                          const status = room.status;
-                          const slotState = getSlotState(status);
-                          const isAvailable = status === "Available";
-                          return (
-                            <div
-                              className="flex-1 flex items-center justify-center rounded mr-1 my-0.5"
-                              style={{ backgroundColor: slotState.color, minHeight: '30px' }}
-                              key={`${room.roomCode}-${roomIndex}`}
-                            >
-                              <button
-                                style={{
-                                  width: `${getSingleRoomSize(DesksData?.chart?.headers)}px`,
-                                }}
-                                className="flex items-center justify-center px-2.5 py-1"
-                                disabled={!isAvailable}
-                                onClick={() => handleSlotPress(timeSlot, room)}
-                              >
-                                <Text
-                                  className="font-semibold text-[10px]"
-                                  style={{ color: slotState.fontColor }}
-                                >
-                                  {t(status)}
-                                </Text>
-                              </button>
-                            </div>
-                          );
-                        })}
+                    {Object.keys(DesksData.chart.data).length === 0 && (
+                      <div className="mt-5">
+                        <div className="w-full h-[50px] flex flex-col items-center justify-center">
+                          <Text className="font-semibold text-red-500 mb-2 text-base">
+                            {t('displayTimeChart.roomsClosed')}
+                          </Text>
+                          <Text className="text-red-500 text-sm">
+                            {t('displayTimeChart.noOperationalHours')}
+                          </Text>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </ScrollArea>
+                    )}
+
+                    {Object.keys(visibleTimeSlots).map((timeSlot) => (
+                      <div key={timeSlot} className="grid grid-cols-[100px_1fr] gap-1 rounded bg-white mb-0.5">
+                        <div className="flex items-center justify-center py-2">
+                          <Text className="font-bold text-gray-900 text-[10px]">
+                            {formatTime(timeSlot)}
+                          </Text>
+                        </div>
+
+                        <div className="grid" style={{ gridTemplateColumns: `repeat(${visibleHeaders.length}, 1fr)` }}>
+                          {visibleTimeSlots[timeSlot]?.rooms?.map((room: roomChart, roomIndex: number) => {
+                            const status = room.status;
+                            const slotState = getSlotState(status);
+                            const isAvailable = status === "Available";
+                            return (
+                              <div
+                                className="flex items-center justify-center rounded mx-0.5 my-0.5 min-h-[30px]"
+                                style={{ backgroundColor: slotState.color }}
+                                key={`${room.roomCode}-${roomIndex}`}
+                              >
+                                <button
+                                  className="w-full h-full flex items-center justify-center px-2.5 py-1"
+                                  disabled={!isAvailable}
+                                  onClick={() => handleSlotPress(timeSlot, room)}
+                                >
+                                  <Text
+                                    className="font-semibold text-[10px]"
+                                    style={{ color: slotState.fontColor }}
+                                  >
+                                    {t(status)}
+                                  </Text>
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
       </div>
     </div>
   );
