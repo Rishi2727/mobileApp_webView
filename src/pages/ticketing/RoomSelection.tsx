@@ -189,7 +189,8 @@ const RoomSelection = () => {
   // Complex cascading logic for filter auto-selection
   useEffect(() => {
     if (categoriesWiseGroupedData?.grouped) {
-      if (selectedCatCode !== "all" && !(selectedCatCode in categoriesWiseGroupedData.grouped)) {
+      // Don't override if hideCategory is set - respect the URL param
+      if (!hideCategory && selectedCatCode !== "all" && !(selectedCatCode in categoriesWiseGroupedData.grouped)) {
         const firstCatKey = Object.keys(categoriesWiseGroupedData.grouped).find((key) => key !== "all");
         if (firstCatKey !== undefined) {
           setSelectedCatCode(firstCatKey);
@@ -197,7 +198,8 @@ const RoomSelection = () => {
         }
       }
 
-      if (selectedLibCode !== "all" && !(selectedLibCode in categoriesWiseGroupedData.grouped[selectedCatCode])) {
+      // Don't override if hideLibrary is set - respect the URL param
+      if (!hideLibrary && selectedLibCode !== "all" && categoriesWiseGroupedData.grouped[selectedCatCode] && !(selectedLibCode in categoriesWiseGroupedData.grouped[selectedCatCode])) {
         const firstLibKey = Object.keys(categoriesWiseGroupedData.grouped[selectedCatCode]).find(
           (key) => key !== "all"
         );
@@ -207,8 +209,11 @@ const RoomSelection = () => {
         }
       }
 
+      // Don't override if hideFloor is set - respect the URL param
       if (
+        !hideFloor &&
         selectedFloorCode !== "all" &&
+        categoriesWiseGroupedData.grouped[selectedCatCode]?.[selectedLibCode] &&
         !(selectedFloorCode in categoriesWiseGroupedData.grouped[selectedCatCode][selectedLibCode])
       ) {
         const firstFloorKey = Object.keys(
@@ -220,7 +225,7 @@ const RoomSelection = () => {
         }
       }
     }
-  }, [categoriesWiseGroupedData, selectedCatCode, selectedFloorCode, selectedLibCode]);
+  }, [categoriesWiseGroupedData, selectedCatCode, selectedFloorCode, selectedLibCode, hideCategory, hideLibrary, hideFloor]);
 
   const chooseCatCode = useCallback(
     (catCode: string) => {
