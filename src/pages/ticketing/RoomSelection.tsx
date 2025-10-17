@@ -38,12 +38,14 @@ const CircularProgress = ({ value, total }: { value: number; total: number }) =>
         strokeLinecap="round"
         transform="rotate(-90 28 28)"
       />
-      <text x="28" y="24" textAnchor="middle" fontSize="14" fontWeight="700" fill="#1F2937">
-        {value}
-      </text>
-      <text x="28" y="36" textAnchor="middle" fontSize="10" fill="#9CA3AF">
-        {total}
-      </text>
+      <g transform="translate(28, 28)">
+        <text y="-6" textAnchor="middle" dominantBaseline="central" fontSize="14" fontWeight="700" fill="#1F2937">
+          {value}
+        </text>
+        <text y="6" textAnchor="middle" dominantBaseline="central" fontSize="10" fill="#9CA3AF">
+          {total}
+        </text>
+      </g>
     </svg>
   );
 };
@@ -351,7 +353,7 @@ const RoomSelection = () => {
             },
             closeOnSuccess: true,
           },
-          { title: t("common.no"), action: () => {}, color: "secondary" },
+          { title: t("common.no"), action: () => { }, color: "secondary" },
         ],
       });
     },
@@ -390,11 +392,10 @@ const RoomSelection = () => {
         title =
           persons === ""
             ? fullCatName
-            : `${
-                selectedCatCode === "all" && (categoriesWiseGroupedData?.counts.categories.length || 0) > 1
-                  ? shortCatName
-                  : t(fullCatName)
-              } ${t("roomSelection.for")}${persons}`;
+            : `${selectedCatCode === "all" && (categoriesWiseGroupedData?.counts.categories.length || 0) > 1
+              ? shortCatName
+              : t(fullCatName)
+            } ${t("roomSelection.for")}${persons}`;
         title +=
           selectedLibCode === "all" && (categoriesWiseGroupedData?.counts.libraries.length || 0) > 1
             ? ` - ${t(zeroIndex.libName)}`
@@ -440,9 +441,8 @@ const RoomSelection = () => {
               if (!statusMessage || newFavourite)
                 handleRoomSelect("SEAT", String(room.roomCode), room.roomcatCode, room.roomName);
             }}
-            className={`p-3 rounded-md bg-white border border-neutral-100 ${
-              !statusMessage || newFavourite ? "cursor-pointer" : "opacity-50"
-            }`}
+            className={`p-3 rounded-md bg-white border border-neutral-100 ${!statusMessage || newFavourite ? "cursor-pointer" : "opacity-50"
+              }`}
           >
             <div className="flex justify-between items-center">
               <div className="flex gap-3 items-center">
@@ -559,21 +559,18 @@ const RoomSelection = () => {
                           handleSeatAction(seat);
                         }}
                         disabled={!isAvailable}
-                        className={`flex-1 ${
-                          isAvailable ? "bg-primary-500" : "bg-neutral-300"
-                        } px-1 py-1 ${
-                          isAvailable ? "border-green-500" : SyncedFavSeats ? "border-red-500" : "border-neutral-400"
-                        } border rounded-md justify-center`}
+                        className={`flex-1 ${isAvailable ? "bg-primary-500" : "bg-neutral-300"
+                          } px-1 py-1 ${isAvailable ? "border-green-500" : SyncedFavSeats ? "border-red-500" : "border-neutral-400"
+                          } border rounded-md justify-center`}
                       >
-                        <div className="flex items-center gap-2 justify-around items-center">
+                        <div className="flex items-center gap-2 justify-around">
                           <Text
-                            className={`${
-                              isAvailable ? "text-white" : "text-black"
-                            } font-semibold text-xs text-center`}
+                            className={`${isAvailable ? "text-white" : "text-black"
+                              } font-semibold text-xs text-center`}
                           >
                             {seat.deskNo} |
                           </Text>
-                          <Text className={`${isAvailable ? "text-white" : "text-black"} font-semibold text-[8px] w-14`}>
+                          <Text variant="caption" className={`${isAvailable ? "text-white" : "text-black"} font-semibold w-14`}>
                             {t(seat?.room?.roomName || "")}
                           </Text>
                         </div>
@@ -638,9 +635,8 @@ const RoomSelection = () => {
                   return (
                     <div
                       key={item.code}
-                      className={`flex items-center justify-between p-1.5 mb-2 ${
-                        isSelected ? "bg-neutral-300" : "bg-primary-100"
-                      } rounded-2xl`}
+                      className={`flex items-center justify-between p-1.5 mb-2 ${isSelected ? "bg-neutral-300" : "bg-primary-100"
+                        } rounded-2xl`}
                     >
                       <div className="flex items-center space-x-4">
                         <div className="bg-white p-2 rounded-md">
@@ -652,9 +648,8 @@ const RoomSelection = () => {
                       </div>
                       <Button
                         onClick={() => chooseLibCode(item.code)}
-                        className={`${
-                          isSelected ? "bg-primary-700" : "bg-primary-400"
-                        } px-4 py-2 h-[35px] justify-center rounded-md`}
+                        className={`${isSelected ? "bg-primary-700" : "bg-primary-400"
+                          } px-4 py-2 h-[35px] justify-center rounded-md`}
                       >
                         <Text className="text-white font-bold text-sm">
                           {isSelected ? t("roomSelection.selected") : t("roomSelection.select")}
@@ -684,9 +679,8 @@ const RoomSelection = () => {
                     return (
                       <div
                         key={item.code}
-                        className={`flex items-center justify-between p-2 mb-2 ${
-                          isSelected ? "bg-primary-100" : "bg-neutral-200"
-                        } rounded-2xl`}
+                        className={`flex items-center justify-between p-2 mb-2 ${isSelected ? "bg-primary-100" : "bg-neutral-200"
+                          } rounded-2xl`}
                       >
                         <div className="flex items-center space-x-4">
                           <div className="bg-white p-2 rounded-md">
@@ -700,9 +694,8 @@ const RoomSelection = () => {
                         </div>
                         <Button
                           onClick={() => setSelectedFloorCode(item.code)}
-                          className={`${
-                            isSelected ? "bg-primary-700" : "bg-primary-400"
-                          } px-4 py-2 h-[35px] justify-center rounded-md`}
+                          className={`${isSelected ? "bg-primary-700" : "bg-primary-400"
+                            } px-4 py-2 h-[35px] justify-center rounded-md`}
                         >
                           <Text className="text-white font-bold text-sm">
                             {isSelected ? t("roomSelection.selected") : t("roomSelection.select")}

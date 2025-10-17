@@ -386,23 +386,206 @@ const SeatSelectionScreen = () => {
   const heightOrg = (screenWidth * 800) / 1200;
   const widthOrg = screenWidth;
 
-  // Handle wheel zoom
+  // Handle touch events with native event handlers
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const element = containerRef.current;
+
+    // Wheel zoom handler
     const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      const delta = e.deltaY * -0.01;
-      setZoom(prevZoom => Math.min(Math.max(prevZoom + delta, 1), 3));
+      if (!e.ctrlKey) { // Only prevent default if it's not a ctrl+wheel (browser zoom)
+        e.preventDefault();
+        const delta = e.deltaY * -0.01;
+        setZoom(prevZoom => Math.min(Math.max(prevZoom + delta, 1), 3));
+      }
     };
 
-    const element = containerRef.current;
+    // Touch event handlers
+    const touchStartHandler = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        setIsPinching(true);
+        setInitialPinchDistance(getTouchDistance(e.touches));
+        setInitialZoom(zoom);
+      } else if (e.touches.length === 1 && zoom > 1) {
+        setIsDragging(true);
+        setIsPinching(false);
+        setIsInteracting(true);
+        const touch = e.touches[0];
+        setDragStart({
+          x: touch.clientX - position.x,
+          y: touch.clientY - position.y,
+        });
+        setLastPanTime(Date.now());
+        setLastPosition({ x: touch.clientX, y: touch.clientY });
+        setVelocity({ x: 0, y: 0 });
+      }
+    };
+
+    const touchMoveHandler = (e: TouchEvent) => {
+      e.preventDefault();
+      if (isPinching && e.touches.length === 2) {
+        const currentDistance = getTouchDistance(e.touches);
+        const scale = currentDistance / initialPinchDistance;
+        const newZoom = Math.min(Math.max(1, initialZoom * scale), 4);
+        
+        if (newZoom !== zoom) {
+          const zoomFactor = newZoom / zoom;
+          const rect = element.getBoundingClientRect();
+          const center = {
+            x: (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left,
+            y: (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top,
+          };
+          const relativeX = center.x - rect.width / 2;
+          const relativeY = center.y - rect.height / 2;
+          
+          const newX = position.x - relativeX * (zoomFactor - 1);
+          const newY = position.y - relativeY * (zoomFactor - 1);
+          
+          setZoom(newZoom);
+          setPosition({
+            x: Math.min(Math.max(newX, -(widthOrg * (newZoom - 1)) / 2), (widthOrg * (newZoom - 1)) / 2),
+            y: Math.min(Math.max(newY, -(heightOrg * (newZoom - 1)) / 2), (heightOrg * (newZoom - 1)) / 2),
+          });
+        }
+      } else if (isDragging && e.touches.length === 1) {
+        const touch = e.touches[0];
+        const newX = touch.clientX - dragStart.x;
+        const newY = touch.clientY - dragStart.y;
+        const now = Date.now();
+        const elapsed = now - lastPanTime;
+        
+        if (elapsed > 0) {
+          const velocityX = (touch.clientX - lastPosition.x) / elapsed;
+          const velocityY = (touch.clientY - lastPosition.y) / elapsed;
+          setVelocity({ x: velocityX, y: velocityY });
+          setLastPosition({ x: touch.clientX, y: touch.clientY });
+          setLastPanTime(now);
+        }
+        
+        const maxX = (widthOrg * (zoom - 1)) / 2;
+        const maxY = (heightOrg * (zoom - 1)) / 2;
+        
+        // Allow slight overscroll (20% beyond bounds)
+        const overscrollFactor = 0.2;
+        const overscrollX = maxX * overscrollFactor;
+        const overscrollY = maxY * overscrollFactor;
+        
+        setPosition({
+          x: Math.min(Math.max(newX, -(maxX + overscrollX)), maxX + overscrollX),
+          y: Math.min(Math.max(newY, -(maxY + overscrollY)), maxY + overscrollY),
+        });
+      }
+    };
+
+    const touchEndHandler = () => {
+      setIsPinching(false);
+      setIsDragging(false);
+      const maxX = (widthOrg * (zoom - 1)) / 2;
+      const maxY = (heightOrg * (zoom - 1)) / 2;
+
+      // Check if we need to bounce back (if we're beyond normal bounds)
+      const needsBounceX = position.x < -maxX || position.x > maxX;
+      const needsBounceY = position.y < -maxY || position.y > maxY;
+
+      if (needsBounceX || needsBounceY || velocity.x !== 0 || velocity.y !== 0) {
+        const momentum = {
+          x: velocity.x * 100,
+          y: velocity.y * 100
+        };
+
+        let finalX = position.x + momentum.x;
+        let finalY = position.y + momentum.y;
+
+        // Apply bounce effect - allow going 20% beyond bounds initially
+        const bounceOvershoot = 0.2;
+        const maxBounceX = maxX * (1 + bounceOvershoot);
+        const maxBounceY = maxY * (1 + bounceOvershoot);
+
+        // If we're already beyond bounds, bounce back immediately
+        if (needsBounceX) {
+          finalX = position.x > 0 ? maxBounceX : -maxBounceX;
+        } else {
+          finalX = Math.min(Math.max(finalX, -maxBounceX), maxBounceX);
+        }
+
+        if (needsBounceY) {
+          finalY = position.y > 0 ? maxBounceY : -maxBounceY;
+        } else {
+          finalY = Math.min(Math.max(finalY, -maxBounceY), maxBounceY);
+        }
+
+        setIsAnimating(true);
+        const startPosition = { ...position };
+        const startTime = Date.now();
+
+        // First animation phase - allow overshooting
+        const animate = () => {
+          const elapsed = Date.now() - startTime;
+          const duration = 300;
+
+          if (elapsed < duration) {
+            const t = elapsed / duration;
+            // Using a custom easing function for more natural bounce
+            const eased = 1 - Math.pow(1 - t, 4); // Quartic ease-out
+
+            setPosition({
+              x: startPosition.x + (finalX - startPosition.x) * eased,
+              y: startPosition.y + (finalY - startPosition.y) * eased,
+            });
+
+            requestAnimationFrame(animate);
+          } else {
+            // Start the bounce-back animation
+            const bounceFinalX = Math.min(Math.max(finalX, -maxX), maxX);
+            const bounceFinalY = Math.min(Math.max(finalY, -maxY), maxY);
+            const bounceStartTime = Date.now();
+            const bounceStartPosition = { x: finalX, y: finalY };
+
+            const bounceAnimate = () => {
+              const bounceElapsed = Date.now() - bounceStartTime;
+              const bounceDuration = 150; // Faster bounce-back
+
+              if (bounceElapsed < bounceDuration) {
+                const t = bounceElapsed / bounceDuration;
+                // Using elastic easing for bounce effect
+                const eased = 1 - Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * ((2 * Math.PI) / 3));
+
+                setPosition({
+                  x: bounceStartPosition.x + (bounceFinalX - bounceStartPosition.x) * eased,
+                  y: bounceStartPosition.y + (bounceFinalY - bounceStartPosition.y) * eased,
+                });
+
+                requestAnimationFrame(bounceAnimate);
+              } else {
+                setPosition({ x: bounceFinalX, y: bounceFinalY });
+                setIsAnimating(false);
+                setVelocity({ x: 0, y: 0 });
+              }
+            };
+
+            requestAnimationFrame(bounceAnimate);
+          }
+        };
+
+        requestAnimationFrame(animate);
+      }
+    };
+
+    // Add event listeners with appropriate passive settings
     element.addEventListener('wheel', handleWheel, { passive: false });
+    element.addEventListener('touchstart', touchStartHandler, { passive: false });
+    element.addEventListener('touchmove', touchMoveHandler, { passive: false });
+    element.addEventListener('touchend', touchEndHandler, { passive: true });
 
     return () => {
       element.removeEventListener('wheel', handleWheel);
+      element.removeEventListener('touchstart', touchStartHandler);
+      element.removeEventListener('touchmove', touchMoveHandler);
+      element.removeEventListener('touchend', touchEndHandler);
     };
-  }, []);
+  }, [zoom, position, initialPinchDistance, initialZoom, isDragging, isPinching, velocity, widthOrg, heightOrg]);
 
   useEffect(() => {
     const roomCodes = roomCode ? String(roomCode).split(',') : [];
@@ -993,12 +1176,12 @@ const SeatSelectionScreen = () => {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseLeave}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
             style={{
               cursor: getCursorStyle(),
-              touchAction: 'none', // Prevent browser gestures
+              touchAction: 'none', // Prevent browser gestures,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
           >
             <div
@@ -1006,8 +1189,10 @@ const SeatSelectionScreen = () => {
               style={{
                 width: `${widthOrg}px`,
                 height: `${heightOrg}px`,
-                position: 'relative',
-                transform: `translate3d(${position.x}px, ${position.y}px, 0) scale(${zoom})`,
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: `translate3d(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px), 0) scale(${zoom})`,
                 transformOrigin: 'center center',
                 transition: (isInteracting || isDragging || isPinching || isAnimating) 
                   ? 'none' 
