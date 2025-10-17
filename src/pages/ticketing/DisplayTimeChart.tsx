@@ -135,14 +135,6 @@ const DisplayTimeChart = () => {
       : moment(timeSlot).format('ll').split(',')[0].split('년 ')?.[1] || moment(timeSlot).format('ll').split(',')[0].split('년 ')?.[0];
   }, []);
 
-  // Memoized room size calculation
-  const getSingleRoomSize = useCallback((lst: string[] | undefined) => {
-    if (!lst) return 75;
-    if (lst.length === 1) return 245;
-    if (lst.length === 2) return 121;
-    return 79;
-  }, []);
-
   // Memoized visible headers and data
   const visibleHeaders = useMemo(() => {
     return DesksData?.chart?.headers?.slice(currentDisplayFrom, currentDisplayFrom + ITEMS_PER_PAGE) || [];
@@ -362,7 +354,7 @@ const DisplayTimeChart = () => {
                 }}
               >
                 <ScrollArea className="h-full">
-                  <div className="pb-80">
+                  {/* <div className="pb-80"> */}
                     {/* Header */}
                     <div className="grid grid-cols-[100px_1fr] gap-1 mb-0.5 sticky top-0 bg-gray-50 z-10">
                       <div className="rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 shadow-sm h-[40px]">
@@ -434,7 +426,7 @@ const DisplayTimeChart = () => {
                         </div>
                       </div>
                     ))}
-                  </div>
+                  {/* </div> */}
                 </ScrollArea>
               </div>
             </div>
