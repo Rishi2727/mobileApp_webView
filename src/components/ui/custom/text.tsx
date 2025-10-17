@@ -21,6 +21,12 @@ type TextVariant =
   | "a"
   | "code"
   | "subtitle"
+  | "subtitle1"
+  | "subtitle2"
+  | "body1"
+  | "body2"
+  | "caption"
+  | "overline"
 
 interface TextProps extends HTMLAttributes<HTMLElement> {
   children?: ReactNode
@@ -76,12 +82,66 @@ const Text = ({
 
        case "h6":
       return (
-        <h4
+        <h6
           className={cn("text-xs text-gray-500 whitespace-pre-line", className)}
           {...props}
         >
           {children}
-        </h4>
+        </h6>
+      )
+    case "subtitle1":
+      return (
+        <h6
+          className={cn("text-lg font-normal leading-7 tracking-wide", className)}
+          {...props}
+        >
+          {children}
+        </h6>
+      )
+    case "subtitle2":
+      return (
+        <h6
+          className={cn("text-base font-medium leading-6 tracking-normal", className)}
+          {...props}
+        >
+          {children}
+        </h6>
+      )
+    case "body1":
+      return (
+        <p
+          className={cn("text-base font-normal leading-7", className)}
+          {...props}
+        >
+          {children}
+        </p>
+      )
+    case "body2":
+      return (
+        <p
+          className={cn("text-sm font-normal leading-6", className)}
+          {...props}
+        >
+          {children}
+        </p>
+      )
+    case "caption":
+      return (
+        <span
+          className={cn("text-xs font-normal leading-5 text-gray-600", className)}
+          {...props}
+        >
+          {children}
+        </span>
+      )
+    case "overline":
+      return (
+        <span
+          className={cn("text-xs font-medium leading-4 tracking-wider uppercase", className)}
+          {...props}
+        >
+          {children}
+        </span>
       )
     case "blockquote":
       return (

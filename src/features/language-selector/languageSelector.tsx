@@ -44,18 +44,15 @@ const LanguageSelector = ({ open, onOpenChange, setLanguage, language }: Languag
   );
 
   const handleCancel = () => {
-    // Reset to original language selection in UI
     setSelectedOption(language);
     onOpenChange(false);
   };
 
   const handleOk = () => {
-    // Apply the selected language to actual state
     setLanguage(selectedOption);
     onOpenChange(false);
   };
 
-  // ✅ Dialog Footer
   const languageDialogFooter = (
     <div className="flex justify-end pt-4 space-x-2">
       <Button
