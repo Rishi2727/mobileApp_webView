@@ -115,7 +115,7 @@ export const useCategoryWiseRoomsStore = create<CatCategoryWiseRoomsStore>((set,
     if (res?.success && res.data && choice === get().CategoriesWiseDesksChoice) {
       const raw = res.data;
 
-      const maps: string[] = [...raw.map(room => room.roomNavigationMap), ...raw.map(room => room.floorMap), ...raw.map(room => room.zoneMap), ...raw.map(room => room.roomMap)].filter(map => map && map !== '' && map !== null && map !== 'null');
+      const maps: string[] = [...raw.map(room => room.roomNavigationMap), ...raw.map(room => room.floorMap), ...raw.map(room => room.roomMap)].filter(map => map && map !== '' && map !== null && map !== 'null');
 
       if (maps.length > 0) {
         get().downloadMapFiles(maps);
