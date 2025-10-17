@@ -64,7 +64,9 @@ import rmNav593 from './store/miniMaps/RM-NAV-593-20250804.png'
 import rmNav594 from './store/miniMaps/RM-NAV-594-20250804.png'
 import rmNav595 from './store/miniMaps/RM-NAV-595-20250804.png'
 
-
+import flr309 from './store/FLR-309-20250701.png'
+import flr310 from './store/FLR-310-20250701.png'
+import flr311 from './store/FLR-311-20250701.png'
 
 // Weather Icons
 import weatherIcon01n from './images/WEATHER_01n.png'
@@ -153,9 +155,15 @@ export const weatherIcon = {
      weatherIcon50d,
      weatherIcon50n,
 }
+
 export const roomImage = {
      rm566, rm567, rm568, rm592, rm593, rm594, rm595
 }
+
 export const roomMiniMap = {
      rmNav566, rmNav567, rmNav568, rmNav592, rmNav593, rmNav594, rmNav595
+}
+
+export const floorMap = {
+     flr309, flr310, flr311
 }

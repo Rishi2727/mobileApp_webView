@@ -4,7 +4,7 @@ import type { CategoryWiseAvailabilityRoom, RoomCategoryConfig } from './api/Res
 import type { CatWiseRooms } from './api/RequestModels';
 import { groupBy, isEqual } from 'lodash';
 import { baseUrl } from './api/client';
-import { roomImage, roomMiniMap } from '@/assets';
+import { roomImage, roomMiniMap, floorMap } from '@/assets';
 
 
 let refreshTimer: ReturnType<typeof setInterval> | null = null;
@@ -228,6 +228,10 @@ const assetMap: { [key: string]: string } = {
   'miniMaps/RM-NAV-593-20250804.png': roomMiniMap.rmNav593,
   'miniMaps/RM-NAV-594-20250804.png': roomMiniMap.rmNav594,
   'miniMaps/RM-NAV-595-20250804.png': roomMiniMap.rmNav595,
+  // Floor map assets
+  'FLR-309-20250701.png': floorMap.flr309,
+  'FLR-310-20250701.png': floorMap.flr310,
+  'FLR-311-20250701.png': floorMap.flr311,
 };
 
 // Web-compatible caching using IndexedDB
@@ -293,7 +297,7 @@ const fileToDataUri = async (blob: Blob): Promise<string> => {
 const getWebCompatibleFileUri = async (file: string): Promise<string> => {
   // Step 1: Check if file exists in bundled assets
   if (assetMap[file]) {
-    console.log(`Using bundled asset: ${file}`);
+    // console.log(`Using bundled asset: ${file}`);
     return assetMap[file];
   }
 
