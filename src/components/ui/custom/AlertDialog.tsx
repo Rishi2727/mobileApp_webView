@@ -98,11 +98,12 @@ export function GlobalAlertDialog() {
       <AlertDialogContent>
         <AlertDialogHeader>
           {getIcon()}
-          {options.title && (
-            <AlertDialogTitle className="text-center text-sm font-semibold">
-              {options.title}
-            </AlertDialogTitle>
-          )}
+          <AlertDialogTitle className={cn(
+            "text-center text-sm font-semibold",
+            !options.title && "sr-only"
+          )}>
+            {options.title || "Alert"} {/* Provide a default title for screen readers */}
+          </AlertDialogTitle>
           {options.message && (
             <AlertDialogDescription className="text-center text-xs py-2">
               {options.message}

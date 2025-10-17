@@ -14,10 +14,47 @@ import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import { metadata } from "@/config/metadata";
 import { useNavbarHeight } from '@/hooks/useNavbarHeight';
 import { useIsMobile } from '@/hooks/use-mobile';
-// Framer Motion available for future enhancements
-// import { motion, useAnimation, type PanInfo } from 'framer-motion';
 
-// Import color constants to match old version exactly
+const ANIMATION_CONFIG = {
+  // Zoom Animation
+  ZOOM: {
+    MIN: 1,
+    MAX: 3,
+    STEP: 0.1,
+    INITIAL: 1,
+    MOMENTUM_MULTIPLIER: 0.95,
+  },
+
+  // Pan/Drag Animation
+  PAN: {
+    DURATION: 150,
+    BOUNCE_DURATION: 120,
+    MOMENTUM_MULTIPLIER: 0.8,
+    BOUNCE_MARGIN: 0.1,
+  },
+
+  // Spring Animation
+  SPRING: {
+    TENSION: 0.08,
+    DAMPING: 4,
+    DURATION: 80,
+  },
+
+  // Transition
+  TRANSITION: {
+    DURATION: 150,
+    EASING: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+  },
+};
+
+// Base dimensions for scaling calculations
+const BASE_DIMENSIONS = {
+  WIDTH: 375,
+  HEIGHT: 667,
+  MAP_WIDTH: 1200,
+  MAP_HEIGHT: 800, 
+};
+
 const SEAT = {
   FIXED: '#9CA3AF',
   BOOKED: '#EF4444',
@@ -97,7 +134,8 @@ const SeatBox: React.FC<SeatBoxProps> = ({ seats, room }) => {
 
   const parseCoords = (coords: string) => {
     const [x1, y1, x2, y2] = coords.split(',').map(Number);
-    const imageWidth = 1200, imageHeight = 800;
+    const imageWidth = BASE_DIMENSIONS.MAP_WIDTH;
+    const imageHeight = BASE_DIMENSIONS.MAP_HEIGHT;
     const scaleX = screenWidth / imageWidth;
     const scaleY = (screenWidth * imageHeight) / imageWidth / imageHeight; // Matches old formula exactly
     return {
@@ -355,13 +393,13 @@ const SeatSelectionScreen = () => {
   const [navMapFileName, setNavMapFileName] = useState<string | null>(null);
 
   // Enhanced zoom and pan state with smooth animations
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(ANIMATION_CONFIG.ZOOM.INITIAL);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [isPinching, setIsPinching] = useState(false);
   const [initialPinchDistance, setInitialPinchDistance] = useState(0);
-  const [initialZoom, setInitialZoom] = useState(1);
+  const [initialZoom, setInitialZoom] = useState(ANIMATION_CONFIG.ZOOM.INITIAL);
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
   const [lastPanTime, setLastPanTime] = useState(0);
   const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
@@ -491,85 +529,91 @@ const SeatSelectionScreen = () => {
 
       if (needsBounceX || needsBounceY || velocity.x !== 0 || velocity.y !== 0) {
         const momentum = {
-          x: velocity.x * 100,
-          y: velocity.y * 100
+          x: velocity.x * 150, // Increased momentum for more natural feel
+          y: velocity.y * 150
         };
 
-        let finalX = position.x + momentum.x;
-        let finalY = position.y + momentum.y;
+        let targetX = position.x + momentum.x;
+        let targetY = position.y + momentum.y;
 
-        // Apply bounce effect - allow going 20% beyond bounds initially
-        const bounceOvershoot = 0.2;
+        // Apply bounce effect - allow going 15% beyond bounds for smoother feel
+        const bounceOvershoot = 0.15;
         const maxBounceX = maxX * (1 + bounceOvershoot);
         const maxBounceY = maxY * (1 + bounceOvershoot);
 
-        // If we're already beyond bounds, bounce back immediately
-        if (needsBounceX) {
-          finalX = position.x > 0 ? maxBounceX : -maxBounceX;
-        } else {
-          finalX = Math.min(Math.max(finalX, -maxBounceX), maxBounceX);
+        // Calculate final positions with overshoot
+        let overshootX = targetX;
+        let overshootY = targetY;
+        
+        if (targetX > maxX) {
+          overshootX = Math.min(targetX, maxBounceX);
+        } else if (targetX < -maxX) {
+          overshootX = Math.max(targetX, -maxBounceX);
+        }
+        
+        if (targetY > maxY) {
+          overshootY = Math.min(targetY, maxBounceY);
+        } else if (targetY < -maxY) {
+          overshootY = Math.max(targetY, -maxBounceY);
         }
 
-        if (needsBounceY) {
-          finalY = position.y > 0 ? maxBounceY : -maxBounceY;
-        } else {
-          finalY = Math.min(Math.max(finalY, -maxBounceY), maxBounceY);
-        }
+        // Final constrained positions
+        const finalX = Math.min(Math.max(overshootX, -maxX), maxX);
+        const finalY = Math.min(Math.max(overshootY, -maxY), maxY);
 
         setIsAnimating(true);
         const startPosition = { ...position };
         const startTime = Date.now();
 
-        // First animation phase - allow overshooting
+        // Single smooth animation with integrated bounce
         const animate = () => {
           const elapsed = Date.now() - startTime;
-          const duration = 300;
+          const totalDuration = 80;
 
-          if (elapsed < duration) {
-            const t = elapsed / duration;
-            // Using a custom easing function for more natural bounce
-            const eased = 1 - Math.pow(1 - t, 4); // Quartic ease-out
+          if (elapsed < totalDuration) {
+            const progress = elapsed / totalDuration;
+            
+            // Custom easing function that combines momentum and bounce
+            let eased;
+            if (progress < 0.7) {
+              // Initial momentum phase with smooth deceleration
+              const t = progress / 0.7;
+              eased = t * (2 - t); // Quadratic ease-out
+            } else {
+              // Bounce back phase with spring-like effect
+              const t = (progress - 0.7) / 0.3;
+              const springFactor = Math.cos(t * Math.PI * 1.5) * Math.exp(-t * 4);
+              eased = 1 + springFactor * 0.08; // More subtle spring effect
+            }
 
-            setPosition({
-              x: startPosition.x + (finalX - startPosition.x) * eased,
-              y: startPosition.y + (finalY - startPosition.y) * eased,
-            });
+            // Calculate current position with smooth interpolation
+            let currentX, currentY;
+            
+            if (progress < 0.7) {
+              // Moving towards overshoot position
+              const t = progress / 0.7;
+              currentX = startPosition.x + (overshootX - startPosition.x) * eased;
+              currentY = startPosition.y + (overshootY - startPosition.y) * eased;
+            } else {
+              // Bouncing back to final position
+              const t = (progress - 0.7) / 0.3;
+              const smoothT = t * t * (3 - 2 * t); // Smooth step function
+              currentX = overshootX + (finalX - overshootX) * smoothT;
+              currentY = overshootY + (finalY - overshootY) * smoothT;
+            }
 
+            setPosition({ x: currentX, y: currentY });
             requestAnimationFrame(animate);
           } else {
-            // Start the bounce-back animation
-            const bounceFinalX = Math.min(Math.max(finalX, -maxX), maxX);
-            const bounceFinalY = Math.min(Math.max(finalY, -maxY), maxY);
-            const bounceStartTime = Date.now();
-            const bounceStartPosition = { x: finalX, y: finalY };
-
-            const bounceAnimate = () => {
-              const bounceElapsed = Date.now() - bounceStartTime;
-              const bounceDuration = 150; // Faster bounce-back
-
-              if (bounceElapsed < bounceDuration) {
-                const t = bounceElapsed / bounceDuration;
-                // Using elastic easing for bounce effect
-                const eased = 1 - Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * ((2 * Math.PI) / 3));
-
-                setPosition({
-                  x: bounceStartPosition.x + (bounceFinalX - bounceStartPosition.x) * eased,
-                  y: bounceStartPosition.y + (bounceFinalY - bounceStartPosition.y) * eased,
-                });
-
-                requestAnimationFrame(bounceAnimate);
-              } else {
-                setPosition({ x: bounceFinalX, y: bounceFinalY });
-                setIsAnimating(false);
-                setVelocity({ x: 0, y: 0 });
-              }
-            };
-
-            requestAnimationFrame(bounceAnimate);
+            setPosition({ x: finalX, y: finalY });
+            setIsAnimating(false);
+            setVelocity({ x: 0, y: 0 });
           }
         };
 
         requestAnimationFrame(animate);
+      } else {
+        setVelocity({ x: 0, y: 0 });
       }
     };
 
@@ -779,7 +823,7 @@ const SeatSelectionScreen = () => {
           
           const animate = () => {
             const elapsed = Date.now() - startTime;
-            const duration = 300; // Reduced from 600ms for faster response
+            const duration = 150; // Reduced for faster response
             
             if (elapsed < duration) {
             // Easing function (ease-out cubic)
@@ -801,7 +845,7 @@ const SeatSelectionScreen = () => {
         requestAnimationFrame(animate);
       }
       
-      // Bounce back to boundaries if exceeded
+      // Smooth bounce back to boundaries if exceeded
       const maxX = (widthOrg * (zoom - 1)) / 2;
       const maxY = (heightOrg * (zoom - 1)) / 2;
       
@@ -815,11 +859,12 @@ const SeatSelectionScreen = () => {
         
         const bounceAnimate = () => {
           const elapsed = Date.now() - startTime;
-          const duration = 200; // Faster bounce animation
+          const duration = 120; // Reduced for faster bounce
           
           if (elapsed < duration) {
             const t = elapsed / duration;
-            const eased = 1 - (1 - t) ** 2; // Ease-out quadratic
+            // Smooth spring-like easing
+            const eased = 1 - Math.pow(1 - t, 3) * Math.cos(t * Math.PI * 2);
             
             setPosition({
               x: startPosition.x + (targetX - startPosition.x) * eased,
@@ -851,243 +896,23 @@ const SeatSelectionScreen = () => {
   }, [isDragging, isPinching, handleMouseUp]);
 
   // Enhanced touch handlers for mobile with smooth animations
-  const getTouchDistance = (touches: React.TouchList): number => {
+  // Helper functions that work with any touch list that has indexed access
+  const getTouchDistance = (touches: any): number => {
+    if (!touches || touches.length < 2) return 0;
     const dx = touches[0].clientX - touches[1].clientX;
     const dy = touches[0].clientY - touches[1].clientY;
     return Math.hypot(dx, dy); // Using Math.hypot for better performance
   };
 
-  const getTouchCenter = (touches: React.TouchList) => {
+  const getTouchCenter = (touches: any) => {
+    if (!touches || touches.length < 2) return { x: 0, y: 0 };
     return {
       x: (touches[0].clientX + touches[1].clientX) / 2,
       y: (touches[0].clientY + touches[1].clientY) / 2,
     };
   };
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    e.preventDefault(); // Prevent browser zoom/scroll
-    
-    if (e.touches.length === 2) {
-      // Enhanced pinch zoom with center point
-      setIsPinching(true);
-      setIsDragging(false);
-      setIsInteracting(true);
-      setInitialPinchDistance(getTouchDistance(e.touches));
-      setInitialZoom(zoom);
-      
-      // Store the center point for zoom-to-point functionality
-      const rect = containerRef.current?.getBoundingClientRect();
-      if (rect) {
-        const center = getTouchCenter(e.touches);
-        const relativeX = center.x - rect.left - rect.width / 2;
-        const relativeY = center.y - rect.top - rect.height / 2;
-        setDragStart({ x: relativeX, y: relativeY });
-      }
-    } else if (e.touches.length === 1 && zoom > 1) {
-      // Pan with momentum tracking
-      setIsDragging(true);
-      setIsPinching(false);
-      setIsInteracting(true);
-      const touch = e.touches[0];
-      setDragStart({
-        x: touch.clientX - position.x,
-        y: touch.clientY - position.y,
-      });
-      setLastPanTime(Date.now());
-      setLastPosition({ x: touch.clientX, y: touch.clientY });
-      setVelocity({ x: 0, y: 0 });
-    }
-  }, [zoom, position]);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
-    
-    if (isPinching && e.touches.length === 2) {
-      // Direct update for immediate pinch zoom response
-      const currentDistance = getTouchDistance(e.touches);
-      const scale = currentDistance / initialPinchDistance;
-      const newZoom = Math.min(Math.max(1, initialZoom * scale), 4);
-      
-      // Zoom towards the pinch center
-      if (newZoom !== zoom) {
-        const zoomFactor = newZoom / zoom;
-        const newX = position.x - dragStart.x * (zoomFactor - 1);
-        const newY = position.y - dragStart.y * (zoomFactor - 1);
-        
-        // Apply boundary constraints
-        const maxX = (widthOrg * (newZoom - 1)) / 2;
-        const maxY = (heightOrg * (newZoom - 1)) / 2;
-        
-        setPosition({
-          x: Math.min(Math.max(newX, -maxX), maxX),
-          y: Math.min(Math.max(newY, -maxY), maxY),
-        });
-      }
-      
-      setZoom(newZoom);
-      
-      // Reset position when zooming out to 1
-      if (newZoom === 1) {
-        setPosition({ x: 0, y: 0 });
-      }
-    } else if (isDragging && e.touches.length === 1 && zoom > 1) {
-      // Direct update for immediate touch response
-      const currentTime = Date.now();
-      const timeDelta = currentTime - lastPanTime;
-      const touch = e.touches[0];
-      
-      if (timeDelta > 0) {
-        const newVelocity = {
-          x: (touch.clientX - lastPosition.x) / timeDelta,
-          y: (touch.clientY - lastPosition.y) / timeDelta,
-        };
-        setVelocity(newVelocity);
-      }
-      
-      const newX = touch.clientX - dragStart.x;
-      const newY = touch.clientY - dragStart.y;
-
-      // Enhanced boundary checking with minimal elastic effect for faster response
-      const maxX = (widthOrg * (zoom - 1)) / 2;
-      const maxY = (heightOrg * (zoom - 1)) / 2;
-
-      // Apply minimal elastic resistance for faster dragging
-      let constrainedX = newX;
-      let constrainedY = newY;
-
-      if (newX > maxX) {
-        const overshoot = newX - maxX;
-        constrainedX = maxX + overshoot * 0.1; // Minimal resistance for faster feel
-      } else if (newX < -maxX) {
-        const overshoot = -maxX - newX;
-        constrainedX = -maxX - overshoot * 0.1;
-      }
-
-      if (newY > maxY) {
-        const overshoot = newY - maxY;
-        constrainedY = maxY + overshoot * 0.1;
-      } else if (newY < -maxY) {
-        const overshoot = -maxY - newY;
-        constrainedY = -maxY - overshoot * 0.1;
-      }
-
-      setPosition({ x: constrainedX, y: constrainedY });
-      setLastPanTime(currentTime);
-      setLastPosition({ x: touch.clientX, y: touch.clientY });
-    }
-  }, [isDragging, isPinching, dragStart, zoom, initialPinchDistance, initialZoom, widthOrg, heightOrg, position, lastPanTime, lastPosition]);
-
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (e.touches.length === 0) {
-      // All touches ended - apply momentum and bounce back
-      if (isDragging && zoom > 1) {
-        setIsInteracting(false);
-        // Apply momentum based on velocity - reduced for faster response
-        const momentumMultiplier = 100; // Further reduced for snappier feel
-        const momentumX = velocity.x * momentumMultiplier;
-        const momentumY = velocity.y * momentumMultiplier;
-        
-        if (Math.abs(momentumX) > 10 || Math.abs(momentumY) > 10) {
-          const finalX = position.x + momentumX;
-          const finalY = position.y + momentumY;
-          
-          // Constrain to boundaries
-          const maxX = (widthOrg * (zoom - 1)) / 2;
-          const maxY = (heightOrg * (zoom - 1)) / 2;
-          
-          const constrainedFinalX = Math.min(Math.max(finalX, -maxX), maxX);
-          const constrainedFinalY = Math.min(Math.max(finalY, -maxY), maxY);
-          
-          setIsAnimating(true);
-          
-          // Animate to final position with momentum
-          const startTime = Date.now();
-          const startPosition = { ...position };
-          
-          const animate = () => {
-            const elapsed = Date.now() - startTime;
-            const duration = 300; // Faster momentum animation
-            
-            if (elapsed < duration) {
-              const t = elapsed / duration;
-              const eased = 1 - (1 - t) ** 3; // Ease-out cubic
-              
-              setPosition({
-                x: startPosition.x + (constrainedFinalX - startPosition.x) * eased,
-                y: startPosition.y + (constrainedFinalY - startPosition.y) * eased,
-              });
-              
-              requestAnimationFrame(animate);
-            } else {
-              setPosition({ x: constrainedFinalX, y: constrainedFinalY });
-              setIsAnimating(false);
-            }
-          };
-          
-          requestAnimationFrame(animate);
-        }
-        
-        // Bounce back to boundaries if exceeded
-        const maxX = (widthOrg * (zoom - 1)) / 2;
-        const maxY = (heightOrg * (zoom - 1)) / 2;
-        
-        if (position.x > maxX || position.x < -maxX || position.y > maxY || position.y < -maxY) {
-          setIsAnimating(true);
-          const targetX = Math.min(Math.max(position.x, -maxX), maxX);
-          const targetY = Math.min(Math.max(position.y, -maxY), maxY);
-          
-          const startTime = Date.now();
-          const startPosition = { ...position };
-          
-          const bounceAnimate = () => {
-            const elapsed = Date.now() - startTime;
-            const duration = 200; // Faster bounce animation
-            
-            if (elapsed < duration) {
-              const t = elapsed / duration;
-              const eased = 1 - (1 - t) ** 2; // Ease-out quadratic
-              
-              setPosition({
-                x: startPosition.x + (targetX - startPosition.x) * eased,
-                y: startPosition.y + (targetY - startPosition.y) * eased,
-              });
-              
-              requestAnimationFrame(bounceAnimate);
-            } else {
-              setPosition({ x: targetX, y: targetY });
-              setIsAnimating(false);
-            }
-          };
-          
-          requestAnimationFrame(bounceAnimate);
-        }
-      }
-      
-      setIsDragging(false);
-      setIsPinching(false);
-      setVelocity({ x: 0, y: 0 });
-    } else if (e.touches.length === 1) {
-      // One touch remaining, switch from pinch to pan
-      setIsPinching(false);
-      if (zoom > 1) {
-        setIsDragging(true);
-        // Keep isInteracting true when switching from pinch to pan
-        const touch = e.touches[0];
-        setDragStart({
-          x: touch.clientX - position.x,
-          y: touch.clientY - position.y,
-        });
-        setLastPanTime(Date.now());
-        setLastPosition({ x: touch.clientX, y: touch.clientY });
-        setVelocity({ x: 0, y: 0 });
-      } else {
-        setIsInteracting(false);
-      }
-    }
-  }, [isDragging, isPinching, zoom, velocity, position, widthOrg, heightOrg]);
-
   const handleChangeRoom = () => {
-    // Match old: router.replace({ pathname: "/ticketing/RoomSelection", params })
     navigate(`/ticketing/RoomSelection?catCodes=${String(catCode)}&hideFloor=true${bookingId ? `&bookingId=${bookingId}` : ''}`, { replace: true });
   };
 
@@ -1195,8 +1020,8 @@ const SeatSelectionScreen = () => {
                 transform: `translate3d(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px), 0) scale(${zoom})`,
                 transformOrigin: 'center center',
                 transition: (isInteracting || isDragging || isPinching || isAnimating) 
-                  ? 'none' 
-                  : 'transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                  ? 'none'
+                  : `transform ${ANIMATION_CONFIG.TRANSITION.DURATION}ms ${ANIMATION_CONFIG.TRANSITION.EASING}`,
                 willChange: 'transform',
                 backfaceVisibility: 'hidden',
                 perspective: 1000,
@@ -1233,7 +1058,7 @@ const SeatSelectionScreen = () => {
               height: 'fit-content'
             }}
           >
-            <div className={`flex ${isMobile? "flex-col": "flex-row"} gap-1`}>
+            <div className={`flex ${isMobile? "flex-col pb-4": "flex-row"} gap-1`}>
               <Indicator label={t('seatSelection.available')} color={getSeatColor('AVAILABLE')} />
               <Indicator label={t('seatSelection.inUse')} color={getSeatColor('booked')} />
               <Indicator label={t('seatSelection.fixed')} color={getSeatColor('fixed')} />
@@ -1255,9 +1080,9 @@ const SeatSelectionScreen = () => {
 };
 
 const Indicator = ({ label, color }: { label: string; color: string }) => (
-  <div className="flex items-center" style={{ margin: `${scale(1)}px`, alignItems: 'center', gap: `${scale(3)}px` }}>
-    <div style={{ width: `${scale(10)}px`, height: `${scale(10)}px`, borderRadius: `${scale(2)}px`, backgroundColor: color }} />
-    <Text style={{ fontSize: `${moderateScale(8)}px` }}>{label}</Text>
+  <div className="flex items-center gap-1 mx-2">
+    <div className='h-4 w-4' style={{ backgroundColor: color }} />
+    <Text variant='caption' className='font-bold'>{label}</Text>
   </div>
 );
 
