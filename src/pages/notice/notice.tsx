@@ -22,7 +22,6 @@ const UniversityNotice = () => {
         if (encryptedData) {
           const noticeUrl = `https://library.kmou.ac.kr/appLogin?encText=${encryptedData}&retUrl=/bbs/list/1`;
           setUrl(noticeUrl);
-          if (import.meta.env.VITE_DEV === "true") console.log("KMOU Secret URL:", import.meta.env.VITE_DEV, noticeUrl);
         } else {
           console.error("Failed to generate KMOU secret");
           setLoading(false);

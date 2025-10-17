@@ -11,12 +11,10 @@ import { useBookingsStore } from "@/store/BookingsStore";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { Icon } from "@/components/ui/custom/icon";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function PreferredSeat() {
   const breadcrumbItems = metadata.PreferredSeatSetting.breadcrumbItems || [];
   const { t } = useTranslation();
-  const isMobile = useIsMobile();
   const {
     favouriteSeats,
     checkLimit,
