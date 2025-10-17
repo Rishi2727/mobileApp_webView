@@ -222,13 +222,18 @@ const DisplayTimeChart = () => {
     );
   }
 
-  const breadcrumbItems = metadata.ticketingDisplayTimeChart?.breadcrumbItems || [];
+  const breadcrumbItems = {
+    "403": metadata.groupTimeSelection,
+    "404": metadata.carrelTimeSelection,
+  }
+
+  type BreadcrumbKeys = keyof typeof breadcrumbItems;
 
   return (
     <div className="min-h-[90vh] bg-primary-50">
       <MyBreadcrumb
-        items={breadcrumbItems}
-        title={title || "Time Chart"}
+        items={breadcrumbItems[catCode as BreadcrumbKeys]?.breadcrumbItems || metadata.ticketingDisplayTimeChart?.breadcrumbItems || []}
+        title={breadcrumbItems[catCode as BreadcrumbKeys]?.title || "Time Chart"}
         showBackButton={true}
       />
 
@@ -355,77 +360,77 @@ const DisplayTimeChart = () => {
               >
                 <ScrollArea className="h-full">
                   {/* <div className="pb-80"> */}
-                    {/* Header */}
-                    <div className="grid grid-cols-[100px_1fr] gap-1 mb-0.5 sticky top-0 bg-gray-50 z-10">
-                      <div className="rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 shadow-sm h-[40px]">
-                        <Text className="text-center font-bold text-blue-700 text-[10px]">
-                          {t('displayTimeChart.time')}
+                  {/* Header */}
+                  <div className="grid grid-cols-[100px_1fr] gap-1 mb-0.5 sticky top-0 bg-gray-50 z-10">
+                    <div className="rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 shadow-sm h-[40px]">
+                      <Text className="text-center font-bold text-blue-700 text-[10px]">
+                        {t('displayTimeChart.time')}
+                      </Text>
+                    </div>
+                    <div className="grid" style={{ gridTemplateColumns: `repeat(${visibleHeaders.length}, 1fr)` }}>
+                      {visibleHeaders.map((header) => (
+                        <div
+                          key={header}
+                          className="rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 shadow-sm h-[40px] mx-0.5"
+                        >
+                          <Text className="text-center font-bold text-blue-700 text-[10px]">
+                            {t(header)}
+                          </Text>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {Object.keys(DesksData.chart.data).length === 0 && (
+                    <div className="mt-5">
+                      <div className="w-full h-[50px] flex flex-col items-center justify-center">
+                        <Text className="font-semibold text-red-500 mb-2 text-base">
+                          {t('displayTimeChart.roomsClosed')}
+                        </Text>
+                        <Text className="text-red-500 text-sm">
+                          {t('displayTimeChart.noOperationalHours')}
                         </Text>
                       </div>
+                    </div>
+                  )}
+
+                  {Object.keys(visibleTimeSlots).map((timeSlot) => (
+                    <div key={timeSlot} className="grid grid-cols-[100px_1fr] gap-1 rounded bg-white mb-0.5">
+                      <div className="flex items-center justify-center py-2">
+                        <Text className="font-bold text-gray-900 text-[10px]">
+                          {formatTime(timeSlot)}
+                        </Text>
+                      </div>
+
                       <div className="grid" style={{ gridTemplateColumns: `repeat(${visibleHeaders.length}, 1fr)` }}>
-                        {visibleHeaders.map((header) => (
-                          <div
-                            key={header}
-                            className="rounded border border-gray-300 bg-gray-100 flex items-center justify-center p-2 shadow-sm h-[40px] mx-0.5"
-                          >
-                            <Text className="text-center font-bold text-blue-700 text-[10px]">
-                              {t(header)}
-                            </Text>
-                          </div>
-                        ))}
+                        {visibleTimeSlots[timeSlot]?.rooms?.map((room: roomChart, roomIndex: number) => {
+                          const status = room.status;
+                          const slotState = getSlotState(status);
+                          const isAvailable = status === "Available";
+                          return (
+                            <div
+                              className="flex items-center justify-center rounded mx-0.5 my-0.5 min-h-[30px]"
+                              style={{ backgroundColor: slotState.color }}
+                              key={`${room.roomCode}-${roomIndex}`}
+                            >
+                              <button
+                                className="w-full h-full flex items-center justify-center px-2.5 py-1"
+                                disabled={!isAvailable}
+                                onClick={() => handleSlotPress(timeSlot, room)}
+                              >
+                                <Text
+                                  className="font-semibold text-[10px]"
+                                  style={{ color: slotState.fontColor }}
+                                >
+                                  {t(status)}
+                                </Text>
+                              </button>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
-
-                    {Object.keys(DesksData.chart.data).length === 0 && (
-                      <div className="mt-5">
-                        <div className="w-full h-[50px] flex flex-col items-center justify-center">
-                          <Text className="font-semibold text-red-500 mb-2 text-base">
-                            {t('displayTimeChart.roomsClosed')}
-                          </Text>
-                          <Text className="text-red-500 text-sm">
-                            {t('displayTimeChart.noOperationalHours')}
-                          </Text>
-                        </div>
-                      </div>
-                    )}
-
-                    {Object.keys(visibleTimeSlots).map((timeSlot) => (
-                      <div key={timeSlot} className="grid grid-cols-[100px_1fr] gap-1 rounded bg-white mb-0.5">
-                        <div className="flex items-center justify-center py-2">
-                          <Text className="font-bold text-gray-900 text-[10px]">
-                            {formatTime(timeSlot)}
-                          </Text>
-                        </div>
-
-                        <div className="grid" style={{ gridTemplateColumns: `repeat(${visibleHeaders.length}, 1fr)` }}>
-                          {visibleTimeSlots[timeSlot]?.rooms?.map((room: roomChart, roomIndex: number) => {
-                            const status = room.status;
-                            const slotState = getSlotState(status);
-                            const isAvailable = status === "Available";
-                            return (
-                              <div
-                                className="flex items-center justify-center rounded mx-0.5 my-0.5 min-h-[30px]"
-                                style={{ backgroundColor: slotState.color }}
-                                key={`${room.roomCode}-${roomIndex}`}
-                              >
-                                <button
-                                  className="w-full h-full flex items-center justify-center px-2.5 py-1"
-                                  disabled={!isAvailable}
-                                  onClick={() => handleSlotPress(timeSlot, room)}
-                                >
-                                  <Text
-                                    className="font-semibold text-[10px]"
-                                    style={{ color: slotState.fontColor }}
-                                  >
-                                    {t(status)}
-                                  </Text>
-                                </button>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ))}
+                  ))}
                   {/* </div> */}
                 </ScrollArea>
               </div>

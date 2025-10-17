@@ -154,19 +154,9 @@ export const metadata: MentaDataTypeProps = {
 
         ],
     },
-    timeSelection: {
+    groupTimeSelection: {
         title: "Group Bookings",
-        path: "/time-selection",
-        isVisible: true,
-        borderAnimation: false,
-        borderColor: "border-accent",
-        iconFillColor: "primary-400",
-        iconStrokeColor: "border-accent",
-        backgroundColor: "background",
-        borderRadius: 16,
-        padding: 12,
-        width: 38,
-        height: 38,
+        path: "#",
         breadcrumbItems: [
             { id: 1, label: "header.dashboard" },
             { id: 2, label: "roomLayout.groupStudyRoom" },
@@ -174,19 +164,9 @@ export const metadata: MentaDataTypeProps = {
 
         ],
     },
-    reservaton: {
+    groupReservaton: {
         title: "Group Bookings",
-        path: "/reservation",
-        isVisible: true,
-        borderAnimation: false,
-        borderColor: "border-accent",
-        iconFillColor: "primary-400",
-        iconStrokeColor: "border-accent",
-        backgroundColor: "background",
-        borderRadius: 16,
-        padding: 12,
-        width: 38,
-        height: 38,
+        path: "#",
         breadcrumbItems: [
             { id: 1, label: "header.dashboard" },
             { id: 2, label: "roomLayout.groupStudyRoom" },
@@ -220,17 +200,7 @@ export const metadata: MentaDataTypeProps = {
     },
     carrelTimeSelection: {
         title: "Carrel Booking",
-        path: "/carrel-time-selection",
-        isVisible: true,
-        borderAnimation: false,
-        borderColor: "border-accent",
-        iconFillColor: "primary-400",
-        iconStrokeColor: "border-accent",
-        backgroundColor: "background",
-        borderRadius: 16,
-        padding: 12,
-        width: 38,
-        height: 38,
+        path: "#",
         breadcrumbItems: [
             { id: 1, label: "header.dashboard" },
             { id: 2, label: "roomLayout.personalCarrel" },

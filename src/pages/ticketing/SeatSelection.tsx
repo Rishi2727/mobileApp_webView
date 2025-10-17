@@ -52,7 +52,7 @@ const BASE_DIMENSIONS = {
   WIDTH: 375,
   HEIGHT: 667,
   MAP_WIDTH: 1200,
-  MAP_HEIGHT: 800, 
+  MAP_HEIGHT: 800,
 };
 
 const SEAT = {
@@ -463,7 +463,7 @@ const SeatSelectionScreen = () => {
         const currentDistance = getTouchDistance(e.touches);
         const scale = currentDistance / initialPinchDistance;
         const newZoom = Math.min(Math.max(1, initialZoom * scale), 4);
-        
+
         if (newZoom !== zoom) {
           const zoomFactor = newZoom / zoom;
           const rect = element.getBoundingClientRect();
@@ -473,10 +473,10 @@ const SeatSelectionScreen = () => {
           };
           const relativeX = center.x - rect.width / 2;
           const relativeY = center.y - rect.height / 2;
-          
+
           const newX = position.x - relativeX * (zoomFactor - 1);
           const newY = position.y - relativeY * (zoomFactor - 1);
-          
+
           setZoom(newZoom);
           setPosition({
             x: Math.min(Math.max(newX, -(widthOrg * (newZoom - 1)) / 2), (widthOrg * (newZoom - 1)) / 2),
@@ -489,7 +489,7 @@ const SeatSelectionScreen = () => {
         const newY = touch.clientY - dragStart.y;
         const now = Date.now();
         const elapsed = now - lastPanTime;
-        
+
         if (elapsed > 0) {
           const velocityX = (touch.clientX - lastPosition.x) / elapsed;
           const velocityY = (touch.clientY - lastPosition.y) / elapsed;
@@ -497,15 +497,15 @@ const SeatSelectionScreen = () => {
           setLastPosition({ x: touch.clientX, y: touch.clientY });
           setLastPanTime(now);
         }
-        
+
         const maxX = (widthOrg * (zoom - 1)) / 2;
         const maxY = (heightOrg * (zoom - 1)) / 2;
-        
+
         // Allow slight overscroll (20% beyond bounds)
         const overscrollFactor = 0.2;
         const overscrollX = maxX * overscrollFactor;
         const overscrollY = maxY * overscrollFactor;
-        
+
         setPosition({
           x: Math.min(Math.max(newX, -(maxX + overscrollX)), maxX + overscrollX),
           y: Math.min(Math.max(newY, -(maxY + overscrollY)), maxY + overscrollY),
@@ -540,13 +540,13 @@ const SeatSelectionScreen = () => {
         // Calculate final positions with overshoot
         let overshootX = targetX;
         let overshootY = targetY;
-        
+
         if (targetX > maxX) {
           overshootX = Math.min(targetX, maxBounceX);
         } else if (targetX < -maxX) {
           overshootX = Math.max(targetX, -maxBounceX);
         }
-        
+
         if (targetY > maxY) {
           overshootY = Math.min(targetY, maxBounceY);
         } else if (targetY < -maxY) {
@@ -568,7 +568,7 @@ const SeatSelectionScreen = () => {
 
           if (elapsed < totalDuration) {
             const progress = elapsed / totalDuration;
-            
+
             // Custom easing function that combines momentum and bounce
             let eased;
             if (progress < 0.7) {
@@ -584,7 +584,7 @@ const SeatSelectionScreen = () => {
 
             // Calculate current position with smooth interpolation
             let currentX, currentY;
-            
+
             if (progress < 0.7) {
               // Moving towards overshoot position
               currentX = startPosition.x + (overshootX - startPosition.x) * eased;
@@ -677,39 +677,39 @@ const SeatSelectionScreen = () => {
   // Enhanced wheel handling for smoother zooming
   const handleWheel = useCallback((e: WheelEvent) => {
     e.preventDefault();
-    
+
     // More responsive zoom delta - increased for faster zooming
     const delta = e.deltaY * -0.008; // Increased for faster zoom response
     const newZoom = Math.min(Math.max(1, zoom + delta), 4);
-    
+
     // Get mouse position relative to container
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) {
       setZoom(newZoom);
       return;
     }
-    
+
     const mouseX = e.clientX - rect.left - rect.width / 2;
     const mouseY = e.clientY - rect.top - rect.height / 2;
-    
+
     // Zoom towards mouse position
     if (newZoom !== zoom) {
       const zoomFactor = newZoom / zoom;
       const newX = position.x - mouseX * (zoomFactor - 1);
       const newY = position.y - mouseY * (zoomFactor - 1);
-      
+
       // Apply boundary constraints
       const maxX = (widthOrg * (newZoom - 1)) / 2;
       const maxY = (heightOrg * (newZoom - 1)) / 2;
-      
+
       setPosition({
         x: Math.min(Math.max(newX, -maxX), maxX),
         y: Math.min(Math.max(newY, -maxY), maxY),
       });
     }
-    
+
     setZoom(newZoom);
-    
+
     // Reset position when zooming out to 1 (bindToBorders behavior)
     if (newZoom === 1) {
       setPosition({ x: 0, y: 0 });
@@ -744,11 +744,11 @@ const SeatSelectionScreen = () => {
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (isDragging && zoom > 1) {
       e.preventDefault();
-      
+
       // Direct update without requestAnimationFrame for immediate response
       const currentTime = Date.now();
       const timeDelta = currentTime - lastPanTime;
-      
+
       if (timeDelta > 0) {
         const newVelocity = {
           x: (e.clientX - lastPosition.x) / timeDelta,
@@ -756,7 +756,7 @@ const SeatSelectionScreen = () => {
         };
         setVelocity(newVelocity);
       }
-      
+
       const newX = e.clientX - dragStart.x;
       const newY = e.clientY - dragStart.y;
 
@@ -795,91 +795,91 @@ const SeatSelectionScreen = () => {
     if (isDragging && zoom > 1) {
       setIsDragging(false);
       setIsInteracting(false);
-      
-        // Apply momentum based on velocity - reduced for faster response  
-        const momentumMultiplier = 100; // Further reduced for snappier feel
-        const momentumX = velocity.x * momentumMultiplier;
-        const momentumY = velocity.y * momentumMultiplier;      if (Math.abs(momentumX) > 10 || Math.abs(momentumY) > 10) {
+
+      // Apply momentum based on velocity - reduced for faster response  
+      const momentumMultiplier = 100; // Further reduced for snappier feel
+      const momentumX = velocity.x * momentumMultiplier;
+      const momentumY = velocity.y * momentumMultiplier; if (Math.abs(momentumX) > 10 || Math.abs(momentumY) > 10) {
         const finalX = position.x + momentumX;
         const finalY = position.y + momentumY;
-        
+
         // Constrain to boundaries
         const maxX = (widthOrg * (zoom - 1)) / 2;
         const maxY = (heightOrg * (zoom - 1)) / 2;
-        
+
         const constrainedFinalX = Math.min(Math.max(finalX, -maxX), maxX);
         const constrainedFinalY = Math.min(Math.max(finalY, -maxY), maxY);
-        
+
         setIsAnimating(true);
-        
-          // Animate to final position - faster animation
-          const startTime = Date.now();
-          const startPosition = { ...position };
-          
-          const animate = () => {
-            const elapsed = Date.now() - startTime;
-            const duration = 150; // Reduced for faster response
-            
-            if (elapsed < duration) {
+
+        // Animate to final position - faster animation
+        const startTime = Date.now();
+        const startPosition = { ...position };
+
+        const animate = () => {
+          const elapsed = Date.now() - startTime;
+          const duration = 150; // Reduced for faster response
+
+          if (elapsed < duration) {
             // Easing function (ease-out cubic)
             const t = elapsed / duration;
             const eased = 1 - (1 - t) ** 3;
-            
+
             setPosition({
               x: startPosition.x + (constrainedFinalX - startPosition.x) * eased,
               y: startPosition.y + (constrainedFinalY - startPosition.y) * eased,
             });
-            
+
             requestAnimationFrame(animate);
           } else {
             setPosition({ x: constrainedFinalX, y: constrainedFinalY });
             setIsAnimating(false);
           }
         };
-        
+
         requestAnimationFrame(animate);
       }
-      
+
       // Smooth bounce back to boundaries if exceeded
       const maxX = (widthOrg * (zoom - 1)) / 2;
       const maxY = (heightOrg * (zoom - 1)) / 2;
-      
+
       if (position.x > maxX || position.x < -maxX || position.y > maxY || position.y < -maxY) {
         setIsAnimating(true);
         const targetX = Math.min(Math.max(position.x, -maxX), maxX);
         const targetY = Math.min(Math.max(position.y, -maxY), maxY);
-        
+
         const startTime = Date.now();
         const startPosition = { ...position };
-        
+
         const bounceAnimate = () => {
           const elapsed = Date.now() - startTime;
           const duration = 120; // Reduced for faster bounce
-          
+
           if (elapsed < duration) {
             const t = elapsed / duration;
             // Smooth spring-like easing
             const eased = 1 - Math.pow(1 - t, 3) * Math.cos(t * Math.PI * 2);
-            
+
             setPosition({
               x: startPosition.x + (targetX - startPosition.x) * eased,
               y: startPosition.y + (targetY - startPosition.y) * eased,
             });
-            
+
             requestAnimationFrame(bounceAnimate);
           } else {
             setPosition({ x: targetX, y: targetY });
             setIsAnimating(false);
           }
         };
-        
+
         requestAnimationFrame(bounceAnimate);
       }
     } else {
       setIsDragging(false);
       setIsInteracting(false);
     }
-    
+
     setVelocity({ x: 0, y: 0 });
   }, [isDragging, zoom, velocity, position, widthOrg, heightOrg]);
 
@@ -925,15 +925,21 @@ const SeatSelectionScreen = () => {
     );
   }
 
-  const breadcrumbItems = metadata.ticketingSeatSelection?.breadcrumbItems || [];
+  const breadcrumbItems = {
+    "401,402": metadata.seatBookingPage,
+    "402,401": metadata.seatBookingPage,
+    "401": metadata.seatBookingPage,
+    "402": metadata.seatBookingPage,
+  };
+  type BreadcrumbKeys = keyof typeof breadcrumbItems;
   return (
     <div
       className="w-screen overflow-hidden flex flex-col bg-primary-50"
       style={{ height: remainingHeight }}
     >
       <MyBreadcrumb
-        items={breadcrumbItems}
-        title={title || "Seat Selection"}
+        items={breadcrumbItems[catCode as BreadcrumbKeys]?.breadcrumbItems || metadata.ticketingSeatSelection?.breadcrumbItems || []}
+        title={breadcrumbItems[catCode as BreadcrumbKeys]?.title || "Seat Selection"}
         showBackButton={true}
       />
       <div
@@ -1006,7 +1012,7 @@ const SeatSelectionScreen = () => {
                 left: '50%',
                 transform: `translate3d(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px), 0) scale(${zoom})`,
                 transformOrigin: 'center center',
-                transition: (isInteracting || isDragging || isPinching || isAnimating) 
+                transition: (isInteracting || isDragging || isPinching || isAnimating)
                   ? 'none'
                   : `transform ${ANIMATION_CONFIG.TRANSITION.DURATION}ms ${ANIMATION_CONFIG.TRANSITION.EASING}`,
                 willChange: 'transform',
@@ -1045,7 +1051,7 @@ const SeatSelectionScreen = () => {
               height: 'fit-content'
             }}
           >
-            <div className={`flex ${isMobile? "flex-col pb-4": "flex-row"} gap-1`}>
+            <div className={`flex ${isMobile ? "flex-col pb-4" : "flex-row"} gap-1`}>
               <Indicator label={t('seatSelection.available')} color={getSeatColor('AVAILABLE')} />
               <Indicator label={t('seatSelection.inUse')} color={getSeatColor('booked')} />
               <Indicator label={t('seatSelection.fixed')} color={getSeatColor('fixed')} />

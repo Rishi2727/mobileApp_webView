@@ -514,13 +514,22 @@ const RoomSelection = () => {
     );
   }
 
-  const breadcrumbItems = metadata.ticketingRoomSelection?.breadcrumbItems || [];
+  const breadcrumbItems = {
+    "401,402": metadata.seatBooking,
+    "402,401" : metadata.seatBooking,
+    "401" : metadata.seatBooking,
+    "402" : metadata.seatBooking,
+    "403": metadata.groupBooking,
+    "404": metadata.carrelBooking,
+  }
+
+  type BreadcrumbKeys = keyof typeof breadcrumbItems;
 
   return (
     <div className="min-h-[90vh] bg-primary-50">
       <MyBreadcrumb
-        items={breadcrumbItems}
-        title={pageConfig.CATEGORY[selectedCatCode as ColorKeys]?.fullname || "Room Selection"}
+        items={breadcrumbItems[catCodes as BreadcrumbKeys]?.breadcrumbItems || metadata.ticketingRoomSelection?.breadcrumbItems || []}
+        title={breadcrumbItems[catCodes as BreadcrumbKeys]?.title || "Room Selection"}
         showBackButton={true}
       />
 

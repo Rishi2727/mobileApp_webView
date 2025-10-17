@@ -358,13 +358,17 @@ const TimeAndUserPicker = () => {
     }
   }, [DesksData, selectedRoomCode, slotStartTime, validateFields, newAlert, t, title, students, myProfile, selectedSlot, masterSlots, createBooking, navigate, catCode]);
 
-  const breadcrumbItems = metadata.ticketingTimeAndUserPicker?.breadcrumbItems || [];
+  const breadcrumbItems = {
+    "403": metadata.groupReservaton,
+  }
+
+  type BreadcrumbKeys = keyof typeof breadcrumbItems;
 
   return (
     <div className="min-h-[90vh] bg-primary-50">
       <MyBreadcrumb
-        items={breadcrumbItems}
-        title={title || "Time & User Picker"}
+        items={breadcrumbItems[catCode as BreadcrumbKeys]?.breadcrumbItems || metadata.ticketingTimeAndUserPicker?.breadcrumbItems || []}
+        title={breadcrumbItems[catCode as BreadcrumbKeys]?.title || "Reservation"}
         showBackButton={true}
       />
 
