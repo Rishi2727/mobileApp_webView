@@ -103,10 +103,6 @@ const scale = (size: number): number => {
   return (width / BASE_WIDTH) * size;
 };
 
-const moderateScale = (size: number, factor: number = 0.5): number => {
-  return size + (scale(size) - size) * factor;
-};
-
 const moderateVerticalScale = (size: number, factor: number = 0.5): number => {
   const height = window.innerHeight;
   const verticalScale = (height / BASE_HEIGHT) * size;
@@ -533,8 +529,8 @@ const SeatSelectionScreen = () => {
           y: velocity.y * 150
         };
 
-        let targetX = position.x + momentum.x;
-        let targetY = position.y + momentum.y;
+        const targetX = position.x + momentum.x;
+        const targetY = position.y + momentum.y;
 
         // Apply bounce effect - allow going 15% beyond bounds for smoother feel
         const bounceOvershoot = 0.15;
@@ -591,7 +587,6 @@ const SeatSelectionScreen = () => {
             
             if (progress < 0.7) {
               // Moving towards overshoot position
-              const t = progress / 0.7;
               currentX = startPosition.x + (overshootX - startPosition.x) * eased;
               currentY = startPosition.y + (overshootY - startPosition.y) * eased;
             } else {
@@ -902,14 +897,6 @@ const SeatSelectionScreen = () => {
     const dx = touches[0].clientX - touches[1].clientX;
     const dy = touches[0].clientY - touches[1].clientY;
     return Math.hypot(dx, dy); // Using Math.hypot for better performance
-  };
-
-  const getTouchCenter = (touches: any) => {
-    if (!touches || touches.length < 2) return { x: 0, y: 0 };
-    return {
-      x: (touches[0].clientX + touches[1].clientX) / 2,
-      y: (touches[0].clientY + touches[1].clientY) / 2,
-    };
   };
 
   const handleChangeRoom = () => {
