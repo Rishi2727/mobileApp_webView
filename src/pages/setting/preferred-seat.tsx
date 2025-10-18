@@ -117,7 +117,7 @@ export default function PreferredSeat() {
   };
 
   return (
-    <div className="min-h-[90vh] bg-gray-50">
+    <div className="min-h-[90vh] bg-gray-50 pb-32">
       <MyBreadcrumb
         items={breadcrumbItems}
         title="Settings"
@@ -224,38 +224,39 @@ export default function PreferredSeat() {
           </div>
         )}
 
-        {/* Suggestions */}
-        {checkLimit() && suggestedFavourite.length > 0 && (
-          <div className="mt-8">
-            <Text className="font-semibold mb-3">{t('favouriteSeat.suggestedForYou')}</Text>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {suggestedFavourite.slice(0, 4).map((item) => (
-                <Card
-                  key={item.desk.deskCode}
-                  className="p-3 cursor-pointer hover:bg-gray-50"
-                  onClick={() => handleAddFavorite(item.desk)}
-                >
-                  <div className="flex items-center space-x-3">
-                    <commonIcons.SeatTableIcon
-                      width={24}
-                      height={24}
-                    />
-                    <div className="flex-1">
-                      <Text className="font-medium text-sm">
-                        {t('favouriteSeat.desk')} {item.desk.deskNo} - {item.desk.room.roomName}
-                      </Text>
-                      <Text className="text-xs text-gray-500">
-                        {t('favouriteSeat.usedTimes')} {item.times} {t('favouriteSeat.timesSuffix')} {item.days} {t('favouriteSeat.daysSuffix')}
-                      </Text>
-                    </div>
-                    <Plus className="w-5 h-5 text-blue-600" />
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Suggestions */}
+      {checkLimit() && suggestedFavourite.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg p-4 z-10">
+          <Text className="font-semibold mb-3">{t('favouriteSeat.suggestedForYou')}</Text>
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+            {suggestedFavourite.slice(0, 10).map((item) => (
+              <Card
+                key={item.desk.deskCode}
+                className="p-3 cursor-pointer hover:bg-gray-50 flex-shrink-0 w-72"
+                onClick={() => handleAddFavorite(item.desk)}
+              >
+                <div className="flex items-center space-x-3">
+                  <commonIcons.SeatTableIcon
+                    width={24}
+                    height={24}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <Text className="font-medium text-sm truncate">
+                      {t('favouriteSeat.desk')} {item.desk.deskNo} - {item.desk.room.roomName}
+                    </Text>
+                    <Text className="text-xs text-gray-500 truncate">
+                      {t('favouriteSeat.usedTimes')} {item.times} {t('favouriteSeat.timesSuffix')} {item.days} {t('favouriteSeat.daysSuffix')}
+                    </Text>
+                  </div>
+                  <Plus className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

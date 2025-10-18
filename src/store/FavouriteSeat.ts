@@ -68,7 +68,8 @@ async function getSuggestedFavouriteSeats(): Promise<SuggestedFavourite[]> {
         // Filter distinct desks order by frequency and must be booked at least 3 times
         const deskFrequency: Record<string, { count: number; desk: FavouriteSeat, firstFound: Moment, lastFound: Moment }> = {};
         const data = res.data.content.filter(booking => {
-            return moment(booking.reservationDtime).isAfter(moment().subtract(30, 'days'));
+            // TODO: Make it back to 30 After Testing
+            return moment(booking.reservationDtime).isAfter(moment().subtract(120, 'days'));
         })
         data.forEach(booking => {
             const deskCode = booking.reserveDeskCode;
