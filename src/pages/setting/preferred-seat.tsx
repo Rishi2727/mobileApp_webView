@@ -84,7 +84,7 @@ export default function PreferredSeat() {
     if (confirmed) {
       removeFavouriteSeat(seat.deskCode);
     }
-  }, [removeFavouriteSeat]);
+  }, [removeFavouriteSeat, t]);
 
   // Add to favorites
   const handleAddFavorite = useCallback(async (seat: FavouriteSeat) => {
