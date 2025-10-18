@@ -143,6 +143,22 @@ export default function PreferredSeat() {
         {favouriteSeats.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
             {/* Favorite Seats */}
+            {/* Add New Button - Show at the end when there are existing favorites */}
+            {checkLimit() && (
+              <Card
+                className="h-36 cursor-pointer hover:bg-gray-50 flex items-center justify-center"
+                onClick={handleAddNew}
+              >
+                <CardContent className="p-3 text-center">
+                  <Plus className="w-8 h-8 text-blue-500 mb-2 mx-auto" />
+                  <Text className="font-semibold text-sm">{t('favouriteSeat.addFavorite')}</Text>
+                  <Text className="text-xs text-gray-500">
+                    {maxFavouriteSeatsLimit - favouriteSeats.length} {t('favouriteSeat.slotsLeft')}
+                  </Text>
+                </CardContent>
+              </Card>
+            )}
+
             {favouriteSeats.map((seat) => (
               <Card
                 key={seat.deskCode}
@@ -170,11 +186,11 @@ export default function PreferredSeat() {
                   </div>
 
                   {/* Seat Info */}
-                  <div className="text-center">
-                    <Text className="text-xs text-gray-500 truncate mb-1">
+                  <div className="text-center w-full px-2">
+                    <Text className="text-xs text-gray-500 truncate mb-1 block">
                       {seat.room.floorName} | {t('favouriteSeat.desk')}: {seat.deskNo}
                     </Text>
-                    <Text className="font-medium text-sm truncate">
+                    <Text className="font-medium text-sm truncate block">
                       {t(seat.room.roomName)}
                     </Text>
                   </div>
@@ -186,22 +202,6 @@ export default function PreferredSeat() {
                 </div>
               </Card>
             ))}
-
-            {/* Add New Button - Show at the end when there are existing favorites */}
-            {checkLimit() && (
-              <Card
-                className="h-36 cursor-pointer hover:bg-gray-50 flex items-center justify-center"
-                onClick={handleAddNew}
-              >
-                <CardContent className="p-3 text-center">
-                  <Plus className="w-8 h-8 text-blue-500 mb-2 mx-auto" />
-                  <Text className="font-semibold text-sm">{t('favouriteSeat.addFavorite')}</Text>
-                  <Text className="text-xs text-gray-500">
-                    {maxFavouriteSeatsLimit - favouriteSeats.length} {t('favouriteSeat.slotsLeft')}
-                  </Text>
-                </CardContent>
-              </Card>
-            )}
           </div>
         )}
 
@@ -243,10 +243,10 @@ export default function PreferredSeat() {
                     height={24}
                   />
                   <div className="flex-1 min-w-0">
-                    <Text className="font-medium text-sm truncate">
+                    <Text className="font-medium text-sm truncate block">
                       {t('favouriteSeat.desk')} {item.desk.deskNo} - {item.desk.room.roomName}
                     </Text>
-                    <Text className="text-xs text-gray-500 truncate">
+                    <Text className="text-xs text-gray-500 truncate block">
                       {t('favouriteSeat.usedTimes')} {item.times} {t('favouriteSeat.timesSuffix')} {item.days} {t('favouriteSeat.daysSuffix')}
                     </Text>
                   </div>
