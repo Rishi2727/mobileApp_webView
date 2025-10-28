@@ -15,7 +15,7 @@ const Dashboard = () => {
                 path={item.path}
                 queryParams={item.queryParams}
                 image={item.image}
-                // iconFillColor={item.iconFillColor}
+                iconFillColor={item.iconFillColor}
                 backgroundColor={item.backgroundColor}
                 borderRadius={item.borderRadius}
                 padding={item.padding}
