@@ -160,7 +160,7 @@ export const metadata: MentaDataTypeProps = {
         breadcrumbItems: [
             { id: 1, label: "header.dashboard" },
             { id: 2, label: "roomLayout.groupStudyRoom" },
-            { id: 2, label: "header.DisplayTimeChart" },
+            { id: 3, label: "header.DisplayTimeChart" },
 
         ],
     },
@@ -204,7 +204,7 @@ export const metadata: MentaDataTypeProps = {
         breadcrumbItems: [
             { id: 1, label: "header.dashboard" },
             { id: 2, label: "roomLayout.personalCarrel" },
-            { id: 2, label: "header.DisplayTimeChart" },
+            { id: 3, label: "header.DisplayTimeChart" },
 
         ],
     },
