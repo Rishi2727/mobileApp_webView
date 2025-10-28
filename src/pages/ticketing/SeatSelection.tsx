@@ -428,7 +428,6 @@ const SeatSelectionScreen = () => {
 
   const catCode = searchParams.get("catCode");
   const roomCode = searchParams.get("roomCode");
-  // const title = searchParams.get('title');
   const bookingId = searchParams.get("bookingId");
   const configSeatchange = searchParams.get("configSeatchange");
 

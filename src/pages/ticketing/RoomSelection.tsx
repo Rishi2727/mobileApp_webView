@@ -16,7 +16,6 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-// Circular Progress Component (SVG-based like old implementation)
 const CircularProgress = ({ value, total }: { value: number; total: number }) => {
   const radius = 20;
   const circumference = 2 * Math.PI * radius;
@@ -141,7 +140,6 @@ const RoomSelection = () => {
   const { createBooking } = useBookingsStore();
   const { newAlert } = useModelStore();
 
-  // Memoized getRoomStatusMessage function
   const getRoomStatusMessageMemo = useMemo(() => {
     const cache = new Map();
     return (item: CategoryWiseAvailabilityRoom) => {
@@ -155,7 +153,6 @@ const RoomSelection = () => {
     };
   }, [t]);
 
-  // Initialize URL params
   useEffect(() => {
     if (catCodes) {
       setCatCode(catCodes);
@@ -171,7 +168,6 @@ const RoomSelection = () => {
     }
   }, [catCodes, hideCategory, hideLibrary, hideFloor]);
 
-  // Initialize stores with useFocusEffect equivalent
   useEffect(() => {
     if (!catCode) return;
     if (!showFav && (catCode.includes("401") || catCode.includes("402"))) {
@@ -186,10 +182,8 @@ const RoomSelection = () => {
     };
   }, [catCode, favInit, favStopAndClear, init, showFav, stopAndClear]);
 
-  // Complex cascading logic for filter auto-selection
   useEffect(() => {
     if (categoriesWiseGroupedData?.grouped) {
-      // Don't override if hideCategory is set - respect the URL param
       if (!hideCategory && selectedCatCode !== "all" && !(selectedCatCode in categoriesWiseGroupedData.grouped)) {
         const firstCatKey = Object.keys(categoriesWiseGroupedData.grouped).find((key) => key !== "all");
         if (firstCatKey !== undefined) {
@@ -198,7 +192,6 @@ const RoomSelection = () => {
         }
       }
 
-      // Don't override if hideLibrary is set - respect the URL param
       if (!hideLibrary && selectedLibCode !== "all" && categoriesWiseGroupedData.grouped[selectedCatCode] && !(selectedLibCode in categoriesWiseGroupedData.grouped[selectedCatCode])) {
         const firstLibKey = Object.keys(categoriesWiseGroupedData.grouped[selectedCatCode]).find(
           (key) => key !== "all"
@@ -209,7 +202,6 @@ const RoomSelection = () => {
         }
       }
 
-      // Don't override if hideFloor is set - respect the URL param
       if (
         !hideFloor &&
         selectedFloorCode !== "all" &&
@@ -500,19 +492,6 @@ const RoomSelection = () => {
 
   const SyncedFavSeats =
     !(showFav && !!favouriteSeats.length) || (checkedStatus && !!categoriesWiseGroupedData?.raw?.length);
-
-  // if (
-  //   !categoriesWiseGroupedData ||
-  //   !categoriesWiseGroupedData.grouped ||
-  //   categoriesWiseGroupedData.grouped?.[selectedCatCode]?.[selectedLibCode]?.[selectedFloorCode] === undefined ||
-  //   !SyncedFavSeats
-  // ) {
-  //   return (
-  //     <div className="flex flex-1 justify-center items-center min-h-screen">
-  //       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-  //     </div>
-  //   );
-  // }
 
   const breadcrumbItems = {
     "401,402": metadata.seatBooking,
