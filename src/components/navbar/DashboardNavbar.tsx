@@ -8,6 +8,7 @@ import { DATE_FORMATS, formatDate } from "@/lib/dateUtils";
 import { LanguageToggle } from "@/features/language-toggle/languageToggle";
 import { useLanguage } from "@/contexts/useLanguage";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 
 const weatherIconMap: Record<string, string> = {
   "01d": weatherIcon.weatherIcon01d,
@@ -36,7 +37,7 @@ export function DashbaordNavbar() {
   const [date, setDate] = useState("");
   const { setLanguage } = useLanguage();
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const currentWeather = useMainStore((state) => state.currentWeather);
   const fetchInitialData = useMainStore((state) => state.fetchInitialData);
 
@@ -117,9 +118,9 @@ export function DashbaordNavbar() {
                 <div className="text-right flex items-center space-x-2">
                   <div>
                     <div className="text-sm opacity-80 font-medium">
-                      {cityName}
+                      {t(cityName)}
                     </div>
-                    <div className="text-sm">{weatherDescription}</div>
+                    <div className="text-sm">{t(weatherDescription)}</div>
                     <div className="text-md font-bold">
                       {" "}
                       {temperature !== null ? `${temperature}°C` : ""}
@@ -178,8 +179,8 @@ export function DashbaordNavbar() {
             </div>
             <div className="text-right flex items-center space-x-2">
               <div>
-                <div className="text-sm opacity-80 font-medium">{cityName}</div>
-                <div className="text-sm">{weatherDescription}</div>
+                <div className="text-sm opacity-80 font-medium">{t(cityName)}</div>
+                <div className="text-sm">{t(weatherDescription)}</div>
                 <div className="text-md font-bold">
                   {temperature !== null ? `${temperature}°C` : ""}
                 </div>
