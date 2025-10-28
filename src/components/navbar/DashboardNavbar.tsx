@@ -104,9 +104,9 @@ export function DashbaordNavbar() {
             />
           </div>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-700 via-slate-600 to-slate-500">
+          <div className=" absolute inset-0 bg-gradient-to-b from-slate-700 via-slate-600 to-slate-500">
             {/* Show date and time only when not mobile */}
-            <div className="absolute top-3 right-[20%] sm:right-[20%] md:right-[20%] xl:right-[10%] text-white text-right flex justify-between items-center w-[20%] sm:w-[20%] md:w-[30%] xl:w-[15%]">
+            <div className="header absolute top-3 right-[20%] sm:right-[20%] md:right-[20%] xl:right-[10%] text-white text-right flex justify-between items-center w-[20%] sm:w-[20%] md:w-[30%] xl:w-[15%]">
               <div>
                 <div className="text-sm opacity-80">{date}</div>
                 <div className="text-lg font-semibold">{time}</div>
@@ -145,7 +145,7 @@ export function DashbaordNavbar() {
             <BrandLogo
               width={isMobile ? 170 : 300}
               height={isMobile ? 40 : 60}
-              className="text-background"
+              className="logo text-background"
             />
           </div>
 

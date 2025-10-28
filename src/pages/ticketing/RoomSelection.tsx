@@ -501,18 +501,18 @@ const RoomSelection = () => {
   const SyncedFavSeats =
     !(showFav && !!favouriteSeats.length) || (checkedStatus && !!categoriesWiseGroupedData?.raw?.length);
 
-  if (
-    !categoriesWiseGroupedData ||
-    !categoriesWiseGroupedData.grouped ||
-    categoriesWiseGroupedData.grouped?.[selectedCatCode]?.[selectedLibCode]?.[selectedFloorCode] === undefined ||
-    !SyncedFavSeats
-  ) {
-    return (
-      <div className="flex flex-1 justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+  // if (
+  //   !categoriesWiseGroupedData ||
+  //   !categoriesWiseGroupedData.grouped ||
+  //   categoriesWiseGroupedData.grouped?.[selectedCatCode]?.[selectedLibCode]?.[selectedFloorCode] === undefined ||
+  //   !SyncedFavSeats
+  // ) {
+  //   return (
+  //     <div className="flex flex-1 justify-center items-center min-h-screen">
+  //       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+  //     </div>
+  //   );
+  // }
 
   const breadcrumbItems = {
     "401,402": metadata.seatBooking,
@@ -526,14 +526,21 @@ const RoomSelection = () => {
   type BreadcrumbKeys = keyof typeof breadcrumbItems;
 
   return (
-    <div className="min-h-[90vh] bg-primary-50">
+    <div className="h-[92vh] bg-primary-100">
       <MyBreadcrumb
         items={breadcrumbItems[catCodes as BreadcrumbKeys]?.breadcrumbItems || metadata.ticketingRoomSelection?.breadcrumbItems || []}
         title={breadcrumbItems[catCodes as BreadcrumbKeys]?.title || "Room Selection"}
         showBackButton={true}
       />
-
-      <div className="px-4 py-3">
+ {(!categoriesWiseGroupedData ||
+    !categoriesWiseGroupedData.grouped ||
+    categoriesWiseGroupedData.grouped?.[selectedCatCode]?.[selectedLibCode]?.[selectedFloorCode] === undefined ||
+    !SyncedFavSeats) ? (
+        <div className="flex flex-1 justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    ) : (
+      <div className="px-4 py-3  max-h-[80vh] overflow-y-auto">
         {/* Favorite Seats Section */}
         {showFav && favouriteSeats.length > 0 && !newFavourite && (
           <div className="mb-2">
@@ -546,7 +553,7 @@ const RoomSelection = () => {
               </div>
             )}
             {SyncedFavSeats && (
-              <ScrollArea className="w-full">
+              // <ScrollArea className="w-full">
                 <div className="flex gap-3">
                   {favouriteSeats.map((seat) => {
                     let isBooked = false;
@@ -592,7 +599,7 @@ const RoomSelection = () => {
                     );
                   })}
                 </div>
-              </ScrollArea>
+              // </ScrollArea>
             )}
           </div>
         )}
@@ -759,6 +766,7 @@ const RoomSelection = () => {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 };

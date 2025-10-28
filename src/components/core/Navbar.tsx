@@ -18,7 +18,7 @@ export function Navbar() {
       {/* Top Navigation Bar */}
       <div className="relative flex justify-between items-center px-4 py-3 bg-border-accent h-[8vh]">
         {/* Logo Section */}
-        <div className="flex items-center">
+        <div className="logo flex items-center">
           <commonIcons.BrandLogo
             width={isMobile ? 170 : 300}
             height={isMobile ? 40 : 60}

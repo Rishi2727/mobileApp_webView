@@ -19,14 +19,14 @@ const Profile = () => {
   }, [init, stopAndClear]);
 
   return (
-    <div className="bg-border-accent h-[90vh]">
+    <div className=" h-[92vh] bg-border-accent">
       <MyBreadcrumb
         items={breadcrumbItems}
         title="My Profile"
         showBackButton={true}
       />
 
-      <div className="flex flex-col items-center justify-center text-center mt-10">
+      <div className="flex flex-col items-center justify-center text-center bg-border-accent">
         {/* Title */}
         <div className="pt-3 font-bold text-xl text-background">
           {t('profile.mobileCard')}

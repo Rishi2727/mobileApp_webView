@@ -1,19 +1,25 @@
-import React, { useEffect, useCallback, useState, useRef } from 'react';
+import React, { useEffect, useCallback, useState, useRef } from "react";
 import { useRoomTimePicker } from "@/store/RoomTimePicker";
 import { useCategoryWiseRoomsStore } from "@/store/CategoryWiseRoomsStore";
-import type { CategoryWiseAvailabilityRoom, RoomWiseDesk } from '@/store/api/ResponseModels';
-import { useModelStore } from '@/store/ModelStore';
-import { useBookingsStore } from '@/store/BookingsStore';
-import { useSearchParams, useNavigate } from 'react-router';
-import { useFavouriteSeatStore, maxFavouriteSeatsLimit } from '@/store/FavouriteSeat';
-import { useLanguage } from '@/contexts/useLanguage';
-import Text from '@/components/ui/custom/text';
-import { Image } from '@/components/ui/custom/image';
-import SwitchIcon from '@/assets/icons/switch.svg?react';
+import type {
+  CategoryWiseAvailabilityRoom,
+  RoomWiseDesk,
+} from "@/store/api/ResponseModels";
+import { useModelStore } from "@/store/ModelStore";
+import { useBookingsStore } from "@/store/BookingsStore";
+import { useSearchParams, useNavigate } from "react-router";
+import {
+  useFavouriteSeatStore,
+  maxFavouriteSeatsLimit,
+} from "@/store/FavouriteSeat";
+import { useLanguage } from "@/contexts/useLanguage";
+import Text from "@/components/ui/custom/text";
+import { Image } from "@/components/ui/custom/image";
+import SwitchIcon from "@/assets/icons/switch.svg?react";
 import MyBreadcrumb from "@/components/ui/custom/my-breadcrumb";
 import { metadata } from "@/config/metadata";
-import { useNavbarHeight } from '@/hooks/useNavbarHeight';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useNavbarHeight } from "@/hooks/useNavbarHeight";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const ANIMATION_CONFIG = {
   // Zoom Animation
@@ -43,7 +49,7 @@ const ANIMATION_CONFIG = {
   // Transition
   TRANSITION: {
     DURATION: 150,
-    EASING: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    EASING: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
   },
 };
 
@@ -56,33 +62,33 @@ const BASE_DIMENSIONS = {
 };
 
 const SEAT = {
-  FIXED: '#9CA3AF',
-  BOOKED: '#EF4444',
-  AVAILABLE: '#10B981',
+  FIXED: "#9CA3AF",
+  BOOKED: "#EF4444",
+  AVAILABLE: "#10B981",
 };
 
 const TEXT = {
-  DARK: '#1F2937',
-  SECONDARY: '#6B7280',
-  LIGHT: '#FFFFFF',
+  DARK: "#1F2937",
+  SECONDARY: "#6B7280",
+  LIGHT: "#FFFFFF",
 };
 
 const BORDER = {
-  MEDIUM: '#D1D5DB',
+  MEDIUM: "#D1D5DB",
 };
 
 const SURFACE = {
-  DEFAULT: '#FFFFFF',
-  LIGHTER: '#F9FAFB',
+  DEFAULT: "#FFFFFF",
+  LIGHTER: "#F9FAFB",
 };
 
-const BRAND = {
-  SECONDARY: '#3B82F6',
-};
+// const BRAND = {
+//   SECONDARY: "#3B82F6",
+// };
 
 const SPECIFIC = {
-  GOLD_STAR: '#FCD34D',
-  SHADOW_BLACK: '#000000',
+  GOLD_STAR: "#FCD34D",
+  SHADOW_BLACK: "#000000",
 };
 
 // Helper function to convert hex to RGBA (matching old implementation)
@@ -118,18 +124,19 @@ const SeatBox: React.FC<SeatBoxProps> = ({ seats, room }) => {
   const { t } = useLanguage();
   const { newAlert } = useModelStore();
   const { createBooking, changeBooking } = useBookingsStore();
-  const { favouriteSeats, checkLimit, prependFavouriteSeat } = useFavouriteSeatStore();
+  const { favouriteSeats, checkLimit, prependFavouriteSeat } =
+    useFavouriteSeatStore();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const bookingId = searchParams.get('bookingId');
-  const newFavourite = searchParams.get('newFavourite');
+  const bookingId = searchParams.get("bookingId");
+  const newFavourite = searchParams.get("newFavourite");
 
   // Calculate container dimensions based on screen width (matching old parseCoords)
   const screenWidth = window.innerWidth;
 
   const parseCoords = (coords: string) => {
-    const [x1, y1, x2, y2] = coords.split(',').map(Number);
+    const [x1, y1, x2, y2] = coords.split(",").map(Number);
     const imageWidth = BASE_DIMENSIONS.MAP_WIDTH;
     const imageHeight = BASE_DIMENSIONS.MAP_HEIGHT;
     const scaleX = screenWidth / imageWidth;
@@ -157,30 +164,36 @@ const SeatBox: React.FC<SeatBoxProps> = ({ seats, room }) => {
   };
 
   const addToFavourite = (desk: RoomWiseDesk) => {
-    if (!favouriteSeats.some(fav => fav.deskCode === desk.deskCode)) {
+    if (!favouriteSeats.some((fav) => fav.deskCode === desk.deskCode)) {
       if (checkLimit()) {
         newAlert({
           disableOnClick: true,
-          message: `${t('seatSelection.areYouSureAddSeat')}${desk.deskNo}${t('seatSelection.toYourFavourites')}`,
-          icon: 'question',
+          message: `${t("seatSelection.areYouSureAddSeat")}${desk.deskNo}${t(
+            "seatSelection.toYourFavourites"
+          )}`,
+          icon: "question",
           buttons: [
             {
-              title: t('common.yes'),
+              title: t("common.yes"),
               onClickLoading: true,
-              color: 'primary',
+              color: "primary",
               onSuccess: () => {
                 newAlert({
-                  message: `${t('seatSelection.seatNo')} ${desk.deskNo}${t('seatSelection.hasBeenAddedToFavourites')}`,
-                  icon: 'success',
-                  buttons: [{
-                    title: t('common.ok'),
-                    action: () => {
-                      // Match old routing: router.dismissAll() then router.dismissTo('/FavouriteSeat')
-                      navigate('/settings-preferred-seat', { replace: true });
+                  message: `${t("seatSelection.seatNo")} ${desk.deskNo}${t(
+                    "seatSelection.hasBeenAddedToFavourites"
+                  )}`,
+                  icon: "success",
+                  buttons: [
+                    {
+                      title: t("common.ok"),
+                      action: () => {
+                        // Match old routing: router.dismissAll() then router.dismissTo('/FavouriteSeat')
+                        navigate("/settings-preferred-seat", { replace: true });
+                      },
+                      closeOnSuccess: true,
+                      color: "primary",
                     },
-                    closeOnSuccess: true,
-                    color: 'primary'
-                  }],
+                  ],
                 });
               },
               action: () => {
@@ -188,87 +201,105 @@ const SeatBox: React.FC<SeatBoxProps> = ({ seats, room }) => {
                   deskCode: desk.deskCode,
                   deskName: desk.deskName,
                   deskNo: desk.deskNo,
-                  room: room
+                  room: room,
                 });
-                return Promise.resolve({ msg: `Seat No. ${desk.deskNo} added to favourites.` });
+                return Promise.resolve({
+                  msg: `Seat No. ${desk.deskNo} added to favourites.`,
+                });
               },
             },
-            { title: t('common.no'), action: () => { }, color: 'secondary' }
+            { title: t("common.no"), action: () => {}, color: "secondary" },
           ],
         });
       } else {
         newAlert({
-          message: `${t('favouriteSeat.canOnlyHaveUpTo')} ${maxFavouriteSeatsLimit} ${t('favouriteSeat.favouriteSeats')}`,
-          icon: 'error',
-          buttons: [{ title: t('common.ok'), action: () => { }, color: 'primary' }],
+          message: `${t(
+            "favouriteSeat.canOnlyHaveUpTo"
+          )} ${maxFavouriteSeatsLimit} ${t("favouriteSeat.favouriteSeats")}`,
+          icon: "error",
+          buttons: [
+            { title: t("common.ok"), action: () => {}, color: "primary" },
+          ],
         });
       }
     }
   };
 
   const bookingAct = (desk: RoomWiseDesk) => {
-    const bkId = (bookingId && bookingId !== '') ? bookingId : undefined;
+    const bkId = bookingId && bookingId !== "" ? bookingId : undefined;
     // Conditional favorite button logic matching old version exactly
-    const favoriteBtn = (checkLimit() && !bkId && !favouriteSeats.some(fav => fav.deskCode === desk.deskCode));
+    const favoriteBtn =
+      checkLimit() &&
+      !bkId &&
+      !favouriteSeats.some((fav) => fav.deskCode === desk.deskCode);
 
     newAlert({
       disableOnClick: true,
-      message: (!bkId)
-        ? `${t('seatSelection.areYouSureBookPrefix')} ${desk.deskNo}${t('seatSelection.areYouSureBookSuffix')}`
-        : `${t('seatSelection.areYouSureChangeSeatPrefix')}${desk.deskNo}${t('seatSelection.areYouSureChangeSeatSuffix')}`,
-      icon: 'question',
+      message: !bkId
+        ? `${t("seatSelection.areYouSureBookPrefix")} ${desk.deskNo}${t(
+            "seatSelection.areYouSureBookSuffix"
+          )}`
+        : `${t("seatSelection.areYouSureChangeSeatPrefix")}${desk.deskNo}${t(
+            "seatSelection.areYouSureChangeSeatSuffix"
+          )}`,
+      icon: "question",
       buttons: [
         {
-          title: t('common.yes'),
+          title: t("common.yes"),
           onClickLoading: true,
-          color: 'primary',
+          color: "primary",
           onFailure: (msg) => {
             newAlert({
               message: String(msg),
-              icon: 'error',
+              icon: "error",
               buttons: [
                 {
-                  title: t('common.ok'),
+                  title: t("common.ok"),
                   action: () => {
                     navigate(-1);
                   },
                   closeOnSuccess: true,
-                  color: 'primary',
-                }
-              ]
+                  color: "primary",
+                },
+              ],
             });
           },
           onSuccess: (result) => {
-            let promptMessage = result?.msg || '';
+            let promptMessage = result?.msg || "";
             if (favoriteBtn) {
-              promptMessage += "\n\n" + t('seatSelection.addSeatToFavourites');
+              promptMessage += "\n\n" + t("seatSelection.addSeatToFavourites");
             }
             newAlert({
               disableOnClick: true,
               message: promptMessage,
-              icon: 'success',
+              icon: "success",
               buttons: [
                 {
                   hidden: !favoriteBtn,
-                  title: t('common.yes'),
+                  title: t("common.yes"),
                   onSuccess: () => {
                     // Match old routing: router.replace({ pathname: '/BookingHistory', params })
-                    navigate(`/bookings?bookingId=${result.data.bookingId}&catCode=${room.roomcatCode}`, { replace: true });
+                    navigate(
+                      `/bookings?bookingId=${result.data.bookingId}&catCode=${room.roomcatCode}`,
+                      { replace: true }
+                    );
                   },
                   action: () => {
                     prependFavouriteSeat({
                       deskCode: desk.deskCode,
                       deskName: desk.deskName,
                       deskNo: desk.deskNo,
-                      room: room
+                      room: room,
                     });
-                    return Promise.resolve({ msg: `Seat No. ${desk.deskNo} added to favourites.` });
+                    return Promise.resolve({
+                      msg: `Seat No. ${desk.deskNo} added to favourites.`,
+                    });
                   },
                   closeOnSuccess: true,
-                  color: 'primary',
+                  color: "primary",
                 },
                 {
-                  title: !favoriteBtn ? t('common.ok') : t('common.no'),
+                  title: !favoriteBtn ? t("common.ok") : t("common.no"),
                   action: () => {
                     if (bkId) {
                       // Match old: router.canGoBack() && router.back()
@@ -276,27 +307,37 @@ const SeatBox: React.FC<SeatBoxProps> = ({ seats, room }) => {
                       return;
                     }
                     // Match old routing: router.replace({ pathname: '/BookingHistory', params })
-                    navigate(`/bookings?bookingId=${result.data.bookingId}&catCode=${room.roomcatCode}`, { replace: true });
+                    navigate(
+                      `/bookings?bookingId=${result.data.bookingId}&catCode=${room.roomcatCode}`,
+                      { replace: true }
+                    );
                   },
                   closeOnSuccess: true,
-                  color: (!favoriteBtn) ? 'primary' : 'secondary',
-                }
+                  color: !favoriteBtn ? "primary" : "secondary",
+                },
               ],
             });
           },
           action: async () => {
             let bk;
             if (bkId) {
-              bk = await changeBooking(bkId, { reserveDeskCode: desk.deskCode, type: 'SEAT' });
+              bk = await changeBooking(bkId, {
+                reserveDeskCode: desk.deskCode,
+                type: "SEAT",
+              });
             } else {
-              bk = await createBooking({ reserveDeskCode: desk.deskCode, type: 'SEAT', bookingStartFromNow: true });
+              bk = await createBooking({
+                reserveDeskCode: desk.deskCode,
+                type: "SEAT",
+                bookingStartFromNow: true,
+              });
             }
             if (bk?.success) return Promise.resolve(bk);
             return Promise.reject(bk?.msg);
           },
           closeOnSuccess: true,
         },
-        { title: t('common.no'), action: () => { }, color: 'secondary' }
+        { title: t("common.no"), action: () => {}, color: "secondary" },
       ],
     });
   };
@@ -305,7 +346,7 @@ const SeatBox: React.FC<SeatBoxProps> = ({ seats, room }) => {
     <>
       {seats.map((seat, idx) => {
         let isFavourite = false;
-        if (favouriteSeats.some(fav => fav.deskCode === seat.deskCode)) {
+        if (favouriteSeats.some((fav) => fav.deskCode === seat.deskCode)) {
           isFavourite = true;
         }
         const { top, left, width, height } = parseCoords(seat.deskCoords);
@@ -315,21 +356,21 @@ const SeatBox: React.FC<SeatBoxProps> = ({ seats, room }) => {
             key={idx}
             className="absolute flex items-center justify-center"
             style={{
-              position: 'absolute',
+              position: "absolute",
               top: `${top}px`,
               left: `${left}px`,
               width: `${width}px`,
               height: `${height}px`,
               backgroundColor: getSeatColor(seat),
-              justifyContent: 'center',
-              alignItems: 'center',
+              justifyContent: "center",
+              alignItems: "center",
               borderRadius: `${scale(1)}px`,
             }}
           >
             {isFavourite && (
               <div
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   top: `${-scale(3)}px`,
                   right: `${-scale(3)}px`,
                   zIndex: 10,
@@ -339,7 +380,10 @@ const SeatBox: React.FC<SeatBoxProps> = ({ seats, room }) => {
                   style={{
                     fontSize: `${scale(6)}px`,
                     color: SPECIFIC.GOLD_STAR,
-                    textShadow: `0 1px 1px ${hexToRGBA(SPECIFIC.SHADOW_BLACK, 0.75)}`,
+                    textShadow: `0 1px 1px ${hexToRGBA(
+                      SPECIFIC.SHADOW_BLACK,
+                      0.75
+                    )}`,
                   }}
                 >
                   ★
@@ -350,14 +394,20 @@ const SeatBox: React.FC<SeatBoxProps> = ({ seats, room }) => {
               onClick={() => handleClick(seat)}
               className="w-full h-full flex items-center justify-center"
               style={{
-                width: '100%',
-                height: '100%',
-                justifyContent: 'center',
-                alignItems: 'center',
+                width: "100%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
                 padding: `${scale(2)}px`,
               }}
             >
-              <Text style={{ fontSize: `${scale(4)}px`, color: TEXT.LIGHT, fontWeight: 'bold' }}>
+              <Text
+                style={{
+                  fontSize: `${scale(4)}px`,
+                  color: TEXT.LIGHT,
+                  fontWeight: "bold",
+                }}
+              >
                 {seat.deskNo}
               </Text>
             </button>
@@ -374,13 +424,13 @@ const SeatSelectionScreen = () => {
   const navigate = useNavigate();
 
   // Calculate navbar height to ensure proper viewport usage
-  const { remainingHeight } = useNavbarHeight('simple');
+  const { remainingHeight } = useNavbarHeight("simple");
 
-  const catCode = searchParams.get('catCode');
-  const roomCode = searchParams.get('roomCode');
-  const title = searchParams.get('title');
-  const bookingId = searchParams.get('bookingId');
-  const configSeatchange = searchParams.get('configSeatchange');
+  const catCode = searchParams.get("catCode");
+  const roomCode = searchParams.get("roomCode");
+  // const title = searchParams.get('title');
+  const bookingId = searchParams.get("bookingId");
+  const configSeatchange = searchParams.get("configSeatchange");
 
   const [mapFile, setMapFile] = useState<string | null>(null);
   const [mapFileName, setMapFileName] = useState<string | null>(null);
@@ -411,8 +461,8 @@ const SeatSelectionScreen = () => {
 
   // Helper function for cursor style
   const getCursorStyle = () => {
-    if (zoom <= 1) return 'default';
-    return isDragging ? 'grabbing' : 'grab';
+    if (zoom <= 1) return "default";
+    return isDragging ? "grabbing" : "grab";
   };
 
   // Calculate screen dimensions matching old version
@@ -428,10 +478,11 @@ const SeatSelectionScreen = () => {
 
     // Wheel zoom handler
     const handleWheel = (e: WheelEvent) => {
-      if (!e.ctrlKey) { // Only prevent default if it's not a ctrl+wheel (browser zoom)
+      if (!e.ctrlKey) {
+        // Only prevent default if it's not a ctrl+wheel (browser zoom)
         e.preventDefault();
         const delta = e.deltaY * -0.01;
-        setZoom(prevZoom => Math.min(Math.max(prevZoom + delta, 1), 3));
+        setZoom((prevZoom) => Math.min(Math.max(prevZoom + delta, 1), 3));
       }
     };
 
@@ -479,8 +530,14 @@ const SeatSelectionScreen = () => {
 
           setZoom(newZoom);
           setPosition({
-            x: Math.min(Math.max(newX, -(widthOrg * (newZoom - 1)) / 2), (widthOrg * (newZoom - 1)) / 2),
-            y: Math.min(Math.max(newY, -(heightOrg * (newZoom - 1)) / 2), (heightOrg * (newZoom - 1)) / 2),
+            x: Math.min(
+              Math.max(newX, -(widthOrg * (newZoom - 1)) / 2),
+              (widthOrg * (newZoom - 1)) / 2
+            ),
+            y: Math.min(
+              Math.max(newY, -(heightOrg * (newZoom - 1)) / 2),
+              (heightOrg * (newZoom - 1)) / 2
+            ),
           });
         }
       } else if (isDragging && e.touches.length === 1) {
@@ -507,8 +564,14 @@ const SeatSelectionScreen = () => {
         const overscrollY = maxY * overscrollFactor;
 
         setPosition({
-          x: Math.min(Math.max(newX, -(maxX + overscrollX)), maxX + overscrollX),
-          y: Math.min(Math.max(newY, -(maxY + overscrollY)), maxY + overscrollY),
+          x: Math.min(
+            Math.max(newX, -(maxX + overscrollX)),
+            maxX + overscrollX
+          ),
+          y: Math.min(
+            Math.max(newY, -(maxY + overscrollY)),
+            maxY + overscrollY
+          ),
         });
       }
     };
@@ -523,10 +586,15 @@ const SeatSelectionScreen = () => {
       const needsBounceX = position.x < -maxX || position.x > maxX;
       const needsBounceY = position.y < -maxY || position.y > maxY;
 
-      if (needsBounceX || needsBounceY || velocity.x !== 0 || velocity.y !== 0) {
+      if (
+        needsBounceX ||
+        needsBounceY ||
+        velocity.x !== 0 ||
+        velocity.y !== 0
+      ) {
         const momentum = {
           x: velocity.x * 150, // Increased momentum for more natural feel
-          y: velocity.y * 150
+          y: velocity.y * 150,
         };
 
         const targetX = position.x + momentum.x;
@@ -578,7 +646,8 @@ const SeatSelectionScreen = () => {
             } else {
               // Bounce back phase with spring-like effect
               const t = (progress - 0.7) / 0.3;
-              const springFactor = Math.cos(t * Math.PI * 1.5) * Math.exp(-t * 4);
+              const springFactor =
+                Math.cos(t * Math.PI * 1.5) * Math.exp(-t * 4);
               eased = 1 + springFactor * 0.08; // More subtle spring effect
             }
 
@@ -587,8 +656,10 @@ const SeatSelectionScreen = () => {
 
             if (progress < 0.7) {
               // Moving towards overshoot position
-              currentX = startPosition.x + (overshootX - startPosition.x) * eased;
-              currentY = startPosition.y + (overshootY - startPosition.y) * eased;
+              currentX =
+                startPosition.x + (overshootX - startPosition.x) * eased;
+              currentY =
+                startPosition.y + (overshootY - startPosition.y) * eased;
             } else {
               // Bouncing back to final position
               const t = (progress - 0.7) / 0.3;
@@ -613,22 +684,34 @@ const SeatSelectionScreen = () => {
     };
 
     // Add event listeners with appropriate passive settings
-    element.addEventListener('wheel', handleWheel, { passive: false });
-    element.addEventListener('touchstart', touchStartHandler, { passive: false });
-    element.addEventListener('touchmove', touchMoveHandler, { passive: false });
-    element.addEventListener('touchend', touchEndHandler, { passive: true });
+    element.addEventListener("wheel", handleWheel, { passive: false });
+    element.addEventListener("touchstart", touchStartHandler, {
+      passive: false,
+    });
+    element.addEventListener("touchmove", touchMoveHandler, { passive: false });
+    element.addEventListener("touchend", touchEndHandler, { passive: true });
 
     return () => {
-      element.removeEventListener('wheel', handleWheel);
-      element.removeEventListener('touchstart', touchStartHandler);
-      element.removeEventListener('touchmove', touchMoveHandler);
-      element.removeEventListener('touchend', touchEndHandler);
+      element.removeEventListener("wheel", handleWheel);
+      element.removeEventListener("touchstart", touchStartHandler);
+      element.removeEventListener("touchmove", touchMoveHandler);
+      element.removeEventListener("touchend", touchEndHandler);
     };
-  }, [zoom, position, initialPinchDistance, initialZoom, isDragging, isPinching, velocity, widthOrg, heightOrg]);
+  }, [
+    zoom,
+    position,
+    initialPinchDistance,
+    initialZoom,
+    isDragging,
+    isPinching,
+    velocity,
+    widthOrg,
+    heightOrg,
+  ]);
 
   useEffect(() => {
-    const roomCodes = roomCode ? String(roomCode).split(',') : [];
-    if (catCode === '' || roomCodes.length === 0) return;
+    const roomCodes = roomCode ? String(roomCode).split(",") : [];
+    if (catCode === "" || roomCodes.length === 0) return;
 
     init({ roomCodes, catCode: String(catCode) });
     return () => stopAndClear();
@@ -656,7 +739,7 @@ const SeatSelectionScreen = () => {
         const uri = await getCachedFileUri(mapFileName);
         setMapFile(uri);
       } catch (error) {
-        console.warn('Error fetching map file:', error);
+        console.warn("Error fetching map file:", error);
       }
     })();
   }, [getCachedFileUri, mapFileName]);
@@ -669,126 +752,143 @@ const SeatSelectionScreen = () => {
         const uri = await getCachedFileUri(navMapFileName);
         setNavMapFile(uri);
       } catch (error) {
-        console.warn('Error fetching navigation map file:', error);
+        console.warn("Error fetching navigation map file:", error);
       }
     })();
   }, [getCachedFileUri, navMapFileName]);
 
   // Enhanced wheel handling for smoother zooming
-  const handleWheel = useCallback((e: WheelEvent) => {
-    e.preventDefault();
+  const handleWheel = useCallback(
+    (e: WheelEvent) => {
+      e.preventDefault();
 
-    // More responsive zoom delta - increased for faster zooming
-    const delta = e.deltaY * -0.008; // Increased for faster zoom response
-    const newZoom = Math.min(Math.max(1, zoom + delta), 4);
+      // More responsive zoom delta - increased for faster zooming
+      const delta = e.deltaY * -0.008; // Increased for faster zoom response
+      const newZoom = Math.min(Math.max(1, zoom + delta), 4);
 
-    // Get mouse position relative to container
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) {
+      // Get mouse position relative to container
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) {
+        setZoom(newZoom);
+        return;
+      }
+
+      const mouseX = e.clientX - rect.left - rect.width / 2;
+      const mouseY = e.clientY - rect.top - rect.height / 2;
+
+      // Zoom towards mouse position
+      if (newZoom !== zoom) {
+        const zoomFactor = newZoom / zoom;
+        const newX = position.x - mouseX * (zoomFactor - 1);
+        const newY = position.y - mouseY * (zoomFactor - 1);
+
+        // Apply boundary constraints
+        const maxX = (widthOrg * (newZoom - 1)) / 2;
+        const maxY = (heightOrg * (newZoom - 1)) / 2;
+
+        setPosition({
+          x: Math.min(Math.max(newX, -maxX), maxX),
+          y: Math.min(Math.max(newY, -maxY), maxY),
+        });
+      }
+
       setZoom(newZoom);
-      return;
-    }
 
-    const mouseX = e.clientX - rect.left - rect.width / 2;
-    const mouseY = e.clientY - rect.top - rect.height / 2;
-
-    // Zoom towards mouse position
-    if (newZoom !== zoom) {
-      const zoomFactor = newZoom / zoom;
-      const newX = position.x - mouseX * (zoomFactor - 1);
-      const newY = position.y - mouseY * (zoomFactor - 1);
-
-      // Apply boundary constraints
-      const maxX = (widthOrg * (newZoom - 1)) / 2;
-      const maxY = (heightOrg * (newZoom - 1)) / 2;
-
-      setPosition({
-        x: Math.min(Math.max(newX, -maxX), maxX),
-        y: Math.min(Math.max(newY, -maxY), maxY),
-      });
-    }
-
-    setZoom(newZoom);
-
-    // Reset position when zooming out to 1 (bindToBorders behavior)
-    if (newZoom === 1) {
-      setPosition({ x: 0, y: 0 });
-    }
-  }, [zoom, position, widthOrg, heightOrg]);
+      // Reset position when zooming out to 1 (bindToBorders behavior)
+      if (newZoom === 1) {
+        setPosition({ x: 0, y: 0 });
+      }
+    },
+    [zoom, position, widthOrg, heightOrg]
+  );
 
   // Set up wheel event listener with passive: false
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    container.addEventListener('wheel', handleWheel, { passive: false });
+    container.addEventListener("wheel", handleWheel, { passive: false });
 
     return () => {
-      container.removeEventListener('wheel', handleWheel);
+      container.removeEventListener("wheel", handleWheel);
     };
   }, [handleWheel]);
 
   // Enhanced pan handlers with momentum - optimized for live dragging
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (zoom > 1) {
-      e.preventDefault();
-      setIsDragging(true);
-      setIsInteracting(true);
-      setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
-      setLastPanTime(Date.now());
-      setLastPosition({ x: e.clientX, y: e.clientY });
-      setVelocity({ x: 0, y: 0 });
-    }
-  }, [zoom, position]);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (isDragging && zoom > 1) {
-      e.preventDefault();
-
-      // Direct update without requestAnimationFrame for immediate response
-      const currentTime = Date.now();
-      const timeDelta = currentTime - lastPanTime;
-
-      if (timeDelta > 0) {
-        const newVelocity = {
-          x: (e.clientX - lastPosition.x) / timeDelta,
-          y: (e.clientY - lastPosition.y) / timeDelta,
-        };
-        setVelocity(newVelocity);
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (zoom > 1) {
+        e.preventDefault();
+        setIsDragging(true);
+        setIsInteracting(true);
+        setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
+        setLastPanTime(Date.now());
+        setLastPosition({ x: e.clientX, y: e.clientY });
+        setVelocity({ x: 0, y: 0 });
       }
+    },
+    [zoom, position]
+  );
 
-      const newX = e.clientX - dragStart.x;
-      const newY = e.clientY - dragStart.y;
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (isDragging && zoom > 1) {
+        e.preventDefault();
 
-      // Enhanced boundary checking with minimal elastic effect for faster response
-      const maxX = (widthOrg * (zoom - 1)) / 2;
-      const maxY = (heightOrg * (zoom - 1)) / 2;
+        // Direct update without requestAnimationFrame for immediate response
+        const currentTime = Date.now();
+        const timeDelta = currentTime - lastPanTime;
 
-      // Apply minimal elastic resistance for faster dragging
-      let constrainedX = newX;
-      let constrainedY = newY;
+        if (timeDelta > 0) {
+          const newVelocity = {
+            x: (e.clientX - lastPosition.x) / timeDelta,
+            y: (e.clientY - lastPosition.y) / timeDelta,
+          };
+          setVelocity(newVelocity);
+        }
 
-      if (newX > maxX) {
-        const overshoot = newX - maxX;
-        constrainedX = maxX + overshoot * 0.1; // Minimal resistance for faster feel
-      } else if (newX < -maxX) {
-        const overshoot = -maxX - newX;
-        constrainedX = -maxX - overshoot * 0.1;
+        const newX = e.clientX - dragStart.x;
+        const newY = e.clientY - dragStart.y;
+
+        // Enhanced boundary checking with minimal elastic effect for faster response
+        const maxX = (widthOrg * (zoom - 1)) / 2;
+        const maxY = (heightOrg * (zoom - 1)) / 2;
+
+        // Apply minimal elastic resistance for faster dragging
+        let constrainedX = newX;
+        let constrainedY = newY;
+
+        if (newX > maxX) {
+          const overshoot = newX - maxX;
+          constrainedX = maxX + overshoot * 0.1; // Minimal resistance for faster feel
+        } else if (newX < -maxX) {
+          const overshoot = -maxX - newX;
+          constrainedX = -maxX - overshoot * 0.1;
+        }
+
+        if (newY > maxY) {
+          const overshoot = newY - maxY;
+          constrainedY = maxY + overshoot * 0.1;
+        } else if (newY < -maxY) {
+          const overshoot = -maxY - newY;
+          constrainedY = -maxY - overshoot * 0.1;
+        }
+
+        setPosition({ x: constrainedX, y: constrainedY });
+        setLastPanTime(currentTime);
+        setLastPosition({ x: e.clientX, y: e.clientY });
       }
-
-      if (newY > maxY) {
-        const overshoot = newY - maxY;
-        constrainedY = maxY + overshoot * 0.1;
-      } else if (newY < -maxY) {
-        const overshoot = -maxY - newY;
-        constrainedY = -maxY - overshoot * 0.1;
-      }
-
-      setPosition({ x: constrainedX, y: constrainedY });
-      setLastPanTime(currentTime);
-      setLastPosition({ x: e.clientX, y: e.clientY });
-    }
-  }, [isDragging, dragStart, zoom, widthOrg, heightOrg, lastPanTime, lastPosition]);
+    },
+    [
+      isDragging,
+      dragStart,
+      zoom,
+      widthOrg,
+      heightOrg,
+      lastPanTime,
+      lastPosition,
+    ]
+  );
 
   // Enhanced mouse up with momentum animation
   const handleMouseUp = useCallback(() => {
@@ -796,10 +896,11 @@ const SeatSelectionScreen = () => {
       setIsDragging(false);
       setIsInteracting(false);
 
-      // Apply momentum based on velocity - reduced for faster response  
+      // Apply momentum based on velocity - reduced for faster response
       const momentumMultiplier = 100; // Further reduced for snappier feel
       const momentumX = velocity.x * momentumMultiplier;
-      const momentumY = velocity.y * momentumMultiplier; if (Math.abs(momentumX) > 10 || Math.abs(momentumY) > 10) {
+      const momentumY = velocity.y * momentumMultiplier;
+      if (Math.abs(momentumX) > 10 || Math.abs(momentumY) > 10) {
         const finalX = position.x + momentumX;
         const finalY = position.y + momentumY;
 
@@ -826,8 +927,10 @@ const SeatSelectionScreen = () => {
             const eased = 1 - (1 - t) ** 3;
 
             setPosition({
-              x: startPosition.x + (constrainedFinalX - startPosition.x) * eased,
-              y: startPosition.y + (constrainedFinalY - startPosition.y) * eased,
+              x:
+                startPosition.x + (constrainedFinalX - startPosition.x) * eased,
+              y:
+                startPosition.y + (constrainedFinalY - startPosition.y) * eased,
             });
 
             requestAnimationFrame(animate);
@@ -844,7 +947,12 @@ const SeatSelectionScreen = () => {
       const maxX = (widthOrg * (zoom - 1)) / 2;
       const maxY = (heightOrg * (zoom - 1)) / 2;
 
-      if (position.x > maxX || position.x < -maxX || position.y > maxY || position.y < -maxY) {
+      if (
+        position.x > maxX ||
+        position.x < -maxX ||
+        position.y > maxY ||
+        position.y < -maxY
+      ) {
         setIsAnimating(true);
         const targetX = Math.min(Math.max(position.x, -maxX), maxX);
         const targetY = Math.min(Math.max(position.y, -maxY), maxY);
@@ -900,30 +1008,27 @@ const SeatSelectionScreen = () => {
   };
 
   const handleChangeRoom = () => {
-    navigate(`/ticketing/RoomSelection?catCodes=${String(catCode)}&hideFloor=true${bookingId ? `&bookingId=${bookingId}` : ''}`, { replace: true });
+    navigate(
+      `/ticketing/RoomSelection?catCodes=${String(catCode)}&hideFloor=true${
+        bookingId ? `&bookingId=${bookingId}` : ""
+      }`,
+      { replace: true }
+    );
   };
 
   // Helper for indicator colors
-  const getSeatColor = (status: 'booked' | 'AVAILABLE' | 'fixed') => {
+  const getSeatColor = (status: "booked" | "AVAILABLE" | "fixed") => {
     switch (status) {
-      case 'booked':
+      case "booked":
         return SEAT.BOOKED;
-      case 'AVAILABLE':
+      case "AVAILABLE":
         return SEAT.AVAILABLE;
-      case 'fixed':
+      case "fixed":
         return SEAT.FIXED;
       default:
         return SEAT.AVAILABLE;
     }
   };
-
-  if (!DesksData?.rooms?.length || !mapFile || !navMapFile) {
-    return (
-      <div className="flex-1 flex items-center justify-center" style={{ backgroundColor: SURFACE.DEFAULT }}>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: BRAND.SECONDARY }}></div>
-      </div>
-    );
-  }
 
   const breadcrumbItems = {
     "401,402": metadata.seatBookingPage,
@@ -932,150 +1037,200 @@ const SeatSelectionScreen = () => {
     "402": metadata.seatBookingPage,
   };
   type BreadcrumbKeys = keyof typeof breadcrumbItems;
+  // if (!DesksData?.rooms?.length || !mapFile || !navMapFile) {
+  //   return (
+  //     <div className="flex-1 flex items-center justify-center" style={{ backgroundColor: SURFACE.DEFAULT }}>
+  //       <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: BRAND.SECONDARY }}></div>
+  //     </div>
+  //   );
+  // }
   return (
     <div
       className="w-screen overflow-hidden flex flex-col bg-primary-50"
       style={{ height: remainingHeight }}
     >
       <MyBreadcrumb
-        items={breadcrumbItems[catCode as BreadcrumbKeys]?.breadcrumbItems || metadata.ticketingSeatSelection?.breadcrumbItems || []}
-        title={breadcrumbItems[catCode as BreadcrumbKeys]?.title || "Seat Selection"}
+        items={
+          breadcrumbItems[catCode as BreadcrumbKeys]?.breadcrumbItems ||
+          metadata.ticketingSeatSelection?.breadcrumbItems ||
+          []
+        }
+        title={
+          breadcrumbItems[catCode as BreadcrumbKeys]?.title || "Seat Selection"
+        }
         showBackButton={true}
       />
-      <div
-        className="flex-1 flex flex-col overflow-hidden"
-        style={{
-          backgroundColor: SURFACE.DEFAULT,
-          opacity: imageLoading ? 0 : 1,
-          transition: 'opacity 200ms',
-          width: '100vw',
-          maxWidth: '100vw'
-        }}
-      >
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Header */}
-          <div
-            className="flex justify-between items-start p-2"
-          >
-            <div className="flex flex-col">
-              <Text className='text-primary-400 font-bold'>
-                {t(DesksData.rooms[0].roomName)}
-              </Text>
+      {!DesksData?.rooms?.length || !mapFile || !navMapFile ? (
+        <div className="flex flex-1 justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      ) : (
+        <div
+          className="flex-1 flex flex-col overflow-hidden"
+          style={{
+            backgroundColor: SURFACE.DEFAULT,
+            opacity: imageLoading ? 0 : 1,
+            transition: "opacity 200ms",
+            width: "100vw",
+            maxWidth: "100vw",
+          }}
+        >
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* Header */}
+            <div className="flex justify-between items-start p-2">
+              <div className="flex flex-col">
+                <Text className="text-primary-400 font-bold">
+                  {t(DesksData.rooms[0].roomName)}
+                </Text>
+              </div>
+              {bookingId &&
+                typeof bookingId === "string" &&
+                bookingId !== "" &&
+                (!configSeatchange ||
+                  (configSeatchange &&
+                    typeof configSeatchange === "string" &&
+                    configSeatchange === "SAME_CATEGORY")) && (
+                  <button onClick={handleChangeRoom}>
+                    <div
+                      style={{
+                        padding: `${scale(2)}px`,
+                        margin: 0,
+                        borderWidth: "1px",
+                        borderStyle: "solid",
+                        borderColor: BORDER.MEDIUM,
+                        borderRadius: `${scale(8)}px`,
+                        backgroundColor: SURFACE.LIGHTER,
+                        paddingLeft: `${scale(8)}px`,
+                        paddingRight: `${scale(8)}px`,
+                      }}
+                    >
+                      <div
+                        className="flex flex-col items-center"
+                        style={{ alignItems: "center", gap: `${scale(1)}px` }}
+                      >
+                        <SwitchIcon
+                          width={scale(16)}
+                          height={scale(16)}
+                          color={TEXT.DARK}
+                        />
+                        <Text style={{ fontSize: "8px", color: TEXT.DARK }}>
+                          {t("seatSelection.changeRoom")}
+                        </Text>
+                      </div>
+                    </div>
+                  </button>
+                )}
             </div>
-            {(bookingId && typeof bookingId === 'string' && bookingId !== '' && (!configSeatchange || (configSeatchange && typeof configSeatchange === 'string' && configSeatchange === 'SAME_CATEGORY'))) && (
-              <button onClick={handleChangeRoom}>
-                <div
-                  style={{
-                    padding: `${scale(2)}px`,
-                    margin: 0,
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                    borderColor: BORDER.MEDIUM,
-                    borderRadius: `${scale(8)}px`,
-                    backgroundColor: SURFACE.LIGHTER,
-                    paddingLeft: `${scale(8)}px`,
-                    paddingRight: `${scale(8)}px`,
-                  }}
-                >
-                  <div className="flex flex-col items-center" style={{ alignItems: 'center', gap: `${scale(1)}px` }}>
-                    <SwitchIcon width={scale(16)} height={scale(16)} color={TEXT.DARK} />
-                    <Text style={{ fontSize: '8px', color: TEXT.DARK }}>{t('seatSelection.changeRoom')}</Text>
-                  </div>
-                </div>
-              </button>
-            )}
-          </div>
 
-          {/* Zoomable Area */}
-          <div
-            ref={containerRef}
-            className="flex-1 overflow-hidden relative select-none smooth-zoom-container custom-scroll"
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseLeave}
-            style={{
-              cursor: getCursorStyle(),
-              touchAction: 'none', // Prevent browser gestures,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
+            {/* Zoomable Area */}
             <div
-              className="smooth-zoom-content"
+              ref={containerRef}
+              className="flex-1 overflow-hidden relative select-none smooth-zoom-container custom-scroll"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseLeave}
               style={{
-                width: `${widthOrg}px`,
-                height: `${heightOrg}px`,
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: `translate3d(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px), 0) scale(${zoom})`,
-                transformOrigin: 'center center',
-                transition: (isInteracting || isDragging || isPinching || isAnimating)
-                  ? 'none'
-                  : `transform ${ANIMATION_CONFIG.TRANSITION.DURATION}ms ${ANIMATION_CONFIG.TRANSITION.EASING}`,
-                willChange: 'transform',
-                backfaceVisibility: 'hidden',
-                perspective: 1000,
+                cursor: getCursorStyle(),
+                touchAction: "none", // Prevent browser gestures,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              <img
-                ref={imageRef}
-                src={mapFile}
-                alt={mapFile || undefined}
-                className="w-full h-full absolute"
-                onLoad={() => setTimeout(() => setImageLoading(false), 200)}
+              <div
+                className="smooth-zoom-content"
                 style={{
-                  width: '100%',
-                  height: '100%',
-                  position: 'absolute',
-                  objectFit: 'contain'
+                  width: `${widthOrg}px`,
+                  height: `${heightOrg}px`,
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: `translate3d(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px), 0) scale(${zoom})`,
+                  transformOrigin: "center center",
+                  transition:
+                    isInteracting || isDragging || isPinching || isAnimating
+                      ? "none"
+                      : `transform ${ANIMATION_CONFIG.TRANSITION.DURATION}ms ${ANIMATION_CONFIG.TRANSITION.EASING}`,
+                  willChange: "transform",
+                  backfaceVisibility: "hidden",
+                  perspective: 1000,
                 }}
-              />
-              <SeatBox seats={DesksData.rawData} room={DesksData.rooms[0]} />
+              >
+                <img
+                  ref={imageRef}
+                  src={mapFile}
+                  alt={mapFile || undefined}
+                  className="w-full h-full absolute"
+                  onLoad={() => setTimeout(() => setImageLoading(false), 200)}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    position: "absolute",
+                    objectFit: "contain",
+                  }}
+                />
+                <SeatBox seats={DesksData.rawData} room={DesksData.rooms[0]} />
+              </div>
             </div>
-          </div>
 
-          {/* Legend and Navigation Map */}
-          <div
-            className="flex items-center justify-between"
-            style={{
-              paddingLeft: `${scale(4)}px`,
-              paddingRight: `${scale(4)}px`,
-              paddingTop: `${moderateVerticalScale(2)}px`,
-              paddingBottom: `${moderateVerticalScale(2)}px`,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              minHeight: 'auto',
-              height: 'fit-content'
-            }}
-          >
-            <div className={`flex ${isMobile ? "flex-col pb-4" : "flex-row"} gap-1`}>
-              <Indicator label={t('seatSelection.available')} color={getSeatColor('AVAILABLE')} />
-              <Indicator label={t('seatSelection.inUse')} color={getSeatColor('booked')} />
-              <Indicator label={t('seatSelection.fixed')} color={getSeatColor('fixed')} />
+            {/* Legend and Navigation Map */}
+            <div
+              className="seat flex items-center justify-between"
+              style={{
+                paddingLeft: `${scale(4)}px`,
+                paddingRight: `${scale(4)}px`,
+                paddingTop: `${moderateVerticalScale(2)}px`,
+                paddingBottom: `${moderateVerticalScale(2)}px`,
+                alignItems: "center",
+                justifyContent: "space-between",
+                minHeight: "auto",
+                height: "fit-content",
+              }}
+            >
+              <div
+                className={`flex ${
+                  isMobile ? "flex-col pb-4" : "flex-row"
+                } gap-1 `}
+              >
+                <Indicator
+                  label={t("seatSelection.available")}
+                  color={getSeatColor("AVAILABLE")}
+                />
+                <Indicator
+                  label={t("seatSelection.inUse")}
+                  color={getSeatColor("booked")}
+                />
+                <Indicator
+                  label={t("seatSelection.fixed")}
+                  color={getSeatColor("fixed")}
+                />
+              </div>
+              <Image
+                src={navMapFile}
+                alt="Navigation Map"
+                style={{
+                  width: "15%",
+                  maxWidth: "120px",
+                  height: "auto",
+                  objectFit: "contain",
+                }}
+                onError={(error) => console.warn("Error loading image:", error)}
+              />
             </div>
-            <Image
-              src={navMapFile}
-              alt="Navigation Map"
-              style={{ width: '15%', maxWidth: '120px', height: 'auto', objectFit: 'contain' }}
-              onError={(error) =>
-                console.warn('Error loading image:', error)
-              }
-            />
           </div>
         </div>
-      </div>
+      )}
     </div>
-
   );
 };
 
 const Indicator = ({ label, color }: { label: string; color: string }) => (
   <div className="flex items-center gap-1 mx-2">
-    <div className='h-4 w-4' style={{ backgroundColor: color }} />
-    <Text variant='caption' className='font-bold'>{label}</Text>
+    <div className="h-4 w-4" style={{ backgroundColor: color }} />
+    <Text variant="caption" className="font-bold">
+      {label}
+    </Text>
   </div>
 );
 

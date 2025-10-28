@@ -380,3 +380,100 @@
     @apply bg-background text-foreground;
   }
 }
+
+@media screen and (width: 712px) and (height: 1138px) {
+  .dashboard{
+    margin-top: 400px;
+  }
+  .header{
+    right: 20%;
+    width: 30%;
+  }
+  .seat{
+    margin-bottom: 300px;
+  }
+  .timeSelection{
+    max-height: 60dvh; 
+  }
+}
+@media screen and (width: 540px) and (height: 720px) {
+  .dashboard{
+    margin-top: 400px;
+  }
+  .header{
+    right: 25%;
+    width: 40%;
+    font-size: 12px;
+  }
+ .logo{
+    width: 160px;
+    height: 50px;
+  }
+}
+@media screen and (width: 600px) and (height: 1024px) {
+  .dashboard{
+    margin-top: 400px;
+  }
+  .header{
+    right: 25%;
+    width: 35%;
+    font-size: 12px;
+  }
+ .logo{
+    width: 200px;
+    height: 50px;
+  }
+  .seat{
+    margin-bottom: 200px;
+  }
+  .timeSelection{
+    max-height: 70vh;
+  }
+}
+@media screen and (width: 412px) and (height: 915px) {
+  .seat{
+    margin-bottom: 50px;
+  }
+}
+@media screen and (width: 430px) and (height: 932px) {
+  .seat{
+    margin-bottom: 100px;
+  }
+}
+@media screen and (width: 768px) and (height: 1024px) {
+  .seat{
+    margin-bottom: 160px;
+  }
+  .timeSelection{
+    max-height: 70vh;
+  }
+}
+@media screen and (width: 820px) and (height: 1180px) {
+  .seat{
+    margin-bottom: 320px;
+  }
+  .timeSelection{
+    max-height: 60dvh;
+  }
+}
+@media screen and (width: 1024px) and (height: 1366px) {
+  .seat{
+    margin-bottom: 480px;
+  }
+   .timeSelection{
+    max-height: 50dvh;
+  }
+}
+@media screen and (width: 912px) and (height: 1368px) {
+  .seat{
+    margin-bottom: 500px;
+  }
+   .timeSelection{
+    max-height: 50dvh;
+  }
+}
+@media screen and (width: 412px) and (height: 914px) {
+  .seat{
+    margin-bottom: 50px;
+  }
+}
