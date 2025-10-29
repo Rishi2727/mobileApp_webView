@@ -631,6 +631,7 @@ const MyBookings = () => {
         activeTab={activeTab}
         onTabChange={handleTabChange}
         tabListClassName="bg-white"
+        
         variant="pills"
         fullWidth
       />

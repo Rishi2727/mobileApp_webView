@@ -73,10 +73,6 @@ const TEXT = {
   LIGHT: "#FFFFFF",
 };
 
-const BORDER = {
-  MEDIUM: "#D1D5DB",
-};
-
 const SURFACE = {
   DEFAULT: "#FFFFFF",
   LIGHTER: "#F9FAFB",
@@ -1091,17 +1087,6 @@ const SeatSelectionScreen = () => {
                     configSeatchange === "SAME_CATEGORY")) && (
                   <button onClick={handleChangeRoom}>
                     <div
-                      style={{
-                        padding: `${scale(2)}px`,
-                        margin: 0,
-                        borderWidth: "1px",
-                        borderStyle: "solid",
-                        borderColor: BORDER.MEDIUM,
-                        borderRadius: `${scale(8)}px`,
-                        backgroundColor: SURFACE.LIGHTER,
-                        paddingLeft: `${scale(8)}px`,
-                        paddingRight: `${scale(8)}px`,
-                      }}
                     >
                       <div
                         className="flex flex-col items-center"

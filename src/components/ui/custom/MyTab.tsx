@@ -220,8 +220,11 @@ const MyTab = ({
                     'rounded-full': variant === 'pills',
                     'text-muted-foreground bg-secondary hover:text-foreground hover:bg-muted-foreground/10': variant === 'pills' && !isActive,
                     
-                    // Shared active state for default and pills
-                    'bg-background text-foreground shadow-sm': (variant === 'default' || variant === 'pills') && isActive,
+                    // Active state for pills variant - RED COLOR
+                    'bg-primary-500 text-white shadow-sm': variant === 'pills' && isActive,
+                    
+                    // Shared active state for default variant (keeping original)
+                    'bg-background text-foreground shadow-sm': variant === 'default' && isActive,
                     
                     // Underline variant
                     'border-b-2 rounded-none px-4 py-3': variant === 'underline',
@@ -243,6 +246,8 @@ const MyTab = ({
                     'ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full px-2 text-xs flex-shrink-0',
                     (() => {
                       if (!isActive) return 'bg-muted-foreground/20 text-muted-foreground';
+                      // Badge color for red active tabs in pills variant
+                      if (variant === 'pills') return 'bg-white/20 text-white';
                       return variant === 'vertical' 
                         ? 'bg-primary-foreground/20 text-primary-foreground'
                         : 'bg-primary/20 text-primary';
