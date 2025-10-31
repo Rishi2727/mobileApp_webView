@@ -7,7 +7,7 @@
     "dev": "vite --host",
     "build": "set VITE_API_ENDPOINT=/&& tsc -b && vite build --base=/mLibrary/",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "tsc -b && vite build --base=/ && vite preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
