@@ -18,7 +18,7 @@ export const setNavigationReference = (navigate: () => void) => {
   navigateToLogin = navigate;
 };
 
-export const baseUrl = "http" + (import.meta.env.VITE_API_IS_SECURE === "true" ? "s" : "") + "://" + import.meta.env.VITE_API_DOMAIN;
+export const baseUrl = import.meta.env.VITE_API_ENDPOINT;
 
 export const getDeviceUUID = async () => {
   let deviceUUID = localStorage.getItem('deviceUUID');
