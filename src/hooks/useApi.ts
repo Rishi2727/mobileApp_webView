@@ -145,7 +145,7 @@ const createApiHook = (defaultIncludePrivateHeaders: boolean = false) => {
                 setLoading(false);
                 actionCallbacks?.onLoadingStop?.();
             }
-        }, [defaultIncludePrivateHeaders]);
+        }, []);
 
         const get = useCallback(async (
             url: string,
@@ -206,7 +206,7 @@ const createApiHook = (defaultIncludePrivateHeaders: boolean = false) => {
             if (initialUrl) {
                 makeRequest(initialMethod, initialUrl, undefined, initialOptions);
             }
-        }, [initialUrl, initialMethod, makeRequest]);
+        }, [initialUrl, initialMethod, makeRequest, initialOptions]);
 
         return {
             data,

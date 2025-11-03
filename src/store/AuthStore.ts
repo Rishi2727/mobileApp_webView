@@ -11,6 +11,7 @@ import { encryptWithStringKey } from '@/lib/crypto';
 import { isEqual } from 'lodash';
 import { requestPermission, getFCMToken, onMessageListener } from '@/lib/firebase';
 
+const basePath = import.meta.env.VITE_BASE_PATH?.replace(/\/$/, '') || '/';
 let refreshTimer: ReturnType<typeof setInterval> | null = null;
 const intervalMs = 3000; // Refresh interval in milliseconds
 
@@ -87,7 +88,7 @@ export const useAuthStore = create<AuthStore>()(
                     
                     // Use setTimeout to ensure state is updated before navigation
                     setTimeout(() => {
-                        window.location.href = '/';
+                        window.location.href = basePath;
                     }, 100);
 
                     // Fetch user profile and QR code after login
@@ -114,7 +115,7 @@ export const useAuthStore = create<AuthStore>()(
                 useMainStore.setState({ welcomeBannerHidden: false });
                 // Use setTimeout to ensure state is cleared before navigation
                 setTimeout(() => {
-                    window.location.href = '/login';
+                    window.location.href = basePath + '/login';
                 }, 100);
             },
 
@@ -123,7 +124,7 @@ export const useAuthStore = create<AuthStore>()(
                 if (!token || token === 'null' || token === '') {
                     // Use setTimeout to ensure navigation happens after current render cycle
                     setTimeout(() => {
-                        window.location.href = '/login';
+                        window.location.href = basePath + '/login';
                     }, 100);
                     return false;
                 }

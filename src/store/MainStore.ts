@@ -19,12 +19,14 @@ type MainStore = {
 export const useMainStore = create<MainStore>()(
     persist(
         (set) => ({
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             fetchInitialData: async (_platform: 'I' | 'A') => {
 
                 getWeatherInfo().then((res) => {
                     if (res?.success && res.data) {
                         set({ currentWeather: res.data });
                     }
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 }).catch((_err) => {
                     // console.warn("Error fetching weather info:", _err);`
                 });
