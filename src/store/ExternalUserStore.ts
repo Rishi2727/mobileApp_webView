@@ -14,6 +14,8 @@ import type {
   ExternalUserGetByTempTokenModel
 } from './api/RequestModels';
 
+const basePath = import.meta.env.VITE_BASE_PATH?.replace(/\/$/, '') || '/';
+
 export interface ExternalUserState {
   // User information
   userName: string | null;
@@ -234,7 +236,7 @@ export const useExternalUserStore = create<ExternalUserStore>()(
         });
 
         setTimeout(() => {
-          window.location.href = '/login';
+          window.location.href = basePath + '/login';
         }, 100);
       },
     }),
