@@ -20,6 +20,7 @@ declare global {
         deviceUUID?: string | null;
         isNativeApp?: boolean;
         platformType?: 'I' | 'A';
+        appLanguage?: string;
     }
 }
 

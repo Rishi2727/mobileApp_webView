@@ -22,7 +22,7 @@ const getBrowserLanguage = () => {
 
 // Get language from localStorage or use browser language
 const getInitialLanguage = () => {
-  const savedLanguage = localStorage.getItem('app_language');
+  const savedLanguage = window?.appLanguage || localStorage.getItem('app_language');
   if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ko')) {
     return savedLanguage;
   }

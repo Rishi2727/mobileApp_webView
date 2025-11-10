@@ -18,7 +18,7 @@ const Setting = () => {
   const navigate = useNavigate();
   const { pushAll, push401, push402, push403, push404, setPushAll, setPush401, setPush402, setPush403, setPush404 } = useSettingsStore();
   const [notificationPermissionDevice, setNotificationPermissionDevice] = useState<boolean>(pushAll);
-  const [isNative, setIsNative] = useState<boolean>(window.isNativeApp || false);
+  const [isNative] = useState<boolean>(window?.isNativeApp || false);
 
   const { logout } = useAuthStore();
   const { t, language, setLanguage } = useLanguage();
@@ -32,14 +32,18 @@ const Setting = () => {
 
   const handleMessage = useCallback((event: MessageEvent) => {
     // Handle the message event here
-    const datamsg = JSON.parse(event.data);
-    if (datamsg.cmd === "pushSettings") {
-      window.ReactNativeWebView?.postMessage(JSON.stringify({ cmd: "log", message: `Received push settings from WebView: ${JSON.stringify(datamsg)} current ${JSON.stringify({ all: pushAll, "401": push401, "402": push402, "403": push403, "404": push404 })}` }));
-      if (datamsg["all"] !== undefined && datamsg["all"] != pushAll) setPushAll(datamsg["all"]);
-      if (datamsg["401"] !== undefined && datamsg["401"] != push401) setPush401(datamsg["401"]);
-      if (datamsg["402"] !== undefined && datamsg["402"] != push402) setPush402(datamsg["402"]);
-      if (datamsg["403"] !== undefined && datamsg["403"] != push403) setPush403(datamsg["403"]);
-      if (datamsg["404"] !== undefined && datamsg["404"] != push404) setPush404(datamsg["404"]);
+    try {
+      const datamsg = JSON.parse(event.data);
+      if (datamsg.cmd === "pushSettings") {
+        if (datamsg["all"] !== undefined && datamsg["all"] != pushAll) setPushAll(datamsg["all"]);
+        if (datamsg["401"] !== undefined && datamsg["401"] != push401) setPush401(datamsg["401"]);
+        if (datamsg["402"] !== undefined && datamsg["402"] != push402) setPush402(datamsg["402"]);
+        if (datamsg["403"] !== undefined && datamsg["403"] != push403) setPush403(datamsg["403"]);
+        if (datamsg["404"] !== undefined && datamsg["404"] != push404) setPush404(datamsg["404"]);
+      }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      // console.warn('Error parsing message event data:', error);
     }
   }, [push401, push402, push403, push404, pushAll, setPush401, setPush402, setPush403, setPush404, setPushAll]);
 
@@ -89,7 +93,6 @@ const Setting = () => {
               }}
             />
           </div>
-
           {[
             {
               key: "seat", label: t("settings.seatPCTicketing"), checked: isNative && push401, onChange: () => {

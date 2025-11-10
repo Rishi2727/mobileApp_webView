@@ -995,6 +995,7 @@ const SeatSelectionScreen = () => {
 
   // Enhanced touch handlers for mobile with smooth animations
   // Helper functions that work with any touch list that has indexed access
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getTouchDistance = (touches: any): number => {
     if (!touches || touches.length < 2) return 0;
     const dx = touches[0].clientX - touches[1].clientX;

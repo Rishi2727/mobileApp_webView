@@ -50,9 +50,15 @@ export const QRShakeModal: React.FC = () => {
 
     const handleMessage = useCallback((event: MessageEvent) => {
         // Handle the message event here
-        const datamsg = JSON.parse(event.data);
-        if (datamsg.cmd === "shake") {
-            handleShakeDetected();
+        try {
+
+            const datamsg = JSON.parse(event?.data || '{}');
+            if (datamsg?.cmd === "shake") {
+                handleShakeDetected();
+            }
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            // console.warn('Error parsing message event data:', error);
         }
     }, [handleShakeDetected]);
 
