@@ -36,7 +36,7 @@ export const useMainStore = create<MainStore>()(
                 const versionName = import.meta.env.VITE_APP_VERSION || "0.0.0";
                 const runtimeVersion = import.meta.env.VITE_RUNTIME_VERSION || "";
                 const res = await getLatestVersionDetails(platform, versionName, runtimeVersion);
-                if (res?.success && res.data?.versionName) {
+                if (res?.success && res?.data?.versionName) {
                     return true;
                 }
                 return false;

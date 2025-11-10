@@ -24,6 +24,8 @@ const Setting = () => {
   const { logout } = useAuthStore();
   const { t, language, setLanguage } = useLanguage();
   const [open, setOpen] = useState(false);
+  const versionName = import.meta.env.VITE_APP_VERSION || "0.0.0";
+  const runtimeVersion = import.meta.env.VITE_RUNTIME_VERSION || "";
 
   useEffect(() => {
     setNotificationPermissionDevice(pushAll);
@@ -111,7 +113,7 @@ const Setting = () => {
           {[
             { label: t("common.developer"), value: t("common.WiseNeosco") },
             { label: t("common.contact"), value: "info@wiseneosco.com", isLink: true },
-            { label: t("common.appVersion"), value: "20250910.2 (8)" },
+            { label: t("common.appVersion"), value: `${versionName} (${runtimeVersion})` },
           ].map((item, index, arr) => (
             <div
               key={item.label}

@@ -9,22 +9,10 @@ import { useMessagesStore } from './MessagesStore';
 import { useMainStore } from './MainStore';
 import { encryptWithStringKey } from '@/lib/crypto';
 import { isEqual } from 'lodash';
-import { requestPermission, getFCMToken, onMessageListener } from '@/lib/firebase';
 
 const basePath = import.meta.env.VITE_BASE_PATH?.replace(/\/$/, '') || '/';
 let refreshTimer: ReturnType<typeof setInterval> | null = null;
 const intervalMs = 3000; // Refresh interval in milliseconds
-
-// Web implementation for push notifications using Firebase Web SDK
-const requestUserPermission = async (): Promise<boolean> => {
-    try {
-        const hasPermission = await requestPermission();
-        return hasPermission;
-    } catch (error) {
-        console.warn('Error requesting notification permission:', error);
-        return false;
-    }
-};
 
 type AuthStore = {
     init: () => void;
@@ -49,23 +37,18 @@ export const useAuthStore = create<AuthStore>()(
 
             login: async (userId, password) => {
                 let fcmToken: string | undefined;
-                
+
                 try {
-                    const hasPermission = await requestUserPermission();
-                    if (hasPermission) {
-                        fcmToken = await getFCMToken() || undefined;
-                    }
+                    // TODO: Request permission and get FCM token
                 } catch (error) {
                     console.warn('Error getting FCM token:', error);
                     fcmToken = undefined;
                 }
-                
+
                 const deviceUUID = getDeviceUUID();
-                
-                if (import.meta.env.DEV) {
-                    console.log('FCM Token:', fcmToken);
-                    console.log('Device UUID:', deviceUUID);
-                }
+
+                console.log('FCM Token:', fcmToken);
+                console.log('Device UUID:', deviceUUID);
 
                 const res = await signin({
                     userId: userId,
@@ -75,17 +58,10 @@ export const useAuthStore = create<AuthStore>()(
                     // pushTokenExpo: fcmToken ? 'FCM_WEB' : undefined,
                     // deviceUniqueId: deviceUUID,
                 });
-                
+
                 if (res) {
                     // Save token only in Zustand state
                     set({ token: res?.data || '' });
-                    
-                    // Set up message listener for foreground notifications
-                    onMessageListener().then((payload: any) => {
-                        console.log('Received foreground message: ', payload);
-                        // You can show a custom notification or toast here
-                    }).catch(err => console.log('Message listener failed: ', err));
-                    
                     // Use setTimeout to ensure state is updated before navigation
                     setTimeout(() => {
                         window.location.href = basePath;
@@ -169,7 +145,7 @@ export const useAuthStore = create<AuthStore>()(
                     refreshTimer = null;
                 }
             },
-            
+
             kmouSecretGenerate: async () => {
                 const { myProfile } = get();
                 if (!myProfile) return;

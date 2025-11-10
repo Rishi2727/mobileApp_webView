@@ -19,7 +19,7 @@ export default defineConfig({
   },
   define: {
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(packageJson.version),
-    'import.meta.env.VITE_RUNTIME_VERSION': JSON.stringify(process.env.VITE_RUNTIME_VERSION || "1.0.0"),
+    'import.meta.env.VITE_RUNTIME_VERSION': JSON.stringify(packageJson.runtimeVersion || 0),
   },
   preview: {
     allowedHosts: true
