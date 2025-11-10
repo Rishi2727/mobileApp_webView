@@ -127,7 +127,8 @@
     "MainNotificationsNotAllowed": "모든 알림이 현재 비활성화됨\n어떠한 알림도 받지 않습니다",
     "preferredSeat": "선호 좌석",
     "view": "보기",
-    "DeviceNotificationsNotAllowed": "알림을 받으시려면 기기 설정에서 알림을 허용해 주세요."
+    "DeviceNotificationsNotAllowed": "알림을 받으시려면 기기 설정에서 알림을 허용해 주세요.",
+    "DeviceNotSupported": "이 기기에서는 푸시 알림을 지원하지 않습니다."
   },
   "profile": {
     "mobileCard": "모바일 카드",

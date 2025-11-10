@@ -21,7 +21,7 @@ export const setNavigationReference = (navigate: () => void) => {
 export const baseUrl = import.meta.env.VITE_API_ENDPOINT;
 
 export const getDeviceUUID = async () => {
-  let deviceUUID = localStorage.getItem('deviceUUID');
+  let deviceUUID = window.deviceUUID || localStorage.getItem('deviceUUID');
   if (!deviceUUID) {
     deviceUUID = randomUUID();
     if (deviceUUID) localStorage.setItem('deviceUUID', deviceUUID);

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from "@/store/AuthStore";
 import { Loader } from "@/components/ui/custom/loader";
+import { QRShakeModal } from "@/components/ui/custom/QRShakeModal";
 
 const isTokenExpired = (token: string): boolean => {
     try {
@@ -21,15 +22,15 @@ export function PrivateRoute({ children }: Readonly<{ children: ReactNode }>) {
     useEffect(() => {
         const checkAuth = async () => {
             setIsChecking(true);
-            
+
             // Check if user must be logged in (this handles token validation and redirects)
             await mustLoggedIn();
-            
+
             if (token && isTokenExpired(token)) {
                 logout();
                 return;
             }
-            
+
             setIsChecking(false);
         };
 
@@ -47,5 +48,9 @@ export function PrivateRoute({ children }: Readonly<{ children: ReactNode }>) {
     }
 
     // If authenticated, render children
-    return <>{children}</>;
+    return <>{
+        children
+    }
+        <QRShakeModal />
+    </>;
 }

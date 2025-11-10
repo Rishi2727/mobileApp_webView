@@ -127,7 +127,8 @@
     "MainNotificationsNotAllowed": "All notifications are currently disabled\nYou won't receive any notifications",
     "preferredSeat": "Preferred Seat",
     "view": "View",
-    "DeviceNotificationsNotAllowed": "To receive notifications, please allow notifications in your device settings."
+    "DeviceNotificationsNotAllowed": "To receive notifications, please allow notifications in your device settings.",
+    "DeviceNotSupported": "Push notifications are not supported on this device."
   },
   "profile": {
     "mobileCard": "Mobile Card",

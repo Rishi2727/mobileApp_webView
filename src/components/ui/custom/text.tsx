@@ -203,7 +203,7 @@ const Text = ({
     case "th":
       return (
         <th
-          className={cn("border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right", className)}
+          className={cn("border px-4 py-2 text-left font-bold [[align=center]]:text-center [[align=right]]:text-right", className)}
           {...props}
         >
           {children}
@@ -212,7 +212,7 @@ const Text = ({
     case "td":
       return (
         <td
-          className={cn("border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right", className)}
+          className={cn("border px-4 py-2 text-left [[align=center]]:text-center [[align=right]]:text-right", className)}
           {...props}
         >
           {children}
@@ -247,7 +247,7 @@ const Text = ({
     case "p":
       return (
         <p
-          className={cn("leading-7 [&:not(:first-child)]:mt-6", className)}
+          className={cn("leading-7 not-first:mt-6", className)}
           {...props}
         >
           {children}

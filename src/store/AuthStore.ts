@@ -14,6 +14,15 @@ const basePath = import.meta.env.VITE_BASE_PATH?.replace(/\/$/, '') || '/';
 let refreshTimer: ReturnType<typeof setInterval> | null = null;
 const intervalMs = 3000; // Refresh interval in milliseconds
 
+declare global {
+    interface Window {
+        fcmToken?: string;
+        deviceUUID?: string | null;
+        isNativeApp?: boolean;
+        platformType?: 'I' | 'A';
+    }
+}
+
 type AuthStore = {
     init: () => void;
     stopAndClear: () => void;
@@ -36,16 +45,8 @@ export const useAuthStore = create<AuthStore>()(
             token: null,
 
             login: async (userId, password) => {
-                let fcmToken: string | undefined;
-
-                try {
-                    // TODO: Request permission and get FCM token
-                } catch (error) {
-                    console.warn('Error getting FCM token:', error);
-                    fcmToken = undefined;
-                }
-
-                const deviceUUID = getDeviceUUID();
+                const fcmToken: string | undefined = window?.fcmToken;
+                const deviceUUID = await getDeviceUUID();
 
                 console.log('FCM Token:', fcmToken);
                 console.log('Device UUID:', deviceUUID);
@@ -54,9 +55,9 @@ export const useAuthStore = create<AuthStore>()(
                     userId: userId,
                     password: password,
                     platformType: 'A',
-                    // pushTokenDevice: fcmToken,
-                    // pushTokenExpo: fcmToken ? 'FCM_WEB' : undefined,
-                    // deviceUniqueId: deviceUUID,
+                    pushTokenDevice: fcmToken,
+                    pushTokenExpo: fcmToken ? 'FCM_WEB' : undefined,
+                    deviceUniqueId: deviceUUID && fcmToken ? deviceUUID : undefined,
                 });
 
                 if (res) {

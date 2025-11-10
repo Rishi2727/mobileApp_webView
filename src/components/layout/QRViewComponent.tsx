@@ -305,7 +305,7 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
         {handleLogout !== null && (
           <button
             onClick={handleLogout}
-            className="absolute top-0 right-2.5 z-[999] w-8 h-8 cursor-pointer"
+            className="absolute top-0 right-2.5 z-999 w-8 h-8 cursor-pointer"
             style={{
               background: "transparent",
               border: "none",
@@ -388,6 +388,7 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
             style={{
               fontSize: "16px",
               color: textColor || "#D1D5DB",
+              textAlign: "center",
             }}
           >
             {t("profile.remainingTime")}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,10 +16,9 @@ import { useLanguage } from "@/contexts/useLanguage";
 const Setting = () => {
   const breadcrumbItems = metadata.setting.breadcrumbItems || [];
   const navigate = useNavigate();
-  const { pushAll, push401, push403, push404,
-    setPush401, setPush402, setPush403, setPush404,
-    toggleAllPushSettings } = useSettingsStore();
+  const { pushAll, push401, push402, push403, push404, setPushAll, setPush401, setPush402, setPush403, setPush404 } = useSettingsStore();
   const [notificationPermissionDevice, setNotificationPermissionDevice] = useState<boolean>(pushAll);
+  const [isNative, setIsNative] = useState<boolean>(window.isNativeApp || false);
 
   const { logout } = useAuthStore();
   const { t, language, setLanguage } = useLanguage();
@@ -30,6 +29,27 @@ const Setting = () => {
   useEffect(() => {
     setNotificationPermissionDevice(pushAll);
   }, [pushAll]);
+
+  const handleMessage = useCallback((event: MessageEvent) => {
+    // Handle the message event here
+    const datamsg = JSON.parse(event.data);
+    if (datamsg.cmd === "pushSettings") {
+      window.ReactNativeWebView?.postMessage(JSON.stringify({ cmd: "log", message: `Received push settings from WebView: ${JSON.stringify(datamsg)} current ${JSON.stringify({ all: pushAll, "401": push401, "402": push402, "403": push403, "404": push404 })}` }));
+      if (datamsg["all"] !== undefined && datamsg["all"] != pushAll) setPushAll(datamsg["all"]);
+      if (datamsg["401"] !== undefined && datamsg["401"] != push401) setPush401(datamsg["401"]);
+      if (datamsg["402"] !== undefined && datamsg["402"] != push402) setPush402(datamsg["402"]);
+      if (datamsg["403"] !== undefined && datamsg["403"] != push403) setPush403(datamsg["403"]);
+      if (datamsg["404"] !== undefined && datamsg["404"] != push404) setPush404(datamsg["404"]);
+    }
+  }, [push401, push402, push403, push404, pushAll, setPush401, setPush402, setPush403, setPush404, setPushAll]);
+
+  useEffect(() => {
+    window.addEventListener("message", handleMessage);
+    window.ReactNativeWebView?.postMessage(JSON.stringify({ cmd: "pushSettings", type: "readAll" }));
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, [handleMessage]);
 
   return (
     <div className="min-h-[90vh] bg-primary-50">
@@ -44,6 +64,15 @@ const Setting = () => {
       <div className="p-3 sm:p-6 max-w-3xl mx-auto space-y-2">
         {/* Notification Section */}
         <Card className="p-4">
+
+          {!isNative && (
+            <div className="flex justify-between items-start">
+              <div>
+                <Text variant="h2" className="text-red-400">{t("settings.DeviceNotSupported")}</Text>
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-between items-start">
             <div>
               <Text variant="h3">{t("settings.pushNotifications")}</Text>
@@ -52,15 +81,35 @@ const Setting = () => {
               </Text>
             </div>
             <Switch
-              checked={pushAll}
-              onCheckedChange={() => toggleAllPushSettings(!pushAll)}
+              checked={isNative && pushAll}
+              disabled={!isNative}
+              onCheckedChange={() => {
+                // toggleAllPushSettings(!pushAll);
+                window.ReactNativeWebView?.postMessage(JSON.stringify({ cmd: "pushSettings", type: "all", value: !pushAll }));
+              }}
             />
           </div>
 
           {[
-            { key: "seat", label: t("settings.seatPCTicketing"), checked: push401, onChange: () => { setPush401(!push401); setPush402(!push401) } },
-            { key: "group", label: t("settings.groupTicketing"), checked: push403, onChange: () => setPush403(!push403) },
-            { key: "carrel", label: t("settings.carrelTicketing"), checked: push404, onChange: () => setPush404(!push404) },
+            {
+              key: "seat", label: t("settings.seatPCTicketing"), checked: isNative && push401, onChange: () => {
+                // setPush401(!push401); setPush402(!push401)
+                window.ReactNativeWebView?.postMessage(JSON.stringify({ cmd: "pushSettings", type: "401", value: !push401 }));
+                window.ReactNativeWebView?.postMessage(JSON.stringify({ cmd: "pushSettings", type: "402", value: !push401 }));
+              }
+            },
+            {
+              key: "group", label: t("settings.groupTicketing"), checked: isNative && push403, onChange: () => {
+                // setPush403(!push403)
+                window.ReactNativeWebView?.postMessage(JSON.stringify({ cmd: "pushSettings", type: "403", value: !push403 }));
+              }
+            },
+            {
+              key: "carrel", label: t("settings.carrelTicketing"), checked: isNative && push404, onChange: () => {
+                // setPush404(!push404)
+                window.ReactNativeWebView?.postMessage(JSON.stringify({ cmd: "pushSettings", type: "404", value: !push404 }));
+              }
+            },
           ].map((item) => (
             <div
               key={item.key}
@@ -76,7 +125,7 @@ const Setting = () => {
               </div>
               <Switch
                 checked={item.checked}
-                disabled={!pushAll || !notificationPermissionDevice}
+                disabled={!isNative || !pushAll || !notificationPermissionDevice}
                 onCheckedChange={item.onChange}
               />
             </div>
