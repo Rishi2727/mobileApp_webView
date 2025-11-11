@@ -9,8 +9,8 @@ import { useMessagesStore } from './MessagesStore';
 import { useMainStore } from './MainStore';
 import { encryptWithStringKey } from '@/lib/crypto';
 import { isEqual } from 'lodash';
+import { navigate } from '@/lib/navigation';
 
-const basePath = import.meta.env.VITE_BASE_PATH?.replace(/\/$/, '') || '/';
 let refreshTimer: ReturnType<typeof setInterval> | null = null;
 const intervalMs = 3000; // Refresh interval in milliseconds
 
@@ -66,7 +66,7 @@ export const useAuthStore = create<AuthStore>()(
                     set({ token: res?.data || '' });
                     // Use setTimeout to ensure state is updated before navigation
                     setTimeout(() => {
-                        window.location.href = basePath;
+                        navigate('/', { replace: true });
                     }, 100);
 
                     // Fetch user profile and QR code after login
@@ -93,7 +93,7 @@ export const useAuthStore = create<AuthStore>()(
                 useMainStore.setState({ welcomeBannerHidden: false });
                 // Use setTimeout to ensure state is cleared before navigation
                 setTimeout(() => {
-                    window.location.href = basePath + '/login';
+                    navigate('/login', { replace: true });
                 }, 100);
             },
 
@@ -102,7 +102,7 @@ export const useAuthStore = create<AuthStore>()(
                 if (!token || token === 'null' || token === '') {
                     // Use setTimeout to ensure navigation happens after current render cycle
                     setTimeout(() => {
-                        window.location.href = basePath + '/login';
+                        navigate( '/login', { replace: true });
                     }, 100);
                     return false;
                 }
