@@ -50,6 +50,17 @@ export const QRViewComponent: React.FC<QRViewComponentProps> = ({
   const [timeRange, setTimeRange] = useState<string | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<string>("");
 
+
+  useEffect(() => {
+    window.ReactNativeWebView?.postMessage(JSON.stringify({ cmd: "CapturePrevent", value : true }));
+
+    return () => {
+      setTimeout(() => {
+        window.ReactNativeWebView?.postMessage(JSON.stringify({ cmd: "CapturePrevent", value : false }));
+      }, 200);
+    };
+  }, []);
+
   const cleanup = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
