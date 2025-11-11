@@ -20,6 +20,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [isRTL, setIsRTL] = useState<boolean>(i18n.dir() === 'rtl');
 
   const setLanguage = async (lang: string) => {
+    window.ReactNativeWebView?.postMessage(JSON.stringify({ cmd: "setLanguage", value : lang }));
     try {
       await i18n.changeLanguage(lang);
       setLanguageState(lang);

@@ -26,6 +26,9 @@ const getInitialLanguage = () => {
   if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ko')) {
     return savedLanguage;
   }
+  if (window?.isNativeApp && (!window?.appLanguage || window?.appLanguage !== savedLanguage)) {
+    window.ReactNativeWebView?.postMessage(JSON.stringify({ cmd: "setLanguage", value : savedLanguage || getBrowserLanguage() }));
+  }
   return getBrowserLanguage();
 };
 

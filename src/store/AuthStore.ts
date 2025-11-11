@@ -158,7 +158,9 @@ export const useAuthStore = create<AuthStore>()(
                 const data = `${userId}▼${timestamp}▼${userName}`;
 
                 const encryptedData = await encryptWithStringKey(data, "librarykmouackr#wiseneoscofuture", "librarykmouackr#");
-                return encryptedData;
+                // url encode the encrypted data
+                const urlEncodedData = encodeURIComponent(encryptedData);
+                return urlEncodedData;
             }
         }),
         {

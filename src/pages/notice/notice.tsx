@@ -47,7 +47,7 @@ const UniversityNotice = () => {
             e.preventDefault();
           }
         } catch (error) {
-          console.log("Cannot access iframe history due to cross-origin policy");
+          console.log("Cannot access iframe history due to cross-origin policy " + error);
         }
       }
     };
@@ -96,9 +96,11 @@ const UniversityNotice = () => {
 
                   // Override doPreserve function
                   if (iframe.contentWindow) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     (iframe.contentWindow as any).doPreserve = function () { };
                   }
                 }
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               } catch (error) {
                 // Cross-origin restrictions may prevent this from working
                 console.log("Cannot inject styles due to cross-origin policy");
