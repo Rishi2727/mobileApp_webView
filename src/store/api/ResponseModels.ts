@@ -32,32 +32,32 @@ export interface ApiResponsePageable<T = any> extends ApiResponseModel {
 // -------------------------------------------------------------
 
 export interface ServerTimeResponse {
-  currentTime: string;
-  timezone: string;
+    currentTime: string;
+    timezone: string;
 }
 export interface UserProfile {
-  isExternal: boolean;
-  userSeq: number;
-  userId: string;
-  userName: string;
-  userSchoolNo: string;
-  userBarcode: string;
-  userDeptCode: string;
-  userDeptName: string;
-  userPosCode: string;
-  userPosName: string;
-  userStatusCode: string;
-  userStatusName: string;
-  userMobile: string | null;
-  userPhone: string | null;
-  userAddress: string | null;
-  userPassChangeDttime: string;
-  authToken: string | null;
-  univAltId: string;
-  inOutStatus: boolean;
-  isActive: boolean;
-  isWebAdmin: boolean;
-  webAdminRole: string;
+    isExternal: boolean;
+    userSeq: number;
+    userId: string;
+    userName: string;
+    userSchoolNo: string;
+    userBarcode: string;
+    userDeptCode: string;
+    userDeptName: string;
+    userPosCode: string;
+    userPosName: string;
+    userStatusCode: string;
+    userStatusName: string;
+    userMobile: string | null;
+    userPhone: string | null;
+    userAddress: string | null;
+    userPassChangeDttime: string;
+    authToken: string | null;
+    univAltId: string;
+    inOutStatus: boolean;
+    isActive: boolean;
+    isWebAdmin: boolean;
+    webAdminRole: string;
 }
 
 export interface UserQrCode {
@@ -108,19 +108,19 @@ export interface MyBookingModel {
     userPosCode: string;
     userStatusCode: string;
     reservationStatusCode: number;
-    reservationStatusName: 
-      | 'BOOKED_USER_WAIT_APPROVAL'
-      | 'BOOKED_USER_WAIT_CONFIRMATION'
-      | 'CANCELLED_USER'
-      | 'CANCELLED_MANAGER'
-      | 'CANCELLED_SYSTEM'
-      | 'IN_USE_AUTO'
-      | 'IN_USE_MANAGER'
-      | 'IN_USE_APPROVED'
-      | 'IN_USE_CONFIRMED'
-      | 'RETURNED_USER'
-      | 'RETURNED_SYSTEM'
-      | 'RETURNED_MANAGER';
+    reservationStatusName:
+    | 'BOOKED_USER_WAIT_APPROVAL'
+    | 'BOOKED_USER_WAIT_CONFIRMATION'
+    | 'CANCELLED_USER'
+    | 'CANCELLED_MANAGER'
+    | 'CANCELLED_SYSTEM'
+    | 'IN_USE_AUTO'
+    | 'IN_USE_MANAGER'
+    | 'IN_USE_APPROVED'
+    | 'IN_USE_CONFIRMED'
+    | 'RETURNED_USER'
+    | 'RETURNED_SYSTEM'
+    | 'RETURNED_MANAGER';
     actualStatus: 'BOOKED' | 'CANCELLED' | 'IN_USE' | 'RETURNED';
     floorCode: number;
     floorNumber: number;
@@ -387,4 +387,12 @@ export interface LatestAppVersion {
     versionCode: number;
     versionName: string;
     platform: string;
+}
+export interface SliderImages {
+    createdAt: string;
+    updatedAt: string;
+    seq: number;
+    description: string;
+    fileimage: string;
+    active: boolean;
 }

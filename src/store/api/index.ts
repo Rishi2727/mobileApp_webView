@@ -1,5 +1,5 @@
 import type { BookingHistoryByUser, CatWiseRooms, DeskBookedList, ExternalUserGetByTempTokenModel, ExternalUserGetOTPModel, ExternalUserVerifyOTPModel, NotificationsByUser, RoomWiseDesksPayload, SeatBookingRequest, SigninRequestMobile } from './RequestModels';
-import type { ApiResponse, ApiResponseList, ApiResponsePageable, AppConfig, CategoryWiseAvailabilityRoom, ExternalUserOTPResponse, ExternalUserQRResponse, ExternalUserVerifyOTPResponse, LatestAppVersion, MyBookingModel, OpenWeatherResponse, PushNotification, RoomCategoryConfig, RoomWiseDesk, ServerTimeResponse, UserDemography, UserProfile, UserQrCode } from './ResponseModels';
+import type { ApiResponse, ApiResponseList, ApiResponsePageable, AppConfig, CategoryWiseAvailabilityRoom, ExternalUserOTPResponse, ExternalUserQRResponse, ExternalUserVerifyOTPResponse, LatestAppVersion, MyBookingModel, OpenWeatherResponse, PushNotification, RoomCategoryConfig, RoomWiseDesk, ServerTimeResponse, SliderImages, UserDemography, UserProfile, UserQrCode } from './ResponseModels';
 import { request } from './client';
 import { endpoints } from './endpoints';
 
@@ -98,4 +98,12 @@ export async function getQRByTempToken(payload: ExternalUserGetByTempTokenModel)
 
 export async function getLatestVersionDetails(platform: 'A' | 'I', appVersion: string | undefined, runtimeVersion: string | undefined) {
   return request<ApiResponse<LatestAppVersion>>('get', endpoints.appRelease.latest(platform, appVersion, runtimeVersion));
+}
+
+export async function getAllMobileSliders() {
+  return request<ApiResponseList<SliderImages>>('get', endpoints.mobileSlider.getAll);
+}
+
+export async function getMobileSliderIds() {
+  return request<ApiResponseList<number>>('get', endpoints.mobileSlider.getIds);
 }

@@ -48,4 +48,8 @@ export const endpoints = {
   appRelease: {
     latest: (platform: 'A' | 'I', appVersion: string | undefined, runtimeVersion: string | undefined) => `${basePath}/app_release/latest?platform=${platform}&versionName=${appVersion}&versionCode=${runtimeVersion}`,
   },
+  mobileSlider: {
+    getAll: `${basePath}/sliders/active_full`,
+    getIds: `${basePath}/sliders/active_ids`,
+  }
 };

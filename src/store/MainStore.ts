@@ -1,8 +1,10 @@
 import moment from 'moment-timezone';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { getAppConfig, getLatestVersionDetails, getServerTime, getWeatherInfo } from './api';
-import type { AppConfig, OpenWeatherResponse } from './api/ResponseModels';
+import { getAllMobileSliders, getMobileSliderIds, getAppConfig, getLatestVersionDetails, getServerTime, getWeatherInfo } from './api';
+import type { AppConfig, OpenWeatherResponse, SliderImages } from './api/ResponseModels';
+import defaultBannerData from './api/defaultBanner.json';
+
 
 type MainStore = {
     fetchInitialData: (platform: 'I' | 'A') => void;
@@ -14,11 +16,12 @@ type MainStore = {
     syncServerTime: () => Promise<void>;
     welcomeBannerHidden: boolean;
     setWelcomeBannerHidden: (hidden: boolean) => void;
+    sliders: SliderImages[];
 };
 
 export const useMainStore = create<MainStore>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             fetchInitialData: async (_platform: 'I' | 'A') => {
 
@@ -26,9 +29,31 @@ export const useMainStore = create<MainStore>()(
                     if (res?.success && res.data) {
                         set({ currentWeather: res.data });
                     }
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 }).catch((_err) => {
                     // console.warn("Error fetching weather info:", _err);`
+                });
+                getMobileSliderIds().then((res) => {
+                    if (res?.success && res.data) {
+                        const sliderIds = res.data.join(',');
+                        const existingSliders = (get().sliders?.map(s => s.seq) ?? []).join(',');
+                        if (sliderIds !== existingSliders) {
+                            // Fetch full slider details only if there is a change in slider IDs
+                            getAllMobileSliders().then((sliderRes) => {
+                                if (sliderRes?.success && sliderRes.data) {
+                                    if (sliderRes.data.length === 0) {
+                                        set({ sliders: defaultBannerData });
+                                    } else {
+                                        set({ sliders: sliderRes.data });
+                                    }
+                                }
+                            }).catch(() => {
+                                // console.warn("Error fetching full slider details:", err);
+                            });
+                        }
+                    }
+                }).catch(() => {
+                    // console.warn("Error fetching slider ids:", err);
                 });
             },
             checkLatestVersionInfo: async (platform: 'I' | 'A') => {
@@ -78,6 +103,7 @@ export const useMainStore = create<MainStore>()(
             setWelcomeBannerHidden: (hidden: boolean) => {
                 set({ welcomeBannerHidden: hidden });
             },
+            sliders: defaultBannerData,
         }),
         {
             name: 'main-storage',
@@ -86,6 +112,7 @@ export const useMainStore = create<MainStore>()(
                 appConfig: state.appConfig,
                 currentWeather: state.currentWeather,
                 welcomeBannerHidden: state.welcomeBannerHidden,
+                sliders: state.sliders,
             }),
         }
     )
