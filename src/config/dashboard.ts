@@ -34,7 +34,10 @@ export const dashboard: DashboardTypeProps[] = [
         borderRadius: metadata.profile.borderRadius,
         padding: metadata.profile.padding,
         width: metadata.profile.width,
-        height: metadata.profile.height
+        height: metadata.profile.height,
+        isExternal: metadata.profile.isExternal,
+        requiresSecret: metadata.profile.requiresSecret,
+        externalUrl: metadata.profile.externalUrl
 
     },
     {
@@ -51,7 +54,10 @@ export const dashboard: DashboardTypeProps[] = [
         borderRadius: metadata.booking.borderRadius,
         padding: metadata.booking.padding,
         width: metadata.booking.width,
-        height: metadata.booking.height
+        height: metadata.booking.height,
+        isExternal: metadata.booking.isExternal,
+        requiresSecret: metadata.booking.requiresSecret,
+        externalUrl: metadata.booking.externalUrl
     },
     {
         title: metadata.notice.title,
@@ -67,7 +73,10 @@ export const dashboard: DashboardTypeProps[] = [
         borderRadius: metadata.notice.borderRadius,
         padding: metadata.notice.padding,
         width: metadata.notice.width,
-        height: metadata.notice.height
+        height: metadata.notice.height,
+        isExternal: metadata.notice.isExternal,
+        requiresSecret: metadata.notice.requiresSecret,
+        externalUrl: metadata.notice.externalUrl
     },
     {
         title: metadata.seatBooking.title,
@@ -84,7 +93,10 @@ export const dashboard: DashboardTypeProps[] = [
         borderRadius: metadata.seatBooking.borderRadius,
         padding: metadata.seatBooking.padding,
         width: metadata.seatBooking.width,
-        height: metadata.seatBooking.height
+        height: metadata.seatBooking.height,
+        isExternal: metadata.seatBooking.isExternal,
+        requiresSecret: metadata.seatBooking.requiresSecret,
+        externalUrl: metadata.seatBooking.externalUrl
     },
     {
         title: metadata.groupBooking.title,
@@ -101,7 +113,10 @@ export const dashboard: DashboardTypeProps[] = [
         borderRadius: metadata.groupBooking.borderRadius,
         padding: metadata.groupBooking.padding,
         width: metadata.groupBooking.width,
-        height: metadata.groupBooking.height
+        height: metadata.groupBooking.height,
+        isExternal: metadata.groupBooking.isExternal,
+        requiresSecret: metadata.groupBooking.requiresSecret,
+        externalUrl: metadata.groupBooking.externalUrl
     },
     {
         title: metadata.carrelBooking.title,
@@ -118,7 +133,10 @@ export const dashboard: DashboardTypeProps[] = [
         borderRadius: metadata.carrelBooking.borderRadius,
         padding: metadata.carrelBooking.padding,
         width: metadata.carrelBooking.width,
-        height: metadata.carrelBooking.height
+        height: metadata.carrelBooking.height,
+        isExternal: metadata.carrelBooking.isExternal,
+        requiresSecret: metadata.carrelBooking.requiresSecret,
+        externalUrl: metadata.carrelBooking.externalUrl
     },
     {
         title: metadata.message.title,
@@ -134,7 +152,10 @@ export const dashboard: DashboardTypeProps[] = [
         borderRadius: metadata.message.borderRadius,
         padding: metadata.message.padding,
         width: metadata.message.width,
-        height: metadata.message.height
+        height: metadata.message.height,
+        isExternal: metadata.message.isExternal,
+        requiresSecret: metadata.message.requiresSecret,
+        externalUrl: metadata.message.externalUrl
     },
     {
         title: metadata.bookSearch.title,
@@ -226,7 +247,10 @@ export const dashboard: DashboardTypeProps[] = [
         borderRadius: metadata.setting.borderRadius,
         padding: metadata.setting.padding,
         width: metadata.setting.width,
-        height: metadata.setting.height
+        height: metadata.setting.height,
+        isExternal: metadata.setting.isExternal,
+        requiresSecret: metadata.setting.requiresSecret,
+        externalUrl: metadata.setting.externalUrl
     }
 
 
