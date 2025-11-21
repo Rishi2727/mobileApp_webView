@@ -3,8 +3,10 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getAllMobileSliders, getMobileSliderIds, getAppConfig, getLatestVersionDetails, getServerTime, getWeatherInfo } from './api';
 import type { AppConfig, OpenWeatherResponse, SliderImages } from './api/ResponseModels';
-import defaultBannerData from './api/defaultBanner.json';
+// import defaultBanner from './api/defaultBanner.json';
 
+// const defaultBannerData: SliderImages[] = defaultBanner as SliderImages[];
+const defaultBannerData: SliderImages[] = [] as SliderImages[];
 
 type MainStore = {
     fetchInitialData: (platform: 'I' | 'A') => void;

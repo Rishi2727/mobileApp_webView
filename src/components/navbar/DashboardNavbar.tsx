@@ -2,7 +2,7 @@ import { commonIcons, weatherIcon } from "@/assets";
 import { Image } from "../ui/custom/image";
 import { useIsMobile } from "@/hooks/use-mobile";
 import BrandLogo from "@/assets/icons/brandLogo.svg?react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useMainStore } from "@/store/MainStore";
 import { DATE_FORMATS, formatDate } from "@/lib/dateUtils";
 import { LanguageToggle } from "@/features/language-toggle/languageToggle";
@@ -40,6 +40,11 @@ export function DashbaordNavbar() {
   const { t } = useTranslation();
   const currentWeather = useMainStore((state) => state.currentWeather);
   const fetchInitialData = useMainStore((state) => state.fetchInitialData);
+  const visibleBanners = useMainStore((state) => state.sliders);
+  
+  // Carousel state
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchInitialData("A");
@@ -90,10 +95,35 @@ export function DashbaordNavbar() {
     setLanguage(newLanguage);
   };
 
+  // Auto-scroll carousel
+  useEffect(() => {
+    if (visibleBanners.length <= 1) return;
+
+    const slideTimer = setInterval(() => {
+      setCurrentIndex((prev) => {
+        const nextIndex = (prev + 1) % visibleBanners.length;
+        
+        // Scroll to next slide
+        if (carouselRef.current) {
+          const container = carouselRef.current;
+          const slideWidth = container.offsetWidth;
+          container.scrollTo({
+            left: slideWidth * nextIndex,
+            behavior: "smooth",
+          });
+        }
+        
+        return nextIndex;
+      });
+    }, 4000);
+
+    return () => clearInterval(slideTimer);
+  }, [visibleBanners.length]);
+
   return (
-    <div className="fixed top-0 left-0 w-full z-50">
+    <div className="fixed top-0 left-0 w-full z-50 pb-8">
       {/* Main Container */}
-      <div className="relative">
+      <div className="relative pb-3">
         {isMobile ? (
           <div className="absolute inset-0 pointer-events-none">
             <Image
@@ -105,7 +135,7 @@ export function DashbaordNavbar() {
             />
           </div>
         ) : (
-          <div className=" absolute inset-0 bg-gradient-to-b from-slate-700 via-slate-600 to-slate-500">
+          <div className="absolute inset-0 bg-linear-to-b from-slate-700 via-slate-600 to-slate-500">
             {/* Show date and time only when not mobile */}
             <div className="header absolute top-3 right-[20%] sm:right-[20%] md:right-[20%] xl:right-[10%] text-white text-right flex justify-between items-center w-[20%] sm:w-[20%] md:w-[30%] xl:w-[15%]">
               <div>
@@ -198,19 +228,76 @@ export function DashbaordNavbar() {
         </div>
       )}
 
-      {/* Welcome Banner */}
-      <div className="relative px-4 py-2">
-        <div className="flex justify-center items-center">
-          <Image
-            src={commonIcons.bannarImage}
-            alt="banner"
-            objectFit="fill"
-            width={isMobile ? 400 : 700}
-            height={isMobile ? 200 : 300}
-            className="w-full"
-          />
+      {/* Welcome Banner Carousel - Only show if banners are available */}
+      {visibleBanners.length > 0 && (
+        <div className="relative px-4 pt-2 pb-4">
+          {/* Carousel Container */}
+          <div className="relative overflow-hidden rounded-lg mb-2">
+            <div
+              ref={carouselRef}
+              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide cursor-grab active:cursor-grabbing"
+              style={{
+                scrollBehavior: "smooth",
+                WebkitOverflowScrolling: "touch",
+              }}
+              onScroll={(e) => {
+                const container = e.currentTarget;
+                const slideWidth = container.offsetWidth;
+                const scrollLeft = container.scrollLeft;
+                const index = Math.round(scrollLeft / slideWidth);
+                if (index !== currentIndex) {
+                  setCurrentIndex(index);
+                }
+              }}
+            >
+              {visibleBanners.map((banner) => (
+                <div
+                  key={banner.seq}
+                  className="shrink-0 w-full snap-center flex justify-center items-center select-none"
+                >
+                  <img
+                    src={`data:image/png;base64,${banner.fileimage}`}
+                    alt="banner"
+                    className="rounded-lg object-contain w-full pointer-events-none"
+                    style={{
+                      maxWidth: isMobile ? "400px" : "700px",
+                      height: isMobile ? "200px" : "300px",
+                    }}
+                    draggable={false}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Dot Indicators - Only show if more than 1 banner */}
+          {visibleBanners.length > 1 && (
+            <div className="flex justify-center items-center space-x-3">
+              {visibleBanners.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setCurrentIndex(index);
+                    if (carouselRef.current) {
+                      const slideWidth = carouselRef.current.offsetWidth;
+                      carouselRef.current.scrollTo({
+                        left: slideWidth * index,
+                        behavior: "smooth",
+                      });
+                    }
+                  }}
+                  className={`rounded-full transition-all duration-300 ${
+                    index === currentIndex
+                      ? "bg-slate-800 h-2.5 w-10 shadow-lg"
+                      : "bg-slate-400/60 h-2.5 w-2.5 hover:bg-slate-400"
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import DashboardCard from "@/features/dashboard/DashboardCard";
 const Dashboard = () => {
   return (
     <div className="relative h-screen overflow-hidden bg-primary-100 pb-10">
-      <div className=" dashboard mt-[360px] sm:mt-[360px] md:mt-[420px] h-[500px] max-h-[calc(100vh-360px)] sm:max-h-[calc(100vh-360px)] md:max-h-[calc(100vh-420px)] overflow-y-auto m-2 bg-background rounded-2xl pb-10">
+      <div className=" dashboard mt-[390px] sm:mt-[390px] md:mt-[430px] h-[500px] max-h-[calc(100vh-360px)] sm:max-h-[calc(100vh-360px)] md:max-h-[calc(100vh-420px)] overflow-y-auto m-2 bg-background rounded-2xl pb-10">
         <ResponsiveContainer>
           <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {dashboard.map((item) => (
